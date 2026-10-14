@@ -1,0 +1,432 @@
+// Complete Trilingual Internationalization (FR / AR / EN) for NAQL DZ
+
+export type AppLang = 'fr' | 'ar' | 'en';
+
+export const translations = {
+  fr: {
+    // Brand & Header
+    brandTitle: 'NAQL DZ',
+    brandSubtitle: 'Plateforme Intelligente des Taxis & Dashcams',
+    dtwBadge: 'WILAYA D\'ALGER',
+    navHome: 'Présentation & Vision',
+    navRider: 'App Passager (Mobile)',
+    navDriver: 'Cockpit Chauffeur (Dashcam)',
+    navFleet: 'Supervision Flotte',
+    navLedger: 'Grand Livre & Monnaie',
+    navLiveDemo: 'Simulateur Multi-Écrans',
+    themeLight: 'Mode Clair',
+    themeDark: 'Mode Sombre',
+    soundMute: 'Couper le son',
+    soundUnmute: 'Activer le son',
+    resetDemo: 'Réinitialiser',
+
+    // Landing Page Hero
+    heroBadge: 'RÉSEAU OFFICIEL DES TAXIS RÉGLEMENTÉS • WILAYA D\'ALGER',
+    heroTitle: 'La Plateforme Intelligente des Taxis Agréés & Dashcams Embarquées',
+    heroDescription: 'La première solution technologique algérienne certifiée pour moderniser le transport urbain : commande en 1 clic, boîte noire dashcam CameraX, et élimination définitive des conflits de monnaie physique grâce au Spare Change Flywheel.',
+    heroCtaRider: 'Tester l\'App Passager',
+    heroCtaDriver: 'Cockpit Dashcam Chauffeur',
+    heroCtaFleet: 'Radar Flotte en Direct',
+    
+    // Stats / Trust Indicators
+    statFleet: '500+ Taxis Agréés',
+    statFleetDesc: 'Conformes Décret 12-230',
+    statResponse: '< 15 Sec.',
+    statResponseDesc: 'Temps d\'acceptation moyen',
+    statSpareChange: '100% Digitalisé',
+    statSpareChangeDesc: 'Rendu de monnaie instantané',
+    statSecurity: 'Loi 25-11',
+    statSecurityDesc: 'Preuves sous clé AES-256',
+
+    // Pillars / Value Propositions
+    pillar1Title: 'Pour les Passagers',
+    pillar1Subtitle: 'Fini le casse-tête de la monnaie',
+    pillar1Desc: 'Commandez votre taxi individuel ou collectif au tarif réglementé. Si le chauffeur manque de pièces pour vous rendre la monnaie, votre reliquat est crédité directement sur votre portefeuille digital en 1 seconde.',
+    pillar1Badge: 'Compteur Fiscal + 100 DA Approche',
+
+    // Pillar 2
+    pillar2Title: 'Pour les Chauffeurs',
+    pillar2Subtitle: 'Sécurité totale & Dashcam continue',
+    pillar2Desc: 'Une tablette connectée avec dashcam HD en mémoire circulaire. En cas d\'impact ou d\'urgence (>2.8G), l\'enregistrement des 60 dernières secondes est crypté et placé sous séquestre pour protéger vos droits.',
+    pillar2Badge: 'Boîte Noire Judiciaire AES-256',
+
+    // Pillar 3
+    pillar3Title: 'Pour les Flottes & la Wilaya',
+    pillar3Subtitle: 'Télématique H3 haute précision',
+    pillar3Desc: 'Supervision en temps réel des agréments, livrets de place, vitesses et positions géographiques sur le maillage Uber H3 Résolution 8, avec transparence comptable en partie double.',
+    pillar3Badge: 'Index H3 Spatial & OpenStreetMap',
+
+    // Interactive Demo Section
+    demoSectionTitle: 'Démonstrateur Interactif Multi-Appareils',
+    demoSectionSubtitle: 'Testez en direct les différentes facettes de l\'écosystème comme sur le terrain à Alger',
+
+    // Rider View
+    riderPhoneHeader: 'Passager • Alger',
+    riderSubheader: 'Taxis agréés par la DTW Alger',
+    riderSelectMode: 'Sélectionnez votre mode de transport réglementé :',
+    riderModeIndividuel: 'Taxi Individuel',
+    riderModeIndividuelSub: 'Compteur fiscal horokilométrique + 100 DA d\'approche obligatoire',
+    riderModeCollectif: 'Taxi Collectif Urbain',
+    riderModeCollectifSub: 'Tarif fixe 50 DA la place. Ligne urbaine partagée (4 places max)',
+    riderModeInterWilaya: 'Taxi Inter-Wilaya',
+    riderModeInterWilayaSub: 'Liaisons régionales depuis la gare routière du Caroubier',
+    riderPickup: 'Prise en charge',
+    riderDestination: 'Destination finale',
+    riderPaymentMethod: 'Mode de paiement',
+    riderCash: 'Espèces',
+    riderCard: 'Edahabia / CIB',
+    riderWallet: 'Portefeuille TrustDesk',
+    riderOrderBtn: 'COMMANDER UN TAXI AGRÉÉ',
+    riderSearching: 'Recherche d\'un taxi dans votre secteur H3...',
+    riderAssignedTitle: 'Chauffeur Agréé en Route',
+    riderPinTitle: 'Code PIN d\'Embarquement Sécurisé',
+    riderPinNotice: 'Communiquez ce code au chauffeur avant le démarrage du compteur.',
+    riderCopyPin: 'Copier le code',
+    riderTripInProgress: 'Course en cours vers votre destination',
+    riderTripCompleted: 'Course Terminée • Merci pour votre confiance !',
+    riderCancelTrip: 'Annuler la Course',
+
+    // Driver View
+    driverCockpitTitle: 'Tablette Chauffeur (Cockpit HUD)',
+    driverStandby: 'Cockpit Chauffeur en Veille',
+    driverStandbyDesc: 'Prêt à recevoir les assignations de la Wilaya d\'Alger (Index H3 actif).',
+    driverNewRide: 'NOUVELLE DEMANDE DE COURSE • ALGER',
+    driverApproachGuaranteed: 'Frais d\'approche garantis :',
+    driverAcceptBtn: 'ACCEPTER LA COURSE (15s)',
+    driverNavToPickup: 'Guidage vers le point de prise en charge',
+    driverArrivedBtn: 'JE SUIS ARRIVÉ AU POINT DE PRISE',
+    driverBoardingTitle: 'Embarquement du Passager',
+    driverBoardingDesc: 'Saisissez le code PIN à 4 chiffres du passager pour déverrouiller le compteur fiscal',
+    driverStartMeterBtn: 'DÉMARRER COMPTEUR & COURSE',
+    driverTripLive: 'Course en cours • Dashcam active',
+    driverFinishBtn: 'ARRIVÉ À DESTINATION • ENCAISSER',
+    driverFareClosing: 'Clôture de la Course',
+    driverEnterMeter: 'Saisissez le montant affiché sur votre compteur fiscal',
+    driverMeterAmount: 'Compteur Fiscal (DA) :',
+    driverApproachFee: 'Frais d\'Approche (CNRC 604103) :',
+    driverTotalDue: 'Total à Régler :',
+    driverCollectBtn: 'ENCAISSER & CONVERTIR MONNAIE TRUSTDESK',
+    driverImpactAlert: 'Simuler Impact 2.8G',
+    driverSosAlert: 'SOS Urgence',
+    driverOnlineBtn: 'En Service',
+    driverOfflineBtn: 'Hors Service',
+    driverRechargeTitle: 'Recharger mon solde :',
+
+    // Spare Change Flywheel Modal
+    modalTitle: 'The Spare Change Flywheel',
+    modalSubtitle: 'Conversion immédiate de la monnaie physique en solde digital',
+    modalFareLabel: 'Montant de la Course :',
+    modalTenderedLabel: 'Billet remis par le client :',
+    modalChangeDue: 'Monnaie restante due :',
+    modalExplanation: 'Le chauffeur conserve les espèces. Le reliquat est débité de son compte chauffeur et crédité instantanément sur le compte TrustDesk du passager.',
+    modalConfirmBtn: 'Valider & Créditer',
+
+    // Dispatch & Fleet
+    fleetTitle: 'Centre de Supervision & Sûreté Urbaine',
+    fleetSubtitle: 'Télématique temps réel, maillage H3 Résolution 8 et flotte municipale',
+    fleetActiveTaxis: 'Taxis en Service à Alger',
+    fleetTableDriver: 'Chauffeur / Véhicule',
+    fleetTableCommune: 'Commune / Secteur H3',
+    fleetTableSpeed: 'Vitesse / Télémétrie',
+    fleetTableStatus: 'Statut Opérationnel',
+    fleetCenterMap: 'Centrer la carte sur la flotte',
+
+    // Ledger
+    ledgerTitle: 'Grand Livre Comptable en Partie Double (Moteur TrustDesk)',
+    ledgerSubtitle: 'Norme comptable algérienne • Rails Chargily Pay & Portefeuille Monnaie',
+    ledgerBalanced: 'Équilibre Débit / Crédit : Conforme (0 écart)',
+    ledgerUnbalanced: 'Vérification de l\'équilibre comptable',
+    ledgerExportCsv: 'Exporter le Journal (CSV)',
+
+    // Regulatory / Legal Footer
+    legalTitle: 'Conformité Réglementaire & Souveraineté Numérique',
+    legalDecret: 'Décret Exécutif 12-230 : Agrément de transport délivré par la Direction des Transports de la Wilaya d\'Alger & Livret de Place obligatoire.',
+    legalCnrc: 'CNRC 604103 : Frais d\'approche obligatoires de 100 DA intégrés aux courses commandées.',
+    legalLaw25: 'Loi 25-11 : Chiffrement AES-256 des enregistrements dashcam et conservation sécurisée des preuves.',
+  },
+
+  ar: {
+    // Brand & Header
+    brandTitle: 'نقل الجزائر • NAQL DZ',
+    brandSubtitle: 'المنصة الذكية لسيارات الأجرة وكاميرات المراقبة',
+    dtwBadge: 'ولاية الجزائر',
+    navHome: 'الرؤية والتقديم',
+    navRider: 'تطبيق الراكب (الهاتف)',
+    navDriver: 'لوحة السائق (الكاميرا)',
+    navFleet: 'إدارة الأسطول',
+    navLedger: 'دفتر الحسابات والفكة',
+    navLiveDemo: 'المحاكي المباشر',
+    themeLight: 'الوضع الفاتح',
+    themeDark: 'الوضع الداكن',
+    soundMute: 'كتم الصوت',
+    soundUnmute: 'تشغيل الصوت',
+    resetDemo: 'إعادة الضبط',
+
+    // Landing Page Hero
+    heroBadge: 'الشبكة الرسمية لسيارات الأجرة المعتمدة • ولاية الجزائر',
+    heroTitle: 'المنصة الذكية الأولى لسيارات الأجرة المعتمدة وكاميرات المراقبة في الجزائر',
+    heroDescription: 'حل تقني جزائري معتمد لتطوير النقل الحضري: طلب سيارة أجرة في ثوان، كاميرا مراقبة ذكية للحماية القانونية، والقضاء النهائي على مشكلة الفكة بفضل نظام محفظة الفكة الذكية.',
+    heroCtaRider: 'تجربة تطبيق الراكب',
+    heroCtaDriver: 'لوحة تحكم السائق والكاميرا',
+    heroCtaFleet: 'مراقبة الأسطول المباشرة',
+
+    // Stats
+    statFleet: '+500 سيارة أجرة',
+    statFleetDesc: 'مطابقة للمرسوم 12-230',
+    statResponse: 'أقل من 15 ثانية',
+    statResponseDesc: 'متوسط سرعة قبول الطلب',
+    statSpareChange: '100% رقمي',
+    statSpareChangeDesc: 'إرجاع الفكة فورياً للمحفظة',
+    statSecurity: 'القانون 25-11',
+    statSecurityDesc: 'تشفير الأدلة بمفتاح AES-256',
+
+    // Pillars
+    pillar1Title: 'للركاب',
+    pillar1Subtitle: 'وداعاً لمشكلة الفكة اليومية',
+    pillar1Desc: 'اطلب سيارة أجرة فردية أو جماعية بالتعريفة الرسمية المقننة. إذا لم تتوفر فكة ورقية لدى السائق، يتم تحويل المبلغ المتبقي فوراً إلى محفظتك الإلكترونية بضغطة زر واحدة.',
+    pillar1Badge: 'العداد الضريبي + 100 دج تكلفة الاقتراب',
+
+    pillar2Title: 'لسائقي سيارات الأجرة',
+    pillar2Subtitle: 'حماية كاملة وكاميرا مراقبة مستمرة',
+    pillar2Desc: 'جهاز لوحي متصل بالسيارة يسجل بدقة عالية. في حال حدوث اصطدام أو فرملة قوية، يتم قفل آخر 60 ثانية وتشفيرها كدليل قانوني معتمد يحمي حقوقك المهنية.',
+    pillar2Badge: 'صندوق أسود قانوني مشفر AES-256',
+
+    pillar3Title: 'لإدارة الأساطيل والولاية',
+    pillar3Subtitle: 'تتبع جغرافي دقيق بنظام H3',
+    pillar3Desc: 'متابعة ميدانية حية لسيارات الأجرة المعتمدة، دفاتر المقاعد، السرعة، والمواقع الجغرافية عبر خريطة ذكية مع شفافية مالية ومحاسبية كاملة.',
+    pillar3Badge: 'نظام الإحداثيات H3 وخريطة الجزائر',
+
+    // Interactive Demo
+    demoSectionTitle: 'المحاكي التفاعلي المتعدد الأجهزة',
+    demoSectionSubtitle: 'جرب سيناريو العمل الحقيقي بين الراكب، السائق، وغرفة العمليات في شوارع الجزائر العاصمة',
+
+    // Rider View
+    riderPhoneHeader: 'الراكب • الجزائر',
+    riderSubheader: 'سيارات أجرة معتمدة من مديرية النقل لولاية الجزائر',
+    riderSelectMode: 'اختر نوع خدمة النقل المقننة:',
+    riderModeIndividuel: 'طاكسي فردي (عداد)',
+    riderModeIndividuelSub: 'عداد ضريبي قانوني + 100 دج تكلفة الاقتراب الإلزامية',
+    riderModeCollectif: 'طاكسي جماعي حضري (خط)',
+    riderModeCollectifSub: 'تعريفة ثابتة 50 دج للمقعد. خط حضري مشترك (4 مقاعد كحد أقصى)',
+    riderModeInterWilaya: 'طاكسي ما بين الولايات',
+    riderModeInterWilayaSub: 'رحلات إقليمية تنطلق من المحطة البرية بالخروبة',
+    riderPickup: 'مكان الركوب',
+    riderDestination: 'الوجهة المقصودة',
+    riderPaymentMethod: 'طريقة الدفع',
+    riderCash: 'نقداً',
+    riderCard: 'البطاقة الذهبية / CIB',
+    riderWallet: 'محفظة ترست ديسك',
+    riderOrderBtn: 'طلب سيارة أجرة معتمدة',
+    riderSearching: 'جاري البحث عن أقرب طاكسي في منطقتك...',
+    riderAssignedTitle: 'السائق المعتمد في الطريق إليك',
+    riderPinTitle: 'رمز التأكيد السري للركوب (PIN)',
+    riderPinNotice: 'أعط هذا الرمز المكون من 4 أرقام للسائق قبل تشغيل العداد الضريبي.',
+    riderCopyPin: 'نسخ الرمز',
+    riderTripInProgress: 'الرحلة جارية نحو وجهتك',
+    riderTripCompleted: 'اكتملت الرحلة بنجاح • شكراً لثقتكم!',
+    riderCancelTrip: 'إلغاء الرحلة',
+
+    // Driver View
+    driverCockpitTitle: 'لوحة تحكم السائق (الكاميرا والعداد)',
+    driverStandby: 'لوحة السائق في وضع الاستعداد',
+    driverStandbyDesc: 'جاهز لاستقبال طلبات الركاب من ولاية الجزائر (مؤشر H3 نشط).',
+    driverNewRide: 'طلب رحلة جديد • ولاية الجزائر',
+    driverApproachGuaranteed: 'تكلفة الاقتراب المضمونة:',
+    driverAcceptBtn: 'قبول الرحلة (15 ثانية)',
+    driverNavToPickup: 'المسار نحو نقطة ركوب الزبون',
+    driverArrivedBtn: 'لقد وصلت إلى مكان الركوب',
+    driverBoardingTitle: 'صعود الزبون',
+    driverBoardingDesc: 'أدخل رمز التأكيد (PIN) المكون من 4 أرقام لتشغيل العداد الضريبي',
+    driverStartMeterBtn: 'تشغيل العداد وبدء الرحلة',
+    driverTripLive: 'الرحلة جارية • كاميرا المراقبة تسجل',
+    driverFinishBtn: 'الوصول للوجهة • تحصيل الحساب',
+    driverFareClosing: 'إنهاء الرحلة وتحصيل المبلغ',
+    driverEnterMeter: 'أدخل المبلغ المسجل على العداد الضريبي',
+    driverMeterAmount: 'مبلغ العداد (دج):',
+    driverApproachFee: 'تكلفة الاقتراب القانونية (السجل 604103):',
+    driverTotalDue: 'إجمالي المبلغ المستحق:',
+    driverCollectBtn: 'تحصيل المبلغ وتحويل الفكة إلكترونياً',
+    driverImpactAlert: 'محاكاة اصطدام 2.8G',
+    driverSosAlert: 'نداء استغاثة طارئ',
+    driverOnlineBtn: 'في الخدمة',
+    driverOfflineBtn: 'خارج الخدمة',
+    driverRechargeTitle: 'شحن رصيدي:',
+
+    // Modal
+    modalTitle: 'محفظة الفكة الذكية (Spare Change Flywheel)',
+    modalSubtitle: 'تحويل فوري لباقي النقود إلى رصيد رقمي',
+    modalFareLabel: 'تكلفة الرحلة الإجمالية:',
+    modalTenderedLabel: 'الورقة النقدية المسلمة من الزبون:',
+    modalChangeDue: 'الفكة المستحقة للزبون:',
+    modalExplanation: 'يحتفظ السائق بالمبلغ النقدي كاملاً. ويتم خصم الفكة من حسابه الإلكتروني وإيداعها فوراً في المحفظة الرقمية للراكب.',
+    modalConfirmBtn: 'تأكيد وتحويل الفكة',
+
+    // Dispatch
+    fleetTitle: 'مركز المتابعة الحضرية وسلامة النقل',
+    fleetSubtitle: 'تتبع آني لسيارات الأجرة، شبكة H3 والأسطول المعتمد بالجزائر',
+    fleetActiveTaxis: 'سيارات الأجرة العاملة حالياً في العاصمة',
+    fleetTableDriver: 'السائق / المركبة',
+    fleetTableCommune: 'البلدية / المنطقة H3',
+    fleetTableSpeed: 'السرعة / التتبع',
+    fleetTableStatus: 'الحالة التشغيلية',
+    fleetCenterMap: 'توسيط الخريطة على الأسطول',
+
+    // Ledger
+    ledgerTitle: 'دفتر الحسابات ذو القيد المزدوج',
+    ledgerSubtitle: 'مطابق للمعايير المحاسبية الجزائرية • دفع وتوزيع شفاف للأموال',
+    ledgerBalanced: 'تطابق الحسابات: الأصول تساوي الخصوم (0 دج فارق)',
+    ledgerUnbalanced: 'جاري مطابقة وتدقيق الحسابات',
+    ledgerExportCsv: 'تصدير السجل المحاسبي (CSV)',
+
+    // Legal
+    legalTitle: 'المطابقة القانونية والسيادة الرقمية',
+    legalDecret: 'المرسوم التنفيذي 12-230: رخصة استغلال معتمدة من مديرية النقل لولاية الجزائر ودفتر المقاعد الإلزامي.',
+    legalCnrc: 'السجل التجاري 604103: تطبيق تكلفة الاقتراب الإلزامية المقدرة بـ 100 دج.',
+    legalLaw25: 'القانون 25-11: تشفير تسجيلات كاميرا المراقبة وحماية المعطيات القضائية.',
+  },
+
+  en: {
+    // Brand & Header
+    brandTitle: 'NAQL DZ',
+    brandSubtitle: 'Smart Certified Taxi & Connected Dashcam Platform',
+    dtwBadge: 'ALGIERS WILAYA',
+    navHome: 'Product Overview',
+    navRider: 'Rider App (Mobile)',
+    navDriver: 'Driver Cockpit (Dashcam)',
+    navFleet: 'Fleet Supervision',
+    navLedger: 'Ledger & Spare Change',
+    navLiveDemo: 'Interactive Simulator',
+    themeLight: 'Light Mode',
+    themeDark: 'Dark Mode',
+    soundMute: 'Mute Audio',
+    soundUnmute: 'Unmute Audio',
+    resetDemo: 'Reset',
+
+    // Landing Page Hero
+    heroBadge: 'CERTIFIED TAXI NETWORK • ALGIERS TRANSPORT DIRECTORATE',
+    heroTitle: 'Algeria\'s Smart Certified Taxi & Connected Dashcam Platform',
+    heroDescription: 'The certified Algerian tech infrastructure modernizing municipal transit: 1-click booking, CameraX in-car blackbox protection, and complete elimination of physical small change friction via the Spare Change Flywheel.',
+    heroCtaRider: 'Launch Rider App',
+    heroCtaDriver: 'Driver Dashcam Cockpit',
+    heroCtaFleet: 'Live Fleet Radar',
+
+    // Stats
+    statFleet: '500+ Certified Taxis',
+    statFleetDesc: 'Executive Decree 12-230 compliant',
+    statResponse: '< 15 Sec.',
+    statResponseDesc: 'Average driver dispatch match',
+    statSpareChange: '100% Digital',
+    statSpareChangeDesc: 'Instant change stored-value credit',
+    statSecurity: 'Law 25-11',
+    statSecurityDesc: 'Judicial escrow under AES-256',
+
+    // Pillars
+    pillar1Title: 'For Passengers',
+    pillar1Subtitle: 'No more spare change friction',
+    pillar1Desc: 'Book individual or collective taxis at official regulated tariffs. When cash change is unavailable, the driver credits your remaining change directly into your digital wallet in 1 second.',
+    pillar1Badge: 'Fiscal Meter + 100 DZD Approach Fee',
+
+    pillar2Title: 'For Taxi Drivers',
+    pillar2Subtitle: 'Continuous dashcam & judicial protection',
+    pillar2Desc: 'A connected in-car tablet running high-definition dashcam circular buffer. Upon sudden braking or collision (>2.8G), the last 60 seconds are encrypted and locked as evidence to safeguard your rights.',
+    pillar2Badge: 'AES-256 G-Sensor Judicial Lockbox',
+
+    pillar3Title: 'For Fleets & Regulators',
+    pillar3Subtitle: 'High-precision H3 urban telematics',
+    pillar3Desc: 'Real-time monitoring of municipal permits, seat occupancy, vehicle speeds, and GPS coordinates over Uber H3 Resolution 8 spatial cells, with transparent double-entry accounting.',
+    pillar3Badge: 'H3 Spatial Hex Index & OpenStreetMap',
+
+    // Interactive Demo
+    demoSectionTitle: 'Interactive Multi-Device Simulator',
+    demoSectionSubtitle: 'Test real-world interactions between the passenger, the driver, and municipal dispatch on Algiers streets',
+
+    // Rider View
+    riderPhoneHeader: 'Passenger • Algiers',
+    riderSubheader: 'Taxis certified by DTW Algiers',
+    riderSelectMode: 'Select your regulated transport mode:',
+    riderModeIndividuel: 'Individual Taxi (Metered)',
+    riderModeIndividuelSub: 'Fiscal meter + 100 DZD mandatory approach fee',
+    riderModeCollectif: 'Urban Collective Taxi',
+    riderModeCollectifSub: 'Fixed 50 DZD per seat. Shared municipal route (4 seats max)',
+    riderModeInterWilaya: 'Inter-Wilaya Taxi',
+    riderModeInterWilayaSub: 'Regional routes departing from Caroubier Bus Station',
+    riderPickup: 'Pickup Location',
+    riderDestination: 'Drop-off Destination',
+    riderPaymentMethod: 'Payment Method',
+    riderCash: 'Cash',
+    riderCard: 'Edahabia / CIB Card',
+    riderWallet: 'TrustDesk Wallet',
+    riderOrderBtn: 'ORDER CERTIFIED TAXI',
+    riderSearching: 'Locating nearest certified taxi in your H3 cell...',
+    riderAssignedTitle: 'Certified Driver on Route',
+    riderPinTitle: 'Secure Boarding PIN Code',
+    riderPinNotice: 'Provide this 4-digit PIN to the driver before the taximeter starts.',
+    riderCopyPin: 'Copy PIN',
+    riderTripInProgress: 'Trip in progress towards destination',
+    riderTripCompleted: 'Trip Completed • Thank you for riding!',
+    riderCancelTrip: 'Cancel Ride',
+
+    // Driver View
+    driverCockpitTitle: 'Driver Tablet (Cockpit HUD)',
+    driverStandby: 'Driver Cockpit on Standby',
+    driverStandbyDesc: 'Ready to receive ride assignments in Algiers (H3 index active).',
+    driverNewRide: 'NEW RIDE DISPATCH • ALGIERS',
+    driverApproachGuaranteed: 'Guaranteed Approach Fee:',
+    driverAcceptBtn: 'ACCEPT RIDE (15s)',
+    driverNavToPickup: 'Navigation to passenger pickup point',
+    driverArrivedBtn: 'I HAVE ARRIVED AT PICKUP POINT',
+    driverBoardingTitle: 'Passenger Boarding',
+    driverBoardingDesc: 'Enter the passenger\'s 4-digit PIN to unlock the fiscal taximeter',
+    driverStartMeterBtn: 'START TAXIMETER & TRIP',
+    driverTripLive: 'Trip in progress • Dashcam recording',
+    driverFinishBtn: 'ARRIVED AT DESTINATION • SETTLE FARE',
+    driverFareClosing: 'Trip Settlement',
+    driverEnterMeter: 'Enter fare shown on your fiscal taximeter',
+    driverMeterAmount: 'Fiscal Taximeter (DZD):',
+    driverApproachFee: 'Approach Fee (CNRC 604103):',
+    driverTotalDue: 'Total Amount Due:',
+    driverCollectBtn: 'COLLECT CASH & CONVERT TRUSTDESK CHANGE',
+    driverImpactAlert: 'Simulate 2.8G Crash Impact',
+    driverSosAlert: 'SOS Emergency',
+    driverOnlineBtn: 'Online',
+    driverOfflineBtn: 'Offline',
+    driverRechargeTitle: 'Top-up driver balance:',
+
+    // Modal
+    modalTitle: 'The Spare Change Flywheel',
+    modalSubtitle: 'Instant conversion of physical cash change into digital wallet balance',
+    modalFareLabel: 'Total Trip Fare:',
+    modalTenderedLabel: 'Cash banknote tendered:',
+    modalChangeDue: 'Remaining Change Due:',
+    modalExplanation: 'The driver keeps the cash banknote. The remaining change is deducted from the driver\'s operating balance and immediately credited to the passenger\'s TrustDesk digital wallet.',
+    modalConfirmBtn: 'Confirm & Credit Change',
+
+    // Dispatch
+    fleetTitle: 'Urban Dispatch & Safety Command Center',
+    fleetSubtitle: 'Real-time telematics, H3 Resolution 8 spatial grid, and municipal fleet radar',
+    fleetActiveTaxis: 'Active Taxis on Duty in Algiers',
+    fleetTableDriver: 'Driver / Vehicle',
+    fleetTableCommune: 'Commune / H3 Cell',
+    fleetTableSpeed: 'Speed / Telematics',
+    fleetTableStatus: 'Operating Status',
+    fleetCenterMap: 'Center map on fleet',
+
+    // Ledger
+    ledgerTitle: 'Double-Entry General Ledger (TrustDesk Engine)',
+    ledgerSubtitle: 'Algerian accounting standards • Transparent Chargily Pay & Wallet Rails',
+    ledgerBalanced: 'Debit / Credit Balance: Balanced (0 discrepancy)',
+    ledgerUnbalanced: 'Verifying ledger balance',
+    ledgerExportCsv: 'Export Journal (CSV)',
+
+    // Legal
+    legalTitle: 'Regulatory Compliance & Data Sovereignty',
+    legalDecret: 'Executive Decree 12-230: Municipal transport permit issued by DTW Algiers & mandatory Livret de Place.',
+    legalCnrc: 'CNRC 604103: Mandatory 100 DZD approach fee applied to on-demand bookings.',
+    legalLaw25: 'Law 25-11: AES-256 encryption of dashcam footage and sovereign evidence escrow.',
+  }
+};
+
+export function getTranslation(lang: AppLang, key: keyof typeof translations.fr): string {
+  const dict = translations[lang] || translations.fr;
+  return (dict as any)[key] || translations.fr[key] || String(key);
+}

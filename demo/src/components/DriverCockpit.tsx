@@ -1,15 +1,8 @@
 import React, { useState } from 'react';
 import { 
-  Car, 
   Power, 
-  MapPin, 
-  Navigation, 
-  CheckCircle2, 
-  Clock, 
-  KeyRound, 
-  Wallet, 
-  DollarSign,
-  Volume2
+  CreditCard,
+  Banknote
 } from 'lucide-react';
 import type { 
   DriverProfile, 
@@ -20,7 +13,8 @@ import { DashcamHUD } from './DashcamHUD';
 import { ChargilyTopupModal } from './ChargilyTopupModal';
 import { BaridiMobModal } from './BaridiMobModal';
 import { soundEngine } from '../utils/audio';
-
+import type { AppLang } from '../utils/i18n';
+import { getTranslation } from '../utils/i18n';
 
 interface DriverCockpitProps {
   driver: DriverProfile;
@@ -34,6 +28,8 @@ interface DriverCockpitProps {
   onIncidentTriggered: (incident: DashcamIncident) => void;
   onTopupDriverWallet: (amountDzd: number) => void;
   onOpenSpareChangeModal: () => void;
+  lang?: AppLang;
+  isDark?: boolean;
 }
 
 export const DriverCockpit: React.FC<DriverCockpitProps> = ({
@@ -48,6 +44,8 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
   onIncidentTriggered,
   onTopupDriverWallet,
   onOpenSpareChangeModal,
+  lang = 'fr',
+  isDark: _isDark,
 }) => {
   const [pinInput, setPinInput] = useState('');
   const [meterFareInput, setMeterFareInput] = useState<number>(750);
@@ -55,357 +53,277 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
   const [isTopupModalOpen, setIsTopupModalOpen] = useState(false);
   const [isBaridiMobModalOpen, setIsBaridiMobModalOpen] = useState(false);
 
+  const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(lang, key);
 
   const handleVerifyPin = () => {
     soundEngine.playClick();
     const success = onStartTrip(pinInput);
     if (!success) {
       setPinError(true);
+      soundEngine.playCrashSonar();
       setTimeout(() => setPinError(false), 2000);
     } else {
-      soundEngine.playSuccessChime();
       setPinInput('');
-    }
-  };
-
-  const handleVoiceDispatch = () => {
-    soundEngine.playClick();
-    if (currentRide) {
-      soundEngine.speakDispatch(
-        `Taxi 16-0482. Assignation en cours. Destination: ${currentRide.destination.name}.`,
-        'fr'
-      );
-    } else {
-      soundEngine.speakDispatch(
-        'Poste de commandement Alger. Aucun appel en attente pour votre secteur H3.',
-        'fr'
-      );
+      soundEngine.playSuccessChime();
     }
   };
 
   return (
-    <div className="cockpit-card rounded-3xl overflow-hidden shadow-2xl flex flex-col h-full max-w-2xl mx-auto border border-white/10">
+    <div className="glass-panel rounded-3xl p-4 sm:p-6 border transition-colors shadow-2xl space-y-4">
       
-      {/* Cockpit Status Header */}
-      <div className="bg-slate-950/95 p-4 border-b border-white/10 flex items-center justify-between">
-        <div className="flex items-center space-x-3.5">
-          <div className="relative">
-            <img
-              src={driver.photoUrl}
-              alt={driver.fullName}
-              className="w-13 h-13 rounded-2xl object-cover border-2 border-amber-400 shadow-lg"
-            />
-            <span className={`absolute -bottom-1 -right-1 w-4 h-4 rounded-full border-2 border-slate-950 ${
-              driver.isOnline ? 'bg-emerald-400 animate-pulse' : 'bg-slate-600'
-            }`}></span>
-          </div>
+      {/* Driver Tablet Header & Profile Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-white/10">
+        <div className="flex items-center space-x-3">
+          <img 
+            src={driver.photoUrl} 
+            alt={driver.fullName} 
+            className="w-12 h-12 rounded-2xl object-cover border-2 border-amber-400/40 shadow-md"
+          />
           <div>
             <div className="flex items-center space-x-2">
-              <h3 className="font-extrabold text-base text-white">{driver.fullName}</h3>
-              <span className="px-2 py-0.5 rounded-lg bg-amber-400/15 text-amber-300 text-xs font-mono font-bold border border-amber-400/30">
+              <h3 className="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white">
+                {driver.fullName}
+              </h3>
+              <span className="font-mono text-xs px-2 py-0.5 rounded-md bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-slate-300 font-bold">
                 {driver.licensePlate}
               </span>
             </div>
-            <div className="text-xs text-slate-400 font-mono mt-0.5">
-              Agrément: <span className="text-slate-300 font-bold">{driver.agrementNumber}</span> • Livret: <span className="text-slate-300 font-bold">{driver.livretDePlaceNumber}</span>
-            </div>
+            <p className="text-[11px] text-slate-500 dark:text-slate-400">
+              Agrément : {driver.agrementNumber} • Livret : {driver.livretDePlaceNumber}
+            </p>
           </div>
         </div>
 
-        {/* Operational Wallet Balance & Online Switch */}
-        <div className="flex items-center space-x-3">
+        {/* Operational Balance & State */}
+        <div className="flex items-center space-x-2.5">
           <div className="text-right">
-            <span className="text-[10px] text-slate-400 font-bold uppercase tracking-wider block">Solde Opérationnel</span>
-            <div className="font-mono font-black text-amber-300 text-base">
+            <span className="block text-[10px] text-slate-500 uppercase font-bold">Solde Opérationnel</span>
+            <span className="text-sm sm:text-base font-black font-mono text-emerald-500">
               {driver.walletBalanceDzd.toFixed(2)} DZD
-            </div>
+            </span>
           </div>
 
           <button
-            onClick={() => {
-              soundEngine.playClick();
-              onToggleOnline();
-            }}
-            title={driver.isOnline ? 'Passer hors-ligne' : 'Se connecter au réseau DTW'}
-            className={`p-3 rounded-2xl border transition-all flex items-center justify-center ${
+            onClick={() => { soundEngine.playClick(); onToggleOnline(); }}
+            className={`px-3 py-1.5 rounded-xl font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer ${
               driver.isOnline
-                ? 'bg-emerald-500 text-slate-950 border-emerald-400 shadow-lg shadow-emerald-500/25'
-                : 'bg-white/5 text-slate-400 border-white/10 hover:text-white'
+                ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 border border-emerald-500/30'
+                : 'bg-rose-500/15 text-rose-600 dark:text-rose-300 border border-rose-500/30'
             }`}
           >
-            <Power className="w-5 h-5 stroke-[2.5]" />
+            <Power className="w-3.5 h-3.5" />
+            <span>{driver.isOnline ? t('driverOnlineBtn') : t('driverOfflineBtn')}</span>
           </button>
         </div>
       </div>
 
-      {/* Main Body */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        
-        {/* Top-Up Quick Bar & Voice Assistance */}
-        <div className="bg-slate-950/80 px-4 py-2.5 rounded-2xl border border-white/10 flex items-center justify-between text-xs">
-          <div className="flex items-center space-x-1.5 text-slate-300">
-            <Wallet className="w-4 h-4 text-amber-400" />
-            <span>Recharge:</span>
-            <button
-              onClick={() => { soundEngine.playClick(); setIsTopupModalOpen(true); }}
-              className="px-2 py-0.5 rounded-lg bg-sky-500/20 text-sky-300 border border-sky-400/30 font-bold text-[10px] hover:bg-sky-500/30 transition-colors"
-            >
-              CIB
-            </button>
-            <button
-              onClick={() => { soundEngine.playClick(); setIsBaridiMobModalOpen(true); }}
-              className="px-2 py-0.5 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-400/30 font-bold text-[10px] hover:bg-amber-500/30 transition-colors"
-            >
-              BaridiMob
-            </button>
-          </div>
-
+      {/* Recharges & Quick Actions */}
+      <div className="flex items-center justify-between text-xs">
+        <div className="flex items-center space-x-2">
+          <span className="text-slate-500 font-semibold">{t('driverRechargeTitle')}</span>
           <button
-            onClick={handleVoiceDispatch}
-            className="flex items-center space-x-1.5 px-2.5 py-1 rounded-xl bg-amber-400/10 text-amber-300 border border-amber-400/25 hover:bg-amber-400/20 transition-colors font-bold text-[11px]"
+            onClick={() => setIsTopupModalOpen(true)}
+            className="px-2.5 py-1 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 text-sky-600 dark:text-sky-300 border border-sky-500/30 font-bold flex items-center gap-1 cursor-pointer"
           >
-            <Volume2 className="w-3.5 h-3.5" />
-            <span>Assistant Vocal</span>
+            <CreditCard className="w-3 h-3" />
+            <span>CIB / Edahabia</span>
+          </button>
+          <button
+            onClick={() => setIsBaridiMobModalOpen(true)}
+            className="px-2.5 py-1 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-300 border border-amber-500/30 font-bold flex items-center gap-1 cursor-pointer"
+          >
+            <Banknote className="w-3 h-3" />
+            <span>BaridiMob</span>
           </button>
         </div>
+      </div>
 
-
-        {/* 1. Integrated Dashcam Telematics HUD */}
+      {/* CameraX Viewfinder & OSD Telemetry HUD */}
+      <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-white/10 shadow-lg">
         <DashcamHUD
           speedKmh={driver.speedKmh}
           driverLat={driver.currentLat}
           driverLng={driver.currentLng}
-          rideId={currentRide?.id || 'STANDBY-NO-RIDE'}
+          rideId={currentRide?.id || 'IDLE'}
           driverId={driver.id}
           onIncidentTriggered={onIncidentTriggered}
         />
-
-        {/* 2. Cockpit Dispatch State Machine */}
-
-        {/* A. STANDBY (Waiting for Dispatch) */}
-        {(!currentRide || currentRide.status === 'idle') && (
-          <div className="bg-slate-950/90 p-6 rounded-3xl border border-white/10 text-center space-y-2">
-            <div className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 text-amber-400 flex items-center justify-center mx-auto">
-              <Car className="w-6 h-6 animate-pulse" />
-            </div>
-            <h4 className="font-extrabold text-base text-white">Cockpit Chauffeur en Veille</h4>
-            <p className="text-xs text-slate-400 max-w-sm mx-auto">
-              {driver.isOnline
-                ? 'Prêt à recevoir les assignations de la Wilaya d\'Alger (Index H3 Résolution 8 actif).'
-                : 'Passez en ligne pour recevoir les alertes de courses.'}
-            </p>
-          </div>
-        )}
-
-        {/* B. DISPATCH INCOMING ALERT */}
-        {currentRide && currentRide.status === 'requesting' && (
-          <div className="bg-amber-500/10 border-2 border-amber-400 rounded-3xl p-5 space-y-4 shadow-2xl shadow-amber-500/20">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2 text-amber-300 font-extrabold text-sm">
-                <Clock className="w-4 h-4 animate-spin text-amber-400" />
-                <span>NOUVELLE DEMANDE DE COURSE • ALGER</span>
-              </div>
-              <span className="px-2.5 py-0.5 rounded-lg bg-amber-400 text-slate-950 font-black text-xs">
-                15 SECONDES
-              </span>
-            </div>
-
-            <div className="bg-slate-950/90 p-4 rounded-2xl border border-white/10 space-y-2 text-xs">
-              <div className="flex items-center space-x-2 text-slate-300">
-                <MapPin className="w-4 h-4 text-emerald-400 flex-shrink-0" />
-                <span>Prise: <strong className="text-white">{currentRide.origin.name}</strong></span>
-              </div>
-              <div className="flex items-center space-x-2 text-slate-300">
-                <Navigation className="w-4 h-4 text-rose-400 flex-shrink-0" />
-                <span>Destination: <strong className="text-white">{currentRide.destination.name}</strong></span>
-              </div>
-              <div className="pt-2 border-t border-white/10 flex justify-between font-mono text-amber-300 font-bold">
-                <span>Frais d'approche garantis:</span>
-                <span>+100.00 DZD</span>
-              </div>
-            </div>
-
-            {/* 64dp Accept Button */}
-            <button
-              onClick={() => {
-                soundEngine.playSuccessChime();
-                onAcceptRide();
-              }}
-              className="w-full driver-touch-btn bg-amber-400 hover:bg-amber-300 active:bg-amber-500 text-slate-950 font-black text-base tracking-wider transition-all shadow-xl shadow-amber-400/30 flex items-center justify-center space-x-2"
-            >
-              <CheckCircle2 className="w-6 h-6 stroke-[3]" />
-              <span>ACCEPTER LA COURSE (15s)</span>
-            </button>
-          </div>
-        )}
-
-        {/* C. DRIVER ASSIGNED: EN ROUTE TO PICKUP */}
-        {currentRide && currentRide.status === 'driver_assigned' && (
-          <div className="bg-slate-950/90 p-5 rounded-3xl border border-white/10 space-y-4">
-            <div className="flex justify-between items-center text-xs text-slate-400">
-              <span>Guidage vers le point de prise en charge</span>
-              <span className="font-mono text-emerald-400 font-bold">~4 mins • 1.6 km</span>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center space-x-3">
-              <MapPin className="w-6 h-6 text-emerald-400 flex-shrink-0" />
-              <div>
-                <div className="text-[11px] text-slate-400 uppercase font-bold">Client en attente</div>
-                <div className="font-bold text-white text-sm">{currentRide.origin.name}</div>
-              </div>
-            </div>
-
-            <button
-              onClick={() => {
-                soundEngine.playClick();
-                onArrivedAtPickup();
-              }}
-              className="w-full driver-touch-btn bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-base tracking-wider transition-all shadow-xl shadow-emerald-500/25 flex items-center justify-center space-x-2"
-            >
-              <CheckCircle2 className="w-6 h-6 stroke-[3]" />
-              <span>JE SUIS ARRIVÉ AU POINT DE PRISE</span>
-            </button>
-          </div>
-        )}
-
-        {/* D. DRIVER ARRIVED: PIN ENTRY BEFORE METER START */}
-        {currentRide && currentRide.status === 'driver_arrived' && (
-          <div className="bg-slate-950/90 p-5 rounded-3xl border border-white/10 space-y-4">
-            <div className="text-center space-y-1">
-              <h4 className="font-extrabold text-base text-white">Embarquement du Passager</h4>
-              <p className="text-xs text-slate-400">Demandez au passager son code PIN à 4 chiffres</p>
-            </div>
-
-            <div className="flex justify-center space-x-2">
-              <input
-                type="text"
-                maxLength={4}
-                value={pinInput}
-                onChange={(e) => setPinInput(e.target.value)}
-                placeholder="Ex: 8492"
-                className={`w-48 text-center bg-slate-900 border text-2xl font-mono font-black text-amber-300 rounded-2xl py-3 tracking-widest focus:outline-none ${
-                  pinError ? 'border-rose-500' : 'border-white/15 focus:border-amber-400'
-                }`}
-              />
-            </div>
-
-            {pinError && (
-              <p className="text-center text-xs text-rose-400 font-bold">
-                Code PIN incorrect. Veuillez vérifier avec le passager.
-              </p>
-            )}
-
-            <button
-              onClick={handleVerifyPin}
-              disabled={pinInput.length < 4}
-              className="w-full driver-touch-btn bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-base tracking-wider transition-all shadow-xl shadow-amber-400/25 flex items-center justify-center space-x-2 disabled:opacity-40"
-            >
-              <KeyRound className="w-6 h-6 stroke-[2.5]" />
-              <span>DÉMARRER COMPTEUR & COURSE</span>
-            </button>
-          </div>
-        )}
-
-        {/* E. IN PROGRESS: TRIP ACTIVE TO DESTINATION */}
-        {currentRide && currentRide.status === 'in_progress' && (
-          <div className="bg-slate-950/90 p-5 rounded-3xl border border-white/10 space-y-4">
-            <div className="flex justify-between items-center text-xs text-slate-400">
-              <span className="flex items-center text-emerald-400 font-bold">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping mr-2"></span>
-                Course en cours • Dashcam active
-              </span>
-              <span className="font-mono text-white font-bold">{currentRide.rideCode}</span>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center space-x-3">
-              <Navigation className="w-6 h-6 text-rose-400 flex-shrink-0" />
-              <div>
-                <div className="text-[11px] text-slate-400 uppercase font-bold">Destination</div>
-                <div className="font-bold text-white text-sm">{currentRide.destination.name}</div>
-              </div>
-            </div>
-
-            <button
-              onClick={() => {
-                soundEngine.playClick();
-                onArrivedDestination();
-              }}
-              className="w-full driver-touch-btn bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-base tracking-wider transition-all shadow-xl shadow-amber-400/25 flex items-center justify-center space-x-2"
-            >
-              <CheckCircle2 className="w-6 h-6 stroke-[3]" />
-              <span>ARRIVÉ À DESTINATION • ENCAISSER</span>
-            </button>
-          </div>
-        )}
-
-        {/* F. FARE ENTRY & FLYWHEEL CONVERSION */}
-        {currentRide && (currentRide.status === 'fare_entry' || currentRide.status === 'spare_change_prompt') && (
-          <div className="bg-slate-950/90 p-5 rounded-3xl border border-white/10 space-y-4">
-            <div className="text-center space-y-1">
-              <h4 className="font-extrabold text-base text-white">Clôture de la Course</h4>
-              <p className="text-xs text-slate-400">Saisissez le montant affiché sur votre compteur fiscal</p>
-            </div>
-
-            {/* Taximeter Input */}
-            <div className="bg-white/5 p-4 rounded-2xl border border-white/10 space-y-3">
-              <div className="flex justify-between items-center text-xs text-slate-300">
-                <span>Compteur Fiscal (DA):</span>
-                <div className="flex items-center space-x-2">
-                  <input
-                    type="number"
-                    value={meterFareInput}
-                    onChange={(e) => setMeterFareInput(Number(e.target.value))}
-                    className="w-28 text-right bg-slate-950 border border-white/20 text-amber-300 font-mono font-black text-lg px-2.5 py-1 rounded-xl focus:outline-none focus:border-amber-400"
-                  />
-                  <span className="font-bold text-white">DZD</span>
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center text-xs text-slate-400">
-                <span>Frais d'Approche (Réglementé CNRC 604103):</span>
-                <span className="font-mono font-bold text-white">+100.00 DZD</span>
-              </div>
-
-              <div className="pt-2 border-t border-white/10 flex justify-between items-center text-sm font-bold">
-                <span className="text-white">Total à Régler:</span>
-                <span className="font-mono font-black text-2xl text-emerald-400">
-                  {(meterFareInput + 100).toFixed(2)} DZD
-                </span>
-              </div>
-            </div>
-
-            {/* Spare Change Flywheel Launch Button */}
-            <button
-              onClick={() => {
-                soundEngine.playCashRegisterDing();
-                onCompleteTrip(meterFareInput);
-                onOpenSpareChangeModal();
-              }}
-              className="w-full driver-touch-btn bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-base tracking-wider transition-all shadow-xl shadow-amber-400/25 flex items-center justify-center space-x-2"
-            >
-              <DollarSign className="w-6 h-6 stroke-[3]" />
-              <span>ENCAISSER & CONVERTIR MONNAIE TRUSTDESK</span>
-            </button>
-          </div>
-        )}
-
       </div>
 
-      {/* Topup Modals */}
+      {/* Dynamic State Machine Display */}
+      {(!currentRide || currentRide.status === 'idle') && (
+        <div className="p-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900/40 text-center space-y-1">
+          <h4 className="font-bold text-sm text-slate-800 dark:text-slate-200">{t('driverStandby')}</h4>
+          <p className="text-xs text-slate-500">{t('driverStandbyDesc')}</p>
+        </div>
+      )}
+
+      {/* RIDE DISPATCH ALERT */}
+      {currentRide && currentRide.status === 'requesting' && (
+        <div className="p-5 rounded-2xl border-2 border-amber-500 bg-amber-500/10 space-y-3 animate-pulse">
+          <div className="flex items-center justify-between">
+            <span className="font-extrabold text-xs text-amber-600 dark:text-amber-400">
+              {t('driverNewRide')}
+            </span>
+            <span className="px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-bold text-[10px]">
+              15 SECONDES
+            </span>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2 text-xs">
+            <div>
+              <span className="text-slate-400 block text-[10px]">Prise :</span>
+              <strong className="text-slate-900 dark:text-white">{currentRide.origin.name}</strong>
+            </div>
+            <div>
+              <span className="text-slate-400 block text-[10px]">Destination :</span>
+              <strong className="text-slate-900 dark:text-white">{currentRide.destination.name}</strong>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between pt-2 border-t border-amber-500/30 text-xs">
+            <span className="text-slate-500">{t('driverApproachGuaranteed')}</span>
+            <span className="font-bold text-amber-500 font-mono">+100.00 DZD</span>
+          </div>
+
+          <button
+            onClick={() => { soundEngine.playSuccessChime(); onAcceptRide(); }}
+            className="w-full py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-sm shadow-lg shadow-amber-500/25 transition-all cursor-pointer"
+          >
+            {t('driverAcceptBtn')}
+          </button>
+        </div>
+      )}
+
+      {/* DRIVER ASSIGNED: NAVIGATE TO PICKUP */}
+      {currentRide && currentRide.status === 'driver_assigned' && (
+        <div className="p-4 rounded-2xl border border-sky-500/30 bg-sky-500/10 space-y-3 animate-fadeIn">
+          <div className="flex items-center justify-between text-xs font-bold text-sky-600 dark:text-sky-300">
+            <span>{t('driverNavToPickup')}</span>
+            <span>~4 mins • 1.6 km</span>
+          </div>
+          <div className="p-3 rounded-xl bg-white/50 dark:bg-slate-900/60 border text-xs">
+            <span className="text-slate-400 block text-[10px]">Client en attente</span>
+            <strong className="text-slate-900 dark:text-white">{currentRide.origin.name}</strong>
+          </div>
+          <button
+            onClick={() => { soundEngine.playClick(); onArrivedAtPickup(); }}
+            className="w-full py-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs cursor-pointer shadow-md"
+          >
+            {t('driverArrivedBtn')}
+          </button>
+        </div>
+      )}
+
+      {/* DRIVER ARRIVED: PIN VERIFICATION KEYPAD */}
+      {currentRide && currentRide.status === 'driver_arrived' && (
+        <div className="p-5 rounded-2xl border-2 border-amber-500/40 bg-amber-500/5 space-y-3 animate-fadeIn">
+          <div>
+            <h4 className="font-extrabold text-sm text-slate-900 dark:text-white">{t('driverBoardingTitle')}</h4>
+            <p className="text-xs text-slate-500">{t('driverBoardingDesc')}</p>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <input
+              type="text"
+              maxLength={4}
+              placeholder="Ex: 8492"
+              value={pinInput}
+              onChange={(e) => setPinInput(e.target.value)}
+              className={`flex-1 p-3 rounded-xl border text-center font-mono font-black text-xl tracking-widest bg-white dark:bg-slate-950 text-slate-900 dark:text-white ${
+                pinError ? 'border-rose-500 animate-shake' : 'border-slate-300 dark:border-white/20'
+              }`}
+            />
+            <button
+              onClick={handleVerifyPin}
+              disabled={pinInput.length !== 4}
+              className="px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-40 text-slate-950 font-black text-xs cursor-pointer"
+            >
+              {t('driverStartMeterBtn')}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* TRIP IN PROGRESS */}
+      {currentRide && currentRide.status === 'in_progress' && (
+        <div className="p-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 space-y-3 animate-fadeIn">
+          <div className="flex items-center justify-between text-xs font-bold text-emerald-600 dark:text-emerald-400">
+            <span>{t('driverTripLive')}</span>
+            <span>{currentRide.rideCode}</span>
+          </div>
+          <div className="p-3 rounded-xl bg-white/50 dark:bg-slate-900/60 border text-xs">
+            <span className="text-slate-400 block text-[10px]">Destination</span>
+            <strong className="text-slate-900 dark:text-white">{currentRide.destination.name}</strong>
+          </div>
+          <button
+            onClick={() => { soundEngine.playClick(); onArrivedDestination(); }}
+            className="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black text-xs cursor-pointer shadow-lg"
+          >
+            {t('driverFinishBtn')}
+          </button>
+        </div>
+      )}
+
+      {/* FARE CLOSING */}
+      {currentRide && (currentRide.status === 'fare_entry' || currentRide.status === 'spare_change_prompt') && (
+        <div className="p-5 rounded-2xl border-2 border-amber-500 bg-amber-500/10 space-y-4 animate-fadeIn">
+          <div>
+            <h4 className="font-extrabold text-sm text-slate-900 dark:text-white">{t('driverFareClosing')}</h4>
+            <p className="text-xs text-slate-500">{t('driverEnterMeter')}</p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 text-xs">
+            <div className="p-3 rounded-xl bg-white/60 dark:bg-slate-900/60 border">
+              <span className="text-slate-500 block text-[10px]">{t('driverMeterAmount')}</span>
+              <div className="flex items-center space-x-1 mt-1">
+                <input
+                  type="number"
+                  value={meterFareInput}
+                  onChange={(e) => setMeterFareInput(Number(e.target.value))}
+                  className="w-20 p-1 font-mono font-bold text-base bg-transparent border-b border-amber-500 text-slate-900 dark:text-white"
+                />
+                <span className="font-bold text-slate-500">DZD</span>
+              </div>
+            </div>
+
+            <div className="p-3 rounded-xl bg-white/60 dark:bg-slate-900/60 border">
+              <span className="text-slate-500 block text-[10px]">{t('driverApproachFee')}</span>
+              <span className="font-mono font-bold text-base text-amber-500 mt-1 block">+100.00 DZD</span>
+            </div>
+          </div>
+
+          <div className="flex items-center justify-between text-sm font-black pt-2 border-t border-amber-500/30">
+            <span>{t('driverTotalDue')}</span>
+            <span className="font-mono text-xl text-amber-500">{(meterFareInput + 100).toFixed(2)} DZD</span>
+          </div>
+
+          <button
+            onClick={() => {
+              onCompleteTrip(meterFareInput);
+              onOpenSpareChangeModal();
+            }}
+            className="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-slate-950 font-black text-sm shadow-xl shadow-amber-500/25 transition-all cursor-pointer"
+          >
+            {t('driverCollectBtn')}
+          </button>
+        </div>
+      )}
+
+      {/* Modals */}
       <ChargilyTopupModal
         isOpen={isTopupModalOpen}
         onClose={() => setIsTopupModalOpen(false)}
-        onSuccess={(amt) => onTopupDriverWallet(amt)}
-        targetAccountName="Compte 2020 Chauffeur"
+        onSuccess={(amt) => { onTopupDriverWallet(amt); setIsTopupModalOpen(false); }}
+        targetAccountName="Compte Opérationnel Chauffeur (2020)"
       />
       <BaridiMobModal
         isOpen={isBaridiMobModalOpen}
         onClose={() => setIsBaridiMobModalOpen(false)}
-        onSuccess={(amt) => onTopupDriverWallet(amt)}
-        targetAccountName="Compte 2020 Chauffeur"
+        onSuccess={(amt) => { onTopupDriverWallet(amt); setIsBaridiMobModalOpen(false); }}
+        targetAccountName="Compte Opérationnel Chauffeur (2020)"
       />
 
     </div>
   );
 };
-

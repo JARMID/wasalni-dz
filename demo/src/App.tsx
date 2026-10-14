@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Header } from './components/Header';
 import type { ActiveTab, AppLang } from './components/Header';
+import { LandingView } from './components/LandingView';
 import { RiderView } from './components/RiderView';
 import { DriverCockpit } from './components/DriverCockpit';
 import { DispatchView } from './components/DispatchView';
@@ -33,8 +34,34 @@ import {
 } from './utils/supabase';
 
 export function App() {
-  const [activeTab, setActiveTab] = useState<ActiveTab>('sync');
+  const [activeTab, setActiveTab] = useState<ActiveTab>('home');
   const [lang, setLang] = useState<AppLang>('fr');
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('naql_theme');
+      if (saved) return saved === 'dark';
+    }
+    return true;
+  });
+
+  // Sync theme to root HTML
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
+      try { localStorage.setItem('naql_theme', 'dark'); } catch (_) {}
+    } else {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
+      try { localStorage.setItem('naql_theme', 'light'); } catch (_) {}
+    }
+  }, [isDark]);
+
+  // Sync language and RTL direction to root HTML
+  useEffect(() => {
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+  }, [lang]);
 
   // Master Reactive State
   const [driver, setDriver] = useState<DriverProfile>(INITIAL_DRIVER);
@@ -375,7 +402,7 @@ export function App() {
   };
 
   return (
-    <div className="min-h-screen text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors">
       
       {/* Top Header */}
       <Header
@@ -383,12 +410,23 @@ export function App() {
         setActiveTab={setActiveTab}
         lang={lang}
         setLang={setLang}
+        isDark={isDark}
+        setIsDark={setIsDark}
         onReset={handleResetDemo}
       />
 
       {/* Main Content Arena */}
       <main className="flex-1 p-4 md:p-6 lg:p-8 max-w-7xl mx-auto w-full">
         
+        {/* VIEW 0: EXECUTIVE SHOWCASE LANDING VIEW */}
+        {activeTab === 'home' && (
+          <LandingView
+            lang={lang}
+            onNavigateTab={setActiveTab}
+            isDark={isDark}
+          />
+        )}
+
         {/* VIEW 1: MULTI-DEVICE SYNC VIEW */}
         {activeTab === 'sync' && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
@@ -397,7 +435,7 @@ export function App() {
             <div className="lg:col-span-5">
               <div className="flex items-center space-x-2 mb-3">
                 <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
-                <span className="text-xs font-mono font-bold tracking-wider text-amber-300 uppercase">
+                <span className="text-xs font-mono font-bold tracking-wider text-amber-600 dark:text-amber-300 uppercase">
                   Tablette Chauffeur (Cockpit HUD)
                 </span>
               </div>
@@ -413,6 +451,8 @@ export function App() {
                 onIncidentTriggered={handleIncidentTriggered}
                 onTopupDriverWallet={handleTopupDriverWallet}
                 onOpenSpareChangeModal={() => setIsSpareChangeModalOpen(true)}
+                lang={lang}
+                isDark={isDark}
               />
             </div>
 
@@ -423,11 +463,11 @@ export function App() {
               <div className="md:col-span-7 flex flex-col h-[740px]">
                 <div className="flex items-center space-x-2 mb-3">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-                  <span className="text-xs font-mono font-bold tracking-wider text-emerald-300 uppercase">
+                  <span className="text-xs font-mono font-bold tracking-wider text-emerald-600 dark:text-emerald-300 uppercase">
                     Cartographie & Télématique Alger (H3 Res 8)
                   </span>
                 </div>
-                <div className="flex-1 glass-panel rounded-3xl overflow-hidden shadow-2xl border border-white/10">
+                <div className="flex-1 glass-panel rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-white/10">
                   <InteractiveMap
                     origin={origin}
                     destination={destination}
@@ -443,7 +483,7 @@ export function App() {
               <div className="md:col-span-5">
                 <div className="flex items-center space-x-2 mb-3">
                   <span className="w-2.5 h-2.5 rounded-full bg-sky-400"></span>
-                  <span className="text-xs font-mono font-bold tracking-wider text-sky-300 uppercase">
+                  <span className="text-xs font-mono font-bold tracking-wider text-sky-600 dark:text-sky-300 uppercase">
                     Smartphone Passager
                   </span>
                 </div>
@@ -478,6 +518,8 @@ export function App() {
               onIncidentTriggered={handleIncidentTriggered}
               onTopupDriverWallet={handleTopupDriverWallet}
               onOpenSpareChangeModal={() => setIsSpareChangeModalOpen(true)}
+              lang={lang}
+              isDark={isDark}
             />
           </div>
         )}
@@ -504,10 +546,11 @@ export function App() {
               incidents={incidents}
               driver={driver}
               currentRide={currentRide}
+              lang={lang}
             />
             
             {/* Interactive Algiers Fleet Map with H3 Hexes */}
-            <div className="h-[480px] glass-panel rounded-3xl overflow-hidden shadow-2xl border border-white/10">
+            <div className="h-[480px] glass-panel rounded-3xl overflow-hidden shadow-2xl border border-slate-200 dark:border-white/10">
               <InteractiveMap
                 origin={origin}
                 destination={destination}
@@ -527,6 +570,7 @@ export function App() {
             <LedgerView
               wallets={wallets}
               ledgerEntries={ledgerEntries}
+              lang={lang}
             />
           </div>
         )}
@@ -541,6 +585,7 @@ export function App() {
         driverBalanceDzd={driver.walletBalanceDzd}
         riderCurrentBalanceDzd={wallets.riderTrustDesk_2010}
         onCreditSpareChange={handleCreditSpareChange}
+        lang={lang}
       />
 
     </div>

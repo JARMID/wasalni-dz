@@ -4,22 +4,28 @@ import {
   Smartphone, 
   Monitor, 
   Wallet, 
-  SplitSquareVertical, 
-  ShieldCheck, 
+  Layers, 
   RotateCcw,
   Volume2,
-  VolumeX
+  VolumeX,
+  Sun,
+  Moon,
+  Home
 } from 'lucide-react';
 import { soundEngine } from '../utils/audio';
+import type { AppLang } from '../utils/i18n';
+export type { AppLang };
+import { getTranslation } from '../utils/i18n';
 
-export type ActiveTab = 'sync' | 'driver' | 'rider' | 'dispatch' | 'ledger';
-export type AppLang = 'fr' | 'ar' | 'en';
+export type ActiveTab = 'home' | 'rider' | 'driver' | 'dispatch' | 'ledger' | 'sync';
 
 interface HeaderProps {
   activeTab: ActiveTab;
   setActiveTab: (tab: ActiveTab) => void;
   lang: AppLang;
   setLang: (lang: AppLang) => void;
+  isDark: boolean;
+  setIsDark: (dark: boolean) => void;
   onReset: () => void;
 }
 
@@ -28,9 +34,12 @@ export const Header: React.FC<HeaderProps> = ({
   setActiveTab,
   lang,
   setLang,
+  isDark,
+  setIsDark,
   onReset,
 }) => {
   const [soundOn, setSoundOn] = useState(true);
+  const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(lang, key);
 
   const toggleSound = () => {
     const next = !soundOn;
@@ -44,214 +53,237 @@ export const Header: React.FC<HeaderProps> = ({
     setActiveTab(tab);
   };
 
-  const handleReset = () => {
+  const toggleTheme = () => {
     soundEngine.playClick();
-    onReset();
+    setIsDark(!isDark);
+  };
+
+  const changeLanguage = (newLang: AppLang) => {
+    soundEngine.playClick();
+    setLang(newLang);
+    if (newLang === 'ar') {
+      document.documentElement.dir = 'rtl';
+      document.documentElement.lang = 'ar';
+    } else {
+      document.documentElement.dir = 'ltr';
+      document.documentElement.lang = newLang;
+    }
   };
 
   return (
-    <header className="glass-panel border-b border-white/10 sticky top-0 z-50 shadow-2xl backdrop-blur-xl">
+    <header className="glass-panel border-b sticky top-0 z-50 shadow-xl backdrop-blur-xl transition-colors">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-16 sm:h-20">
           
-          {/* Logo & Platform Name */}
-          <div className="flex items-center space-x-3.5">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/25 text-slate-950 font-black">
-              <Car className="w-5 h-5 stroke-[2.5]" />
+          {/* Logo & Brand Identity */}
+          <div 
+            onClick={() => handleTabChange('home')}
+            className="flex items-center space-x-3 cursor-pointer group"
+          >
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center shadow-lg shadow-amber-500/25 text-slate-950 font-black group-hover:scale-105 transition-transform">
+              <Car className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.5]" />
             </div>
             <div>
               <div className="flex items-center space-x-2">
-                <span className="font-extrabold text-base sm:text-lg tracking-tight text-white font-sans">
-                  NAQL DZ
+                <span className="font-extrabold text-base sm:text-xl tracking-tight font-sans">
+                  {t('brandTitle')}
                 </span>
-                <span className="px-2 py-0.5 text-[10px] font-bold bg-amber-400/15 text-amber-300 border border-amber-400/30 rounded-full tracking-wide">
-                  DTW ALGER
+                <span className="px-2 py-0.5 text-[10px] font-bold bg-amber-400/20 text-amber-600 dark:text-amber-300 border border-amber-400/30 rounded-full tracking-wider">
+                  {t('dtwBadge')}
                 </span>
               </div>
-              <p className="text-[11px] text-slate-400 hidden sm:block">
-                Décret 12-230 • Agrément Municipal • Dashcam Télématique • Chargily Pay
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block">
+                {t('brandSubtitle')}
               </p>
             </div>
           </div>
 
-          {/* Perspective View Switcher */}
-          <div className="hidden md:flex items-center space-x-1 bg-slate-950/80 p-1 rounded-2xl border border-white/10 shadow-inner">
+          {/* Navigation Items */}
+          <nav className="hidden lg:flex items-center space-x-1 p-1 rounded-2xl bg-slate-200/60 dark:bg-slate-900/80 border border-slate-300/60 dark:border-white/10 shadow-inner">
             <button
-              onClick={() => handleTabChange('sync')}
-              className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'sync'
-                  ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-400/25'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+              onClick={() => handleTabChange('home')}
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                activeTab === 'home'
+                  ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-400/20'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
-              <SplitSquareVertical className="w-3.5 h-3.5" />
-              <span>Multi-Device Sync</span>
-            </button>
-
-            <button
-              onClick={() => handleTabChange('driver')}
-              className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
-                activeTab === 'driver'
-                  ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-400/25'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <Car className="w-3.5 h-3.5" />
-              <span>Cockpit Driver</span>
+              <Home className="w-3.5 h-3.5" />
+              <span>{t('navHome')}</span>
             </button>
 
             <button
               onClick={() => handleTabChange('rider')}
-              className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 activeTab === 'rider'
-                  ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-400/25'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-400/20'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               <Smartphone className="w-3.5 h-3.5" />
-              <span>App Passager</span>
+              <span>{t('navRider')}</span>
+            </button>
+
+            <button
+              onClick={() => handleTabChange('driver')}
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                activeTab === 'driver'
+                  ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-400/20'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <Car className="w-3.5 h-3.5" />
+              <span>{t('navDriver')}</span>
             </button>
 
             <button
               onClick={() => handleTabChange('dispatch')}
-              className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 activeTab === 'dispatch'
-                  ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-400/25'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-400/20'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               <Monitor className="w-3.5 h-3.5" />
-              <span>Dispatch & Sûreté</span>
+              <span>{t('navFleet')}</span>
             </button>
 
             <button
               onClick={() => handleTabChange('ledger')}
-              className={`flex items-center space-x-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 activeTab === 'ledger'
-                  ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-400/25'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-400/20'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               <Wallet className="w-3.5 h-3.5" />
-              <span>TrustDesk Grand Livre</span>
+              <span>{t('navLedger')}</span>
             </button>
-          </div>
 
-          {/* Right Action Bar */}
-          <div className="flex items-center space-x-2 sm:space-x-3">
+            <button
+              onClick={() => handleTabChange('sync')}
+              className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                activeTab === 'sync'
+                  ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-400/20'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <Layers className="w-3.5 h-3.5" />
+              <span>{t('navLiveDemo')}</span>
+            </button>
+          </nav>
+
+          {/* Controls: Theme, Language, Audio & Reset */}
+          <div className="flex items-center space-x-2 sm:space-x-2.5">
+            
+            {/* Light / Dark Mode Switcher */}
+            <button
+              onClick={toggleTheme}
+              title={isDark ? t('themeLight') : t('themeDark')}
+              className="p-2 sm:p-2.5 rounded-xl border border-slate-300 dark:border-white/10 text-slate-700 dark:text-slate-200 hover:bg-slate-200/50 dark:hover:bg-white/5 transition-all cursor-pointer"
+            >
+              {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
+            </button>
+
             {/* Audio Toggle */}
             <button
               onClick={toggleSound}
-              title={soundOn ? 'Couper les sons' : 'Activer les sons'}
-              className={`p-2 rounded-xl border transition-all ${
+              title={soundOn ? t('soundMute') : t('soundUnmute')}
+              className={`p-2 sm:p-2.5 rounded-xl border transition-all cursor-pointer ${
                 soundOn 
-                  ? 'bg-amber-400/10 border-amber-400/30 text-amber-300' 
-                  : 'bg-slate-900 border-white/10 text-slate-500'
+                  ? 'border-amber-500/40 text-amber-500 bg-amber-500/10' 
+                  : 'border-slate-300 dark:border-white/10 text-slate-400'
               }`}
             >
               {soundOn ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
             </button>
 
-            {/* Live Dedicated Supabase Badge */}
-            <div className="hidden xl:flex items-center space-x-1.5 px-2.5 py-1 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-mono font-bold">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-              <span>Supabase: jgctorgztxwrgdkfkuxv</span>
-            </div>
-
-            {/* Regulatory Badge */}
-            <div className="hidden lg:flex items-center space-x-1.5 px-2.5 py-1 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-medium">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-              <span>Loi 25-11 Souveraineté</span>
-            </div>
-
-            {/* Language Switcher */}
-            <div className="flex items-center bg-slate-950/80 border border-white/10 rounded-xl p-0.5 text-xs">
+            {/* Working Trilingual Switcher */}
+            <div className="flex items-center bg-slate-200/70 dark:bg-slate-900/80 border border-slate-300 dark:border-white/10 rounded-xl p-0.5 text-xs font-bold">
               <button
-                onClick={() => { soundEngine.playClick(); setLang('fr'); }}
-                className={`px-2 py-1 rounded-lg font-bold transition-colors ${
-                  lang === 'fr' ? 'bg-white/10 text-amber-300' : 'text-slate-400 hover:text-white'
+                onClick={() => changeLanguage('fr')}
+                className={`px-2 py-1 rounded-lg transition-colors cursor-pointer ${
+                  lang === 'fr' 
+                    ? 'bg-white dark:bg-white/15 text-amber-600 dark:text-amber-300 shadow-sm' 
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 FR
               </button>
               <button
-                onClick={() => { soundEngine.playClick(); setLang('ar'); }}
-                className={`px-2 py-1 rounded-lg font-bold transition-colors ${
-                  lang === 'ar' ? 'bg-white/10 text-amber-300' : 'text-slate-400 hover:text-white'
+                onClick={() => changeLanguage('ar')}
+                className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
+                  lang === 'ar' 
+                    ? 'bg-white dark:bg-white/15 text-amber-600 dark:text-amber-300 shadow-sm' 
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 عربي
               </button>
               <button
-                onClick={() => { soundEngine.playClick(); setLang('en'); }}
-                className={`px-2 py-1 rounded-lg font-bold transition-colors ${
-                  lang === 'en' ? 'bg-white/10 text-amber-300' : 'text-slate-400 hover:text-white'
+                onClick={() => changeLanguage('en')}
+                className={`px-2 py-1 rounded-lg transition-colors cursor-pointer ${
+                  lang === 'en' 
+                    ? 'bg-white dark:bg-white/15 text-amber-600 dark:text-amber-300 shadow-sm' 
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 EN
               </button>
             </div>
 
-            {/* Reset Demo State */}
+            {/* Reset Simulation State */}
             <button
-              onClick={handleReset}
-              title="Réinitialiser la simulation"
-              className="p-2 text-slate-400 hover:text-white hover:bg-white/5 rounded-xl transition-colors border border-white/10"
+              onClick={onReset}
+              title={t('resetDemo')}
+              className="p-2 sm:p-2.5 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-xl transition-colors border border-slate-300 dark:border-white/10 cursor-pointer"
             >
               <RotateCcw className="w-4 h-4" />
             </button>
           </div>
 
         </div>
-      </div>
 
-      {/* Mobile Perspective Navigation Tabs */}
-      <div className="md:hidden flex items-center justify-around border-t border-white/10 bg-slate-950/90 px-2 py-2 overflow-x-auto">
-        <button
-          onClick={() => handleTabChange('sync')}
-          className={`flex items-center space-x-1 px-3 py-1.5 rounded-xl text-xs font-bold ${
-            activeTab === 'sync' ? 'bg-amber-400 text-slate-950' : 'text-slate-400'
-          }`}
-        >
-          <SplitSquareVertical className="w-3.5 h-3.5" />
-          <span>Sync</span>
-        </button>
-        <button
-          onClick={() => handleTabChange('driver')}
-          className={`flex items-center space-x-1 px-3 py-1.5 rounded-xl text-xs font-bold ${
-            activeTab === 'driver' ? 'bg-amber-400 text-slate-950' : 'text-slate-400'
-          }`}
-        >
-          <Car className="w-3.5 h-3.5" />
-          <span>Driver</span>
-        </button>
-        <button
-          onClick={() => handleTabChange('rider')}
-          className={`flex items-center space-x-1 px-3 py-1.5 rounded-xl text-xs font-bold ${
-            activeTab === 'rider' ? 'bg-amber-400 text-slate-950' : 'text-slate-400'
-          }`}
-        >
-          <Smartphone className="w-3.5 h-3.5" />
-          <span>Rider</span>
-        </button>
-        <button
-          onClick={() => handleTabChange('dispatch')}
-          className={`flex items-center space-x-1 px-3 py-1.5 rounded-xl text-xs font-bold ${
-            activeTab === 'dispatch' ? 'bg-amber-400 text-slate-950' : 'text-slate-400'
-          }`}
-        >
-          <Monitor className="w-3.5 h-3.5" />
-          <span>Dispatch</span>
-        </button>
-        <button
-          onClick={() => handleTabChange('ledger')}
-          className={`flex items-center space-x-1 px-3 py-1.5 rounded-xl text-xs font-bold ${
-            activeTab === 'ledger' ? 'bg-amber-400 text-slate-950' : 'text-slate-400'
-          }`}
-        >
-          <Wallet className="w-3.5 h-3.5" />
-          <span>Ledger</span>
-        </button>
+        {/* Mobile Navigation Bar */}
+        <div className="lg:hidden flex items-center justify-between py-2 border-t border-slate-200 dark:border-white/10 overflow-x-auto space-x-1 text-xs font-bold">
+          <button
+            onClick={() => handleTabChange('home')}
+            className={`px-3 py-1.5 rounded-lg whitespace-nowrap cursor-pointer ${activeTab === 'home' ? 'bg-amber-400 text-slate-950' : 'text-slate-500'}`}
+          >
+            {t('navHome')}
+          </button>
+          <button
+            onClick={() => handleTabChange('rider')}
+            className={`px-3 py-1.5 rounded-lg whitespace-nowrap cursor-pointer ${activeTab === 'rider' ? 'bg-amber-400 text-slate-950' : 'text-slate-500'}`}
+          >
+            {t('navRider')}
+          </button>
+          <button
+            onClick={() => handleTabChange('driver')}
+            className={`px-3 py-1.5 rounded-lg whitespace-nowrap cursor-pointer ${activeTab === 'driver' ? 'bg-amber-400 text-slate-950' : 'text-slate-500'}`}
+          >
+            {t('navDriver')}
+          </button>
+          <button
+            onClick={() => handleTabChange('dispatch')}
+            className={`px-3 py-1.5 rounded-lg whitespace-nowrap cursor-pointer ${activeTab === 'dispatch' ? 'bg-amber-400 text-slate-950' : 'text-slate-500'}`}
+          >
+            {t('navFleet')}
+          </button>
+          <button
+            onClick={() => handleTabChange('ledger')}
+            className={`px-3 py-1.5 rounded-lg whitespace-nowrap cursor-pointer ${activeTab === 'ledger' ? 'bg-amber-400 text-slate-950' : 'text-slate-500'}`}
+          >
+            {t('navLedger')}
+          </button>
+          <button
+            onClick={() => handleTabChange('sync')}
+            className={`px-3 py-1.5 rounded-lg whitespace-nowrap cursor-pointer ${activeTab === 'sync' ? 'bg-amber-400 text-slate-950' : 'text-slate-500'}`}
+          >
+            {t('navLiveDemo')}
+          </button>
+        </div>
+
       </div>
     </header>
   );
