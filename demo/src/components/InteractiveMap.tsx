@@ -304,9 +304,9 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
       {/* Live Map Telemetry Header HUD (Top Bar) */}
       <div className="absolute top-3 inset-x-3 z-[1000] flex flex-wrap items-center justify-between gap-1.5 pointer-events-none">
         {/* Live 1Hz Telemetry OSD Pill */}
-        <div className="glass-pill pointer-events-auto px-2.5 py-1 rounded-xl text-[10px] text-slate-200 flex items-center space-x-1.5 shadow-xl">
+        <div className="bg-slate-950/95 backdrop-blur-md border border-white/10 pointer-events-auto px-2.5 py-1 rounded-xl text-[10px] text-slate-200 flex items-center space-x-1.5 shadow-xl">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-          <span className="font-mono font-bold text-emerald-300">1Hz PROTOBUF</span>
+          <span className="font-mono font-bold text-emerald-400">1Hz PROTOBUF</span>
           <span className="text-white/20">|</span>
           <span className="font-mono text-slate-300">{latencyMs}ms</span>
           <span className="text-white/20">|</span>
@@ -317,7 +317,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
         {/* Live Algiers Weather & Road Telematics Badge (Open-Meteo Free API) */}
         {weather && (
-          <div className="glass-pill pointer-events-auto px-2.5 py-1 rounded-xl text-[10px] text-slate-200 flex items-center space-x-1.5 shadow-xl border border-sky-400/30">
+          <div className="bg-slate-950/95 backdrop-blur-md pointer-events-auto px-2.5 py-1 rounded-xl text-[10px] text-slate-200 flex items-center space-x-1.5 shadow-xl border border-sky-400/40">
             <CloudSun className="w-3 h-3 text-sky-400" />
             <span className="font-bold text-sky-300">Alger {weather.temperatureC}°C</span>
             <span className="text-white/20">|</span>
@@ -338,13 +338,13 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
               map.flyTo([driverLat, driverLng], 14, { duration: 1.2 });
             }
           }}
-          className="glass-panel pointer-events-auto px-2.5 py-1 rounded-xl text-[10px] font-mono font-bold text-amber-300 hover:text-white transition-all flex items-center justify-center space-x-1 shadow-xl cursor-pointer"
+          className="bg-slate-950/95 backdrop-blur-md border border-amber-500/40 pointer-events-auto px-2.5 py-1 rounded-xl text-[10px] font-mono font-bold text-amber-300 hover:text-white transition-all flex items-center justify-center space-x-1 shadow-xl cursor-pointer"
         >
           <span>🚕 Centrer Taxi</span>
         </button>
 
         {streetRoute && (
-          <div className="glass-panel pointer-events-auto px-2 py-1 rounded-xl text-[10px] font-mono text-slate-200 flex items-center space-x-1.5 shadow-xl border border-amber-500/30">
+          <div className="bg-slate-950/95 backdrop-blur-md pointer-events-auto px-2.5 py-1 rounded-xl text-[10px] font-mono text-slate-200 flex items-center space-x-1.5 shadow-xl border border-amber-500/40">
             <Navigation className="w-3 h-3 text-amber-400 shrink-0" />
             <span>OSRM: <strong className="text-amber-300">{streetRoute.distanceKm} km</strong> (~{streetRoute.durationMins}m)</span>
             <span className="text-slate-400 text-[9px] truncate max-w-[110px]">➔ {streetRoute.streetName}</span>
