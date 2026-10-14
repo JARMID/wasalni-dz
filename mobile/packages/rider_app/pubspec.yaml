@@ -1,0 +1,19 @@
+name: rider_app
+description: Passenger Smartphone Application for NAQL DZ (3 Transport Modes, TrustDesk Spare Change Wallet, Chargily Pay V2).
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+  flutter: '>=3.16.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  naql_core:
+    path: ../naql_core
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0

@@ -1,0 +1,74 @@
+{
+  "mjolnir": {
+    "tile_dir": "/custom_files/valhalla_tiles",
+    "tile_extract": "/custom_files/valhalla_tiles.tar",
+    "traffic_extract": "/custom_files/traffic.tar",
+    "admin": "/custom_files/admin.sqlite",
+    "timezone": "/custom_files/tz.sqlite",
+    "transit_dir": "/custom_files/transit",
+    "hierarchy": true,
+    "shortcuts": true,
+    "max_cache_size": 268435456,
+    "id_table_size": 1300000000
+  },
+  "loki": {
+    "actions": [
+      "locate",
+      "route",
+      "height",
+      "sources_to_targets",
+      "optimized_route",
+      "isochrone",
+      "trace_route",
+      "trace_attributes",
+      "transit_available",
+      "expansion",
+      "centroid",
+      "status"
+    ],
+    "logging": {
+      "type": "std_out",
+      "color": true
+    },
+    "service": {
+      "proxy": "ipc:///tmp/loki"
+    },
+    "service_defaults": {
+      "minimum_reachability": 50,
+      "radius": 0
+    },
+    "use_connectivity": true
+  },
+  "thor": {
+    "logging": {
+      "type": "std_out",
+      "color": true
+    },
+    "service": {
+      "proxy": "ipc:///tmp/thor"
+    },
+    "source_to_target_algorithm": "select_optimal",
+    "clear_reserved_memory": false,
+    "extended_search": false
+  },
+  "service_limits": {
+    "auto": {
+      "max_distance": 5000000.0,
+      "max_locations": 20,
+      "max_matrix_distance": 400000.0,
+      "max_matrix_locations": 50
+    },
+    "max_avoid_locations": 50,
+    "max_reachability": 100,
+    "max_radius": 200,
+    "max_timedep_distance": 500000.0,
+    "max_alternates": 2
+  },
+  "httpd": {
+    "service": {
+      "listen": "tcp://0.0.0.0:8002",
+      "loopback": "ipc:///tmp/loopback",
+      "interrupt": "ipc:///tmp/interrupt"
+    }
+  }
+}

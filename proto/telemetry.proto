@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package telemetry;
+
+option go_package = "dz-smart-taxi/telemetry/proto;telemetrypb";
+
+// Compact binary Protobuf frame for 1Hz telematics ingestion over WebSockets (~32 bytes)
+message LocationPing {
+  string driver_id = 1;
+  double latitude = 2;
+  double longitude = 3;
+  float heading = 4;
+  float speed_kmh = 5;
+  int64 timestamp_utc = 6;
+  uint32 sequence_number = 7;
+  bool is_busy = 8;
+  string current_ride_id = 9;
+}
+
+// Ingest response sent back to vehicle tablet
+message LocationAck {
+  uint32 sequence_number = 1;
+  int64 server_time_utc = 2;
+  bool should_throttle = 3;
+}
+
+// Internal H3 Res 8 Candidate Query
+message CandidateQuery {
+  double rider_lat = 1;
+  double rider_lng = 2;
+  uint32 max_candidates = 3;
+  uint32 search_ring_k = 4; // Default: 2 (~2.5km radius)
+}
+
+// Candidate match result returned from in-memory H3 indexer
+message CandidateDriver {
+  string driver_id = 1;
+  double latitude = 2;
+  double longitude = 3;
+  float heading = 4;
+  uint64 h3_cell = 5;
+  float eta_seconds = 6;
+  float distance_meters = 7;
+}
+
+message CandidateMatchResponse {
+  repeated CandidateDriver candidates = 1;
+  int64 compute_time_micros = 2;
+}
+
+// Trajectory Point for batch flushing to PostGIS LineStringM
+message TrajectoryPoint {
+  double latitude = 1;
+  double longitude = 2;
+  float speed_kmh = 3;
+  int64 timestamp_utc = 4;
+}
+
+message TrajectoryBatch {
+  string ride_id = 1;
+  string driver_id = 2;
+  repeated TrajectoryPoint points = 3;
+  int64 start_time_utc = 4;
+  int64 end_time_utc = 5;
+}

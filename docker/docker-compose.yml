@@ -1,0 +1,216 @@
+# ============================================================================
+# ALGERIA SMART TAXI & MOBILITY PLATFORM
+# Trimmed Low-Memory Self-Hosted Docker Compose Stack
+# Target Idle RAM: <1.5 GB (Logflare analytics and vector engines excluded)
+# Compliance: Algerian Law 18-07 & Law 25-11 (Domestic Self-Hosted Storage)
+# ============================================================================
+
+services:
+  # --------------------------------------------------------------------------
+  # 1. CORE DATABASE: PostgreSQL 15/16 + PostGIS
+  # --------------------------------------------------------------------------
+  db:
+    image: supabase/postgres:15.8.1.085
+    container_name: dash-postgres
+    restart: unless-stopped
+    ports:
+      - "${POSTGRES_PORT:-54322}:5432"
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres_secure_pass_2026}
+      POSTGRES_DB: postgres
+      JWT_SECRET: ${JWT_SECRET:-super_secret_jwt_token_dz_taxi_platform_2026_at_least_32_chars}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ../supabase/migrations:/docker-entrypoint-initdb.d/migrations:ro
+      - ../supabase/seed.sql:/docker-entrypoint-initdb.d/99-seed.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # --------------------------------------------------------------------------
+  # 2. LOCAL OBJECT STORAGE: MinIO (Law 25-11 Domestic Evidence Store)
+  # --------------------------------------------------------------------------
+  minio:
+    image: minio/minio:RELEASE.2024-06-13T22-53-53Z
+    container_name: dash-minio
+    restart: unless-stopped
+    ports:
+      - "${MINIO_API_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-admin_dz}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-dashcam_secure_minio_pass_2026}
+    volumes:
+      - minio-data:/data
+    command: server /data --console-address ":9001"
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # --------------------------------------------------------------------------
+  # 3. API GATEWAY: Kong
+  # --------------------------------------------------------------------------
+  kong:
+    image: kong:2.8.1
+    container_name: dash-kong
+    restart: unless-stopped
+    ports:
+      - "${KONG_HTTP_PORT:-8000}:8000"
+      - "${KONG_HTTPS_PORT:-8443}:8443"
+    environment:
+      KONG_DATABASE: "off"
+      KONG_DECLARATIVE_CONFIG: /var/lib/kong/kong.yml
+      KONG_DNS_ORDER: LAST,A,CNAME
+      KONG_PLUGINS: request-transformer,cors,key-auth,acl
+      KONG_NGINX_PROXY_PROXY_BUFFER_SIZE: 160k
+      KONG_NGINX_PROXY_PROXY_BUFFERS: 64 160k
+    volumes:
+      - ./volumes/api/kong.yml:/var/lib/kong/kong.yml:ro
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # --------------------------------------------------------------------------
+  # 4. AUTH SERVICE: GoTrue
+  # --------------------------------------------------------------------------
+  auth:
+    image: supabase/gotrue:v2.158.1
+    container_name: dash-auth
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      GOTRUE_API_HOST: 0.0.0.0
+      GOTRUE_API_PORT: 9999
+      API_EXTERNAL_URL: ${API_EXTERNAL_URL:-http://localhost:8000}
+      GOTRUE_DB_DRIVER: postgres
+      GOTRUE_DB_DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-postgres_secure_pass_2026}@db:5432/postgres?sslmode=disable
+      GOTRUE_SITE_URL: ${SITE_URL:-http://localhost:3000}
+      GOTRUE_URI_ALLOW_LIST: "*"
+      GOTRUE_JWT_SECRET: ${JWT_SECRET:-super_secret_jwt_token_dz_taxi_platform_2026_at_least_32_chars}
+      GOTRUE_JWT_EXP: 3600
+      GOTRUE_JWT_DEFAULT_GROUP_NAME: authenticated
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: "false"
+      GOTRUE_EXTERNAL_PHONE_ENABLED: "true"
+      GOTRUE_SMS_AUTOCONFIRM: "true" # Development mock OTP
+
+  # --------------------------------------------------------------------------
+  # 5. REST ENGINE: PostgREST
+  # --------------------------------------------------------------------------
+  rest:
+    image: postgrest/postgrest:v12.2.0
+    container_name: dash-rest
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PGRST_DB_URI: postgres://postgres:${POSTGRES_PASSWORD:-postgres_secure_pass_2026}@db:5432/postgres?sslmode=disable
+      PGRST_DB_SCHEMAS: public,storage
+      PGRST_DB_ANON_ROLE: anon
+      PGRST_JWT_SECRET: ${JWT_SECRET:-super_secret_jwt_token_dz_taxi_platform_2026_at_least_32_chars}
+      PGRST_DB_USE_BUILTIN_AUTH: "false"
+
+  # --------------------------------------------------------------------------
+  # 6. REALTIME: WebSockets Event Hub
+  # --------------------------------------------------------------------------
+  realtime:
+    image: supabase/realtime:v2.30.23
+    container_name: dash-realtime
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PORT: 4000
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-postgres_secure_pass_2026}
+      DB_NAME: postgres
+      DB_SSL: "false"
+      JWT_SECRET: ${JWT_SECRET:-super_secret_jwt_token_dz_taxi_platform_2026_at_least_32_chars}
+      REPLICATION_MODE: RLS
+      REPLICATION_POLL_INTERVAL: 100
+      SECURE_CHANNELS: "true"
+
+  # --------------------------------------------------------------------------
+  # 7. WEB ADMIN CONSOLE: Supabase Studio
+  # --------------------------------------------------------------------------
+  studio:
+    image: supabase/studio:20240729-fa66930
+    container_name: dash-studio
+    restart: unless-stopped
+    ports:
+      - "${STUDIO_PORT:-54323}:3000"
+    environment:
+      STUDIO_PG_META_URL: http://meta:8080
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres_secure_pass_2026}
+      DEFAULT_ORGANIZATION_NAME: "Algeria Smart Taxi Corp"
+      DEFAULT_PROJECT_NAME: "Algiers Pilot Fleet"
+      SUPABASE_URL: http://kong:8000
+      SUPABASE_PUBLIC_URL: ${API_EXTERNAL_URL:-http://localhost:8000}
+      SUPABASE_ANON_KEY: ${ANON_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN0dWRpbyIsInJvbGUiOiJhbm9uIiwiaWF0IjoxNzA0MDY3MjAwLCJleHAiOjIwMTk2NDMyMDB9.mock_anon_key_for_local_dev}
+      SUPABASE_SERVICE_KEY: ${SERVICE_ROLE_KEY:-eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN0dWRpbyIsInJvbGUiOiJzZXJ2aWNlX3JvbGUiLCJpYXQiOjE3MDQwNjcyMDAsImV4cCI6MjAxOTY0MzIwMH0.mock_service_key_for_local_dev}
+
+  # --------------------------------------------------------------------------
+  # 8. METADATA API: Postgres-Meta
+  # --------------------------------------------------------------------------
+  meta:
+    image: supabase/postgres-meta:v0.84.2
+    container_name: dash-meta
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      PG_META_PORT: 8080
+      PG_META_DB_HOST: db
+      PG_META_DB_PORT: 5432
+      PG_META_DB_USER: postgres
+      PG_META_DB_PASSWORD: ${POSTGRES_PASSWORD:-postgres_secure_pass_2026}
+      PG_META_DB_NAME: postgres
+      PG_META_DB_SSL_MODE: disable
+
+  # --------------------------------------------------------------------------
+  # 9. ROUTING ENGINE: Valhalla (Algeria Street Network & ETA Matrix)
+  # --------------------------------------------------------------------------
+  valhalla:
+    image: ghcr.io/valhalla/valhalla:latest
+    container_name: dash-valhalla
+    restart: unless-stopped
+    ports:
+      - "${VALHALLA_PORT:-8002}:8002"
+    volumes:
+      - ./volumes/valhalla_tiles:/custom_files:ro
+    command: valhalla_service /custom_files/valhalla.json 1
+
+  # --------------------------------------------------------------------------
+  # 10. TELEMETRY DAEMON: Go 1Hz WebSockets Ingestion & H3 Dispatch
+  # --------------------------------------------------------------------------
+  telemetry:
+    build:
+      context: ..
+      dockerfile: docker/telemetry/Dockerfile
+    container_name: dash-telemetry
+    restart: unless-stopped
+    ports:
+      - "${TELEMETRY_PORT:-8080}:8080"
+    environment:
+      PORT: 8080
+      DATABASE_URL: postgres://postgres:${POSTGRES_PASSWORD:-postgres_secure_pass_2026}@db:5432/postgres?sslmode=disable
+      VALHALLA_URL: http://valhalla:8002
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db-data:
+    name: dash-postgres-data
+  minio-data:
+    name: dash-minio-data

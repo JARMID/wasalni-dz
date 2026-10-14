@@ -1,0 +1,19 @@
+name: naql_core
+description: Core domain models, envelope encryption, thermal state machine, and double-entry interfaces for NAQL DZ.
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: '>=3.2.0 <4.0.0'
+  flutter: '>=3.16.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  meta: ^1.12.0
+  crypto: ^3.0.3
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
