@@ -17,18 +17,20 @@ import {
 } from 'lucide-react';
 import type { AppLang } from '../utils/i18n';
 import { getTranslation } from '../utils/i18n';
-import type { ActiveTab } from './Header';
+import type { ActiveTab, BrandOption } from './Header';
 
 interface LandingViewProps {
   lang: AppLang;
   onNavigateTab: (tab: ActiveTab) => void;
   isDark?: boolean;
+  brand?: BrandOption;
 }
 
 export const LandingView: React.FC<LandingViewProps> = ({
   lang,
   onNavigateTab,
   isDark: _isDark,
+  brand,
 }) => {
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(lang, key);
 
@@ -41,10 +43,12 @@ export const LandingView: React.FC<LandingViewProps> = ({
         {/* Glow ambient background */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-gradient-to-r from-amber-500/10 via-emerald-500/10 to-sky-500/10 blur-3xl -z-10 pointer-events-none rounded-full" />
 
-        {/* Official Wilaya Badge */}
+        {/* Official Wilaya Badge with Dynamic Brand Name */}
         <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase mb-6 border transition-all glass-panel">
-          <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-          <span className="text-amber-500 dark:text-amber-300">{t('heroBadge')}</span>
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="text-emerald-600 dark:text-emerald-300">
+            {brand ? `${brand.name} • ${brand.nameAr}` : 'WASALNI DZ • وصلني'} • {t('heroBadge')}
+          </span>
         </div>
 
         {/* Main Headline */}
@@ -63,7 +67,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
         <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-14">
           <button
             onClick={() => onNavigateTab('rider')}
-            className="flex items-center space-x-2.5 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-400 hover:to-sky-500 text-white font-bold text-sm shadow-xl shadow-sky-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+            className="flex items-center space-x-2.5 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm shadow-xl shadow-emerald-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
           >
             <Smartphone className="w-4 h-4" />
             <span>{t('heroCtaRider')}</span>
@@ -72,7 +76,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
 
           <button
             onClick={() => onNavigateTab('driver')}
-            className="flex items-center space-x-2.5 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-sm shadow-xl shadow-amber-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+            className="flex items-center space-x-2.5 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-sm shadow-xl shadow-blue-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
           >
             <Video className="w-4 h-4" />
             <span>{t('heroCtaDriver')}</span>
@@ -128,22 +132,22 @@ export const LandingView: React.FC<LandingViewProps> = ({
       <section className="max-w-6xl mx-auto px-4">
         <div className="text-center mb-10">
           <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-2">
-            Une Solution Intégrée pour Chaque Acteur du Transport
+            {t('landingPillarsHeader')}
           </h2>
           <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400">
-            Conçue pour répondre aux réalités du terrain algérien : monnaie physique, réglementation et sécurité.
+            {t('landingPillarsSub')}
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
           {/* Pillar 1: Passager */}
-          <div className="glass-panel rounded-3xl p-6 sm:p-8 flex flex-col justify-between border relative group hover:border-sky-500/40 transition-all">
+          <div className="glass-panel rounded-3xl p-6 sm:p-8 flex flex-col justify-between border relative group hover:border-emerald-500/40 transition-all">
             <div>
-              <div className="w-12 h-12 rounded-2xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-500 mb-6 group-hover:scale-110 transition-transform">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-500 mb-6 group-hover:scale-110 transition-transform">
                 <Smartphone className="w-6 h-6" />
               </div>
-              <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold bg-sky-500/10 text-sky-500 dark:text-sky-300 mb-3">
+              <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 mb-3">
                 {t('pillar1Badge')}
               </span>
               <h3 className="text-xl font-bold mb-2">{t('pillar1Title')}</h3>
@@ -154,7 +158,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
             </div>
             <button
               onClick={() => onNavigateTab('rider')}
-              className="w-full flex items-center justify-between p-3 rounded-xl bg-sky-500/10 hover:bg-sky-500/20 text-sky-600 dark:text-sky-300 text-xs font-bold transition-all cursor-pointer"
+              className="w-full flex items-center justify-between p-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 text-xs font-bold transition-all cursor-pointer"
             >
               <span>{t('heroCtaRider')}</span>
               <ChevronRight className="w-4 h-4" />
@@ -162,12 +166,12 @@ export const LandingView: React.FC<LandingViewProps> = ({
           </div>
 
           {/* Pillar 2: Chauffeur & Dashcam */}
-          <div className="glass-panel rounded-3xl p-6 sm:p-8 flex flex-col justify-between border relative group hover:border-amber-500/40 transition-all">
+          <div className="glass-panel rounded-3xl p-6 sm:p-8 flex flex-col justify-between border relative group hover:border-sapphire-500/40 transition-all">
             <div>
-              <div className="w-12 h-12 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-500 mb-6 group-hover:scale-110 transition-transform">
+              <div className="w-12 h-12 rounded-2xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-500 mb-6 group-hover:scale-110 transition-transform">
                 <Video className="w-6 h-6" />
               </div>
-              <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-500 dark:text-amber-300 mb-3">
+              <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold bg-blue-500/10 text-blue-600 dark:text-blue-300 mb-3">
                 {t('pillar2Badge')}
               </span>
               <h3 className="text-xl font-bold mb-2">{t('pillar2Title')}</h3>
@@ -178,7 +182,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
             </div>
             <button
               onClick={() => onNavigateTab('driver')}
-              className="w-full flex items-center justify-between p-3 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-300 text-xs font-bold transition-all cursor-pointer"
+              className="w-full flex items-center justify-between p-3 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-300 text-xs font-bold transition-all cursor-pointer"
             >
               <span>{t('heroCtaDriver')}</span>
               <ChevronRight className="w-4 h-4" />
@@ -191,7 +195,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
               <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-500 mb-6 group-hover:scale-110 transition-transform">
                 <Gauge className="w-6 h-6" />
               </div>
-              <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-500 dark:text-emerald-300 mb-3">
+              <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 mb-3">
                 {t('pillar3Badge')}
               </span>
               <h3 className="text-xl font-bold mb-2">{t('pillar3Title')}</h3>
@@ -215,54 +219,54 @@ export const LandingView: React.FC<LandingViewProps> = ({
 
       {/* How the Flywheel Solves Algeria's Cash Dilemma */}
       <section className="max-w-5xl mx-auto px-4">
-        <div className="glass-panel rounded-3xl p-6 sm:p-10 border border-amber-500/20 bg-gradient-to-br from-amber-500/5 via-transparent to-emerald-500/5">
+        <div className="glass-panel rounded-3xl p-6 sm:p-10 border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 via-transparent to-blue-500/5">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div>
-              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-lg bg-amber-400/15 text-amber-500 dark:text-amber-300 font-bold text-xs mb-4">
+              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 font-bold text-xs mb-4">
                 <Coins className="w-3.5 h-3.5" />
-                <span>INNOVATION FINTECH ALGÉRIE</span>
+                <span>{t('flywheelBadge')}</span>
               </div>
               <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-4">
-                Le "Spare Change Flywheel" : Zéro Conflit de Monnaie
+                {t('flywheelTitle')}
               </h3>
               <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
-                En Algérie, 94% des règlements de taxis s'effectuent en espèces, ce qui engendre des frictions quotidiennes lors des rendus de monnaie sur les coupures de 1 000 DA ou 2 000 DA.
+                {t('flywheelDesc')}
               </p>
               <ul className="space-y-3 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
                 <li className="flex items-start space-x-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>Le chauffeur conserve le billet complet en espèces dans sa poche.</span>
+                  <span>{t('flywheelStep1')}</span>
                 </li>
                 <li className="flex items-start space-x-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>Le reliquat exact (ex. 150 DA) est transféré numériquement depuis son compte vers le passager.</span>
+                  <span>{t('flywheelStep2')}</span>
                 </li>
                 <li className="flex items-start space-x-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
-                  <span>Le passager réutilise ce solde immédiatement pour payer ses prochaines courses.</span>
+                  <span>{t('flywheelStep3')}</span>
                 </li>
               </ul>
             </div>
 
             <div className="glass-panel p-6 rounded-2xl border space-y-4 text-center">
-              <span className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">Exemple Concret</span>
+              <span className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">{t('flywheelExampleBadge')}</span>
               <div className="flex items-center justify-between p-3 rounded-xl bg-slate-900/10 dark:bg-slate-900/60 border text-xs">
-                <span>Course Alger Centre → Kouba :</span>
-                <span className="font-bold text-amber-500">850 DA</span>
+                <span>{t('flywheelTripLabel')}</span>
+                <span className="font-bold text-emerald-600 dark:text-emerald-400">850 DA</span>
               </div>
               <div className="flex items-center justify-between p-3 rounded-xl bg-slate-900/10 dark:bg-slate-900/60 border text-xs">
-                <span>Billet remis en espèces :</span>
+                <span>{t('flywheelCashGiven')}</span>
                 <span className="font-bold">1 000 DA</span>
               </div>
               <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400">
-                <span className="block text-xs font-semibold mb-1">Crédit Immédiat au Portefeuille :</span>
+                <span className="block text-xs font-semibold mb-1">{t('flywheelCreditReceived')}</span>
                 <span className="text-2xl font-black">+150.00 DA</span>
               </div>
               <button
                 onClick={() => onNavigateTab('ledger')}
                 className="w-full py-2.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-bold text-xs hover:opacity-90 transition-all cursor-pointer"
               >
-                Inspecter le Grand Livre Comptable
+                {t('flywheelInspectLedger')}
               </button>
             </div>
           </div>
@@ -271,53 +275,53 @@ export const LandingView: React.FC<LandingViewProps> = ({
 
       {/* NEW: Dedicated Chauffeur & Third-Party Sponsored Payment Section */}
       <section className="max-w-5xl mx-auto px-4">
-        <div className="glass-panel rounded-3xl p-6 sm:p-10 border border-sky-500/20 bg-gradient-to-br from-sky-500/5 via-transparent to-amber-500/5">
+        <div className="glass-panel rounded-3xl p-6 sm:p-10 border border-blue-500/20 bg-gradient-to-br from-blue-500/5 via-transparent to-emerald-500/5">
           <div className="text-center max-w-2xl mx-auto mb-8">
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-lg bg-sky-500/15 text-sky-600 dark:text-sky-300 font-bold text-xs mb-3">
+            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-lg bg-blue-500/15 text-blue-600 dark:text-blue-300 font-bold text-xs mb-3">
               <HeartHandshake className="w-3.5 h-3.5" />
-              <span>NOUVEAUTÉ TRANSPORT RÉGULIER & SOCIAL</span>
+              <span>{t('landingSocialBadge')}</span>
             </div>
             <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
-              Chauffeur Dédié & Billet Sponsorisé pour vos Proches
+              {t('landingSocialTitle')}
             </h3>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-2">
-              Une réponse adaptée aux habitudes des familles algériennes et des entreprises : abonnements réguliers et prise en charge des trajets à distance.
+              {t('landingSocialSubtitle')}
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             
             {/* Card 1: Chauffeur Titulaire & Navette Programmée */}
-            <div className="p-6 rounded-2xl border border-amber-500/30 bg-white/40 dark:bg-slate-900/40 space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center font-bold">
+            <div className="p-6 rounded-2xl border border-emerald-500/30 bg-white/40 dark:bg-slate-900/40 space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-500 flex items-center justify-center font-bold">
                 <Calendar className="w-5 h-5" />
               </div>
               <h4 className="font-extrabold text-base text-slate-900 dark:text-white">
-                Navette Programmée & Chauffeur Titulaire
+                {t('landingCard1Title')}
               </h4>
               <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                Idéal pour le ramassage scolaire (Dimanche à Jeudi) ou les navettes domicile - bureau. Vous choisissez vos jours, vos horaires fixes (matin et soir), et le même chauffeur agréé vous prend en charge chaque jour.
+                {t('landingCard1Desc')}
               </p>
-              <div className="pt-2 flex items-center justify-between text-xs font-bold text-amber-600 dark:text-amber-400">
-                <span>Agrément DTW garanti</span>
-                <span>Tarif forfaitaire avantageux</span>
+              <div className="pt-2 flex items-center justify-between text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                <span>{t('landingCard1Tag1')}</span>
+                <span>{t('landingCard1Tag2')}</span>
               </div>
             </div>
 
             {/* Card 2: Payer pour un Proche / Billet Sponsorisé */}
-            <div className="p-6 rounded-2xl border border-sky-500/30 bg-white/40 dark:bg-slate-900/40 space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-500 flex items-center justify-center font-bold">
+            <div className="p-6 rounded-2xl border border-blue-500/30 bg-white/40 dark:bg-slate-900/40 space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-500 flex items-center justify-center font-bold">
                 <HeartHandshake className="w-5 h-5" />
               </div>
               <h4 className="font-extrabold text-base text-slate-900 dark:text-white">
-                Billet Sponsorisé CIB & Edahabia
+                {t('landingCard2Title')}
               </h4>
               <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                Vos enfants, parents ou collaborateurs n'ont pas de carte bancaire ? Vous réglez leur course à distance via SATIM 3DS ou BaridiMob. Ils reçoivent un code PIN d'embarquement digital et n'ont aucun sou à payer en espèces.
+                {t('landingCard2Desc')}
               </p>
-              <div className="pt-2 flex items-center justify-between text-xs font-bold text-sky-600 dark:text-sky-400">
-                <span>Reçu fiscal électronique</span>
-                <span>0 DA d'espèces à bord</span>
+              <div className="pt-2 flex items-center justify-between text-xs font-bold text-blue-600 dark:text-blue-400">
+                <span>{t('landingCard2Tag1')}</span>
+                <span>{t('landingCard2Tag2')}</span>
               </div>
             </div>
 
@@ -328,7 +332,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
               onClick={() => onNavigateTab('rider')}
               className="inline-flex items-center space-x-2 px-6 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-bold text-xs hover:opacity-90 transition-all cursor-pointer shadow-md"
             >
-              <span>Tester la Réservation d'un Chauffeur Dédié</span>
+              <span>{t('landingTestDedicatedBtn')}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

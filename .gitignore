@@ -5,3 +5,6 @@ dist
 *.log
 **/build/
 .dart_tool/
+.env
+.env.local
+.env.*.local

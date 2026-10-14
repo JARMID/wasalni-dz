@@ -7,10 +7,13 @@ import {
   ShieldAlert, 
   Lock, 
   HardDrive,
-  Activity
+  Activity,
+  SunMedium,
+  Moon
 } from 'lucide-react';
 import type { ThermalState, DashcamIncident } from '../types';
 import { soundEngine } from '../utils/audio';
+import { fetchAlgiersWeather, type WeatherData } from '../utils/publicApis';
 
 interface DashcamHUDProps {
   speedKmh: number;
@@ -37,9 +40,14 @@ export const DashcamHUD: React.FC<DashcamHUDProps> = ({
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [currentGForce, setCurrentGForce] = useState(1.02);
   const [timecodeStr, setTimecodeStr] = useState('');
+  const [weather, setWeather] = useState<WeatherData | null>(null);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    fetchAlgiersWeather().then(w => setWeather(w));
+  }, []);
 
   // Live Timecode and G-force micro-fluctuation generator
   useEffect(() => {
@@ -283,6 +291,17 @@ export const DashcamHUD: React.FC<DashcamHUDProps> = ({
           <div className="bg-black/80 backdrop-blur-md px-2 py-0.5 rounded-md text-[9px] font-mono text-slate-300 border border-white/5">
             {timecodeStr || '16:42:00.000'} • GPS: {driverLat.toFixed(4)}°N, {driverLng.toFixed(4)}°E
           </div>
+
+          {weather?.cameraCalibration && (
+            <div className="bg-black/85 backdrop-blur-md px-2 py-0.5 rounded-md text-[9px] font-mono text-cyan-300 border border-cyan-500/30 flex items-center space-x-1.5 shadow-md">
+              {weather.cameraCalibration.nightVision ? (
+                <Moon className="w-2.5 h-2.5 text-indigo-400 shrink-0" />
+              ) : (
+                <SunMedium className="w-2.5 h-2.5 text-amber-400 shrink-0" />
+              )}
+              <span className="truncate">{weather.cameraCalibration.description}</span>
+            </div>
+          )}
         </div>
 
         {/* Rolling Buffer Indicator & Accelerometer */}

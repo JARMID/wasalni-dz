@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Header } from './components/Header';
-import type { ActiveTab, AppLang } from './components/Header';
+import { Header, BRAND_OPTIONS } from './components/Header';
+import type { ActiveTab, AppLang, BrandOption } from './components/Header';
 import { LandingView } from './components/LandingView';
 import { RiderView } from './components/RiderView';
 import { DriverCockpit } from './components/DriverCockpit';
@@ -27,6 +27,7 @@ import {
   INITIAL_LEDGER, 
   ALGIERS_LOCATIONS 
 } from './data/mockData';
+import { AiCopilotModal } from './components/AiCopilotModal';
 import { soundEngine } from './utils/audio';
 import { 
   syncLiveWallets, 
@@ -39,6 +40,7 @@ import {
 export function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('home');
   const [lang, setLang] = useState<AppLang>('fr');
+  const [selectedBrand, setSelectedBrand] = useState<BrandOption>(BRAND_OPTIONS[0]);
   const [isDark, setIsDark] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('naql_theme');
@@ -73,6 +75,7 @@ export function App() {
   const [ledgerEntries, setLedgerEntries] = useState<LedgerEntry[]>(INITIAL_LEDGER);
   const [incidents, setIncidents] = useState<DashcamIncident[]>([]);
   const [isSpareChangeModalOpen, setIsSpareChangeModalOpen] = useState(false);
+  const [isCopilotOpen, setIsCopilotOpen] = useState(false);
 
   // Active Origin & Destination (Default: Kouba to Grande Poste)
   const [origin, setOrigin] = useState<LocationPoint>(ALGIERS_LOCATIONS[2]);
@@ -489,6 +492,9 @@ export function App() {
         isDark={isDark}
         setIsDark={setIsDark}
         onReset={handleResetDemo}
+        onOpenCopilot={() => setIsCopilotOpen(true)}
+        selectedBrand={selectedBrand}
+        onSelectBrand={setSelectedBrand}
       />
 
       {/* Main Content Arena */}
@@ -500,6 +506,7 @@ export function App() {
             lang={lang}
             onNavigateTab={setActiveTab}
             isDark={isDark}
+            brand={selectedBrand}
           />
         )}
 
@@ -600,9 +607,9 @@ export function App() {
           </div>
         )}
 
-        {/* VIEW 3: RIDER SMARTPHONE FULL VIEW */}
+        {/* VIEW 3: RIDER SMARTPHONE / FULLSCREEN VIEW */}
         {activeTab === 'rider' && (
-          <div className="py-4 flex justify-center">
+          <div className="py-4 w-full flex justify-center">
             <RiderView
               currentRide={currentRide}
               driver={driver}
@@ -661,6 +668,13 @@ export function App() {
         driverBalanceDzd={driver.walletBalanceDzd}
         riderCurrentBalanceDzd={wallets.riderTrustDesk_2010}
         onCreditSpareChange={handleCreditSpareChange}
+        lang={lang}
+      />
+
+      {/* AI Regulatory & Dispatch Copilot Modal (Groq LPU / Unified Router) */}
+      <AiCopilotModal
+        isOpen={isCopilotOpen}
+        onClose={() => setIsCopilotOpen(false)}
         lang={lang}
       />
 

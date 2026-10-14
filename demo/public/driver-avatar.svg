@@ -1,42 +1,42 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" width="160" height="160">
   <defs>
     <linearGradient id="shieldBg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0f172a" />
-      <stop offset="50%" stop-color="#1e293b" />
-      <stop offset="100%" stop-color="#090d16" />
+      <stop offset="0%" stop-color="#022c22" />
+      <stop offset="50%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#0f172a" />
     </linearGradient>
     <linearGradient id="goldBorder" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#fbbf24" />
       <stop offset="50%" stop-color="#d97706" />
       <stop offset="100%" stop-color="#f59e0b" />
     </linearGradient>
-    <linearGradient id="avatarSkin" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#f1f5f9" />
-      <stop offset="100%" stop-color="#cbd5e1" />
+    <linearGradient id="sapphireGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#1d4ed8" />
     </linearGradient>
   </defs>
 
-  <!-- Outer Rounded Shield Frame -->
-  <rect x="4" y="4" width="152" height="152" rx="36" fill="url(#shieldBg)" stroke="url(#goldBorder)" stroke-width="4" />
+  <!-- Outer Rounded Shield Frame with Emerald & Gold Medallion -->
+  <rect x="4" y="4" width="152" height="152" rx="36" fill="url(#shieldBg)" stroke="url(#goldBorder)" stroke-width="3.5" />
   
-  <!-- Subtle Guilloche / Grid pattern -->
-  <circle cx="80" cy="80" r="68" fill="none" stroke="#f59e0b" stroke-width="0.75" stroke-dasharray="3,3" opacity="0.3" />
-  <circle cx="80" cy="80" r="58" fill="none" stroke="#38bdf8" stroke-width="0.75" stroke-dasharray="2,4" opacity="0.25" />
+  <!-- Subtle Telematics Grid Pattern -->
+  <circle cx="80" cy="80" r="68" fill="none" stroke="#10b981" stroke-width="0.75" stroke-dasharray="3,3" opacity="0.35" />
+  <circle cx="80" cy="80" r="54" fill="none" stroke="#38bdf8" stroke-width="0.75" stroke-dasharray="2,4" opacity="0.25" />
 
-  <!-- Professional Driver Silhouette in Suit & Tie with Cap -->
-  <!-- Shoulders & Lapels -->
-  <path d="M32 136 C32 108 52 98 80 98 C108 98 128 108 128 136 Z" fill="#334155" stroke="#f59e0b" stroke-width="1.5" />
-  <path d="M62 100 L80 124 L98 100" fill="#ffffff" />
-  <polygon points="80,108 84,130 80,136 76,130" fill="#0284c7" />
+  <!-- Chauffeur Executive Silhouette (Abstract Vector Form) -->
+  <!-- Shoulders & Coat -->
+  <path d="M34 134 C34 104 54 96 80 96 C106 96 126 104 126 134 Z" fill="#0f172a" stroke="#10b981" stroke-width="1.5" />
+  <path d="M64 98 L80 120 L96 98" fill="#f8fafc" />
+  <polygon points="80,104 84,124 80,132 76,124" fill="#059669" />
 
-  <!-- Head / Neck -->
-  <rect x="72" y="80" width="16" height="20" rx="3" fill="#e2e8f0" />
-  <circle cx="80" cy="62" r="22" fill="url(#avatarSkin)" stroke="#94a3b8" stroke-width="1" />
+  <!-- Head / Neck (Clean Minimalist Tone) -->
+  <rect x="73" y="78" width="14" height="18" rx="2" fill="#f1f5f9" />
+  <circle cx="80" cy="62" r="21" fill="#f8fafc" stroke="#94a3b8" stroke-width="1" />
 
-  <!-- Official Driver Visor Cap -->
-  <path d="M54 54 C54 40 64 34 80 34 C96 34 106 40 106 54 Z" fill="#1e293b" />
-  <path d="M50 54 Q80 48 110 54 Q80 60 50 54 Z" fill="#0f172a" stroke="#d97706" stroke-width="2" />
-  <!-- Cap Cockade Badge -->
+  <!-- Official Driver Peaked Cap (Chauffeur Casquette) -->
+  <path d="M55 54 C55 38 65 32 80 32 C95 32 105 38 105 54 Z" fill="#1e293b" />
+  <path d="M50 54 Q80 48 110 54 Q80 60 50 54 Z" fill="#0f172a" stroke="#fbbf24" stroke-width="2" />
+  <!-- Medallion Cockade on Cap -->
   <circle cx="80" cy="44" r="5" fill="#f59e0b" stroke="#ffffff" stroke-width="1" />
   <circle cx="80" cy="44" r="2.5" fill="#059669" />
 
@@ -46,9 +46,9 @@
     <path d="M9 16 L14 21 L23 11" fill="none" stroke="#ffffff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
   </g>
 
-  <!-- Wilaya Code Top Badge -->
+  <!-- Wilaya 16 Sovereign Gold Plate -->
   <g transform="translate(18, 12)">
-    <rect width="28" height="16" rx="6" fill="#f59e0b" />
+    <rect width="28" height="16" rx="6" fill="#f59e0b" stroke="#ffffff" stroke-width="1" />
     <text x="14" y="12" font-family="monospace" font-size="10" font-weight="900" fill="#0f172a" text-anchor="middle">16</text>
   </g>
 </svg>

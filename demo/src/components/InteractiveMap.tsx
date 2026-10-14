@@ -3,7 +3,60 @@ import L from 'leaflet';
 import type { LocationPoint } from '../types';
 import { soundEngine } from '../utils/audio';
 import { fetchAlgiersWeather, fetchStreetRoute, type WeatherData } from '../utils/publicApis';
-import { CloudSun, Navigation } from 'lucide-react';
+import { CloudSun, Navigation, Layers } from 'lucide-react';
+
+export type MapStyleKey = 'streets' | 'satellite' | 'esri_street' | 'transit';
+
+export interface MapStyleConfig {
+  id: MapStyleKey;
+  label: string;
+  tag: string;
+  icon: string;
+  url: string;
+  attribution: string;
+  maxZoom: number;
+  subdomains?: string[];
+}
+
+export const MAP_STYLES: Record<MapStyleKey, MapStyleConfig> = {
+  streets: {
+    id: 'streets',
+    label: 'Rues Alger',
+    tag: 'OpenStreetMap Standard',
+    icon: '🗺️',
+    url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    attribution: '&copy; OpenStreetMap contributors • DTW Alger',
+    maxZoom: 19,
+  },
+  satellite: {
+    id: 'satellite',
+    label: 'Satellite Réel',
+    tag: 'ESRI Maxar Orthophoto',
+    icon: '🛰️',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    attribution: '&copy; Esri, Maxar, Earthstar Geographics',
+    maxZoom: 18,
+  },
+  esri_street: {
+    id: 'esri_street',
+    label: 'ESRI Topo',
+    tag: 'ESRI World Street Map',
+    icon: '🧭',
+    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+    attribution: '&copy; Esri, DeLorme, NAVTEQ',
+    maxZoom: 18,
+  },
+  transit: {
+    id: 'transit',
+    label: 'Transport Urbain',
+    tag: 'OSM Humanitarian HOT',
+    icon: '🚌',
+    url: 'https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png',
+    attribution: '&copy; OpenStreetMap contributors, Humanitarian OSM',
+    maxZoom: 19,
+    subdomains: ['a', 'b', 'c'],
+  },
+};
 
 interface InteractiveMapProps {
   origin: LocationPoint;
@@ -36,11 +89,14 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
 }) => {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
+  const activeTileLayerRef = useRef<L.TileLayer | null>(null);
   const driverMarkerRef = useRef<L.Marker | null>(null);
+  const routeCasingRef = useRef<L.Polyline | null>(null);
   const routePolylineRef = useRef<L.Polyline | null>(null);
   const hexLayerRef = useRef<L.LayerGroup | null>(null);
   const surroundingLayerRef = useRef<L.LayerGroup | null>(null);
 
+  const [mapStyle, setMapStyle] = useState<MapStyleKey>('streets');
   const [telemetryBytes, setTelemetryBytes] = useState(14820);
   const [latencyMs, setLatencyMs] = useState(18);
   const [weather, setWeather] = useState<WeatherData | null>(null);
@@ -60,28 +116,25 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
     fetchAlgiersWeather().then(w => setWeather(w));
   }, []);
 
-  // Initialize Leaflet Map with Zero-Key ESRI Dark Canvas Tiles
+  // Initialize Leaflet Map with Real Street Cartography
   useEffect(() => {
     if (!mapContainerRef.current) return;
     if (mapInstanceRef.current) return;
 
     const map = L.map(mapContainerRef.current, {
-      center: [36.7420, 3.0680],
+      center: [36.7525, 3.0588],
       zoom: 13,
       zoomControl: false,
     });
 
-    // Zero-Key High-Contrast Dark Telematics Layer (ESRI World Dark Gray Base + Reference)
-    // 100% Free, Zero API Key required, Zero watermarks
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-      attribution: '&copy; Esri, DeLorme, NAVTEQ &copy; OpenStreetMap &copy; DTW Alger',
-      maxZoom: 16,
+    // Zero-Key High-Resolution OpenStreetMap Standard Layer (Real Streets, Roads, Buildings, Water)
+    const initialConfig = MAP_STYLES[mapStyle];
+    const baseLayer = L.tileLayer(initialConfig.url, {
+      attribution: initialConfig.attribution,
+      maxZoom: initialConfig.maxZoom,
+      subdomains: initialConfig.subdomains || 'abc',
     }).addTo(map);
-
-    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
-      attribution: '',
-      maxZoom: 16,
-    }).addTo(map);
+    activeTileLayerRef.current = baseLayer;
 
     L.control.zoom({ position: 'bottomright' }).addTo(map);
 
@@ -92,6 +145,25 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
       mapInstanceRef.current = null;
     };
   }, []);
+
+  // Dynamically swap cartography style on user selection without breaking camera
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
+    if (activeTileLayerRef.current) {
+      map.removeLayer(activeTileLayerRef.current);
+    }
+
+    const config = MAP_STYLES[mapStyle];
+    const newLayer = L.tileLayer(config.url, {
+      attribution: config.attribution,
+      maxZoom: config.maxZoom,
+      subdomains: config.subdomains || 'abc',
+    }).addTo(map);
+    newLayer.bringToBack();
+    activeTileLayerRef.current = newLayer;
+  }, [mapStyle]);
 
   // Render Fleet, Route Polyline & Live OSRM Turn-by-Turn Routing
   useEffect(() => {
@@ -134,7 +206,10 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
     const originMarker = L.marker([origin.lat, origin.lng], { icon: originIcon }).addTo(map);
     const destMarker = L.marker([destination.lat, destination.lng], { icon: destIcon }).addTo(map);
 
-    // 2. Realistic Route Polyline (OSRM Live Routing API with fallback)
+    // 2. Realistic Route Polyline (Dual Casing & Core for maximum visibility on streets and satellite)
+    if (routeCasingRef.current) {
+      routeCasingRef.current.remove();
+    }
     if (routePolylineRef.current) {
       routePolylineRef.current.remove();
     }
@@ -146,16 +221,25 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
       [destination.lat, destination.lng],
     ];
 
+    // High-contrast dark casing under route
+    routeCasingRef.current = L.polyline(fallbackWaypoints, {
+      color: '#020617',
+      weight: 8,
+      opacity: 0.85,
+    }).addTo(map);
+
+    // Vivid route core line
     routePolylineRef.current = L.polyline(fallbackWaypoints, {
-      color: '#f59e0b',
-      weight: 4.5,
+      color: '#ea580c',
+      weight: 5,
       dashArray: '8, 8',
-      opacity: 0.9,
+      opacity: 1,
     }).addTo(map);
 
     // Call free OpenStreetMap OSRM Routing API for real street geometry in Algiers
     fetchStreetRoute(origin.lng, origin.lat, destination.lng, destination.lat).then(geo => {
-      if (geo && routePolylineRef.current) {
+      if (geo && routePolylineRef.current && routeCasingRef.current) {
+        routeCasingRef.current.setLatLngs(geo.coordinates);
         routePolylineRef.current.setLatLngs(geo.coordinates);
         setStreetRoute({
           distanceKm: geo.distanceKm,
@@ -185,8 +269,8 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
       const surroundingIcon = L.divIcon({
         className: 'surrounding-taxi',
         html: `
-          <div class="relative flex items-center justify-center opacity-85 hover:opacity-100 transition-opacity">
-            <div class="w-7 h-7 rounded-xl ${isAvailable ? 'bg-slate-900 border border-emerald-400 text-emerald-400' : 'bg-slate-900 border border-slate-700 text-slate-500'} flex items-center justify-center text-xs shadow-lg">
+          <div class="relative flex items-center justify-center opacity-90 hover:opacity-100 transition-opacity">
+            <div class="w-7 h-7 rounded-xl ${isAvailable ? 'bg-slate-900 border-2 border-emerald-400 text-emerald-400' : 'bg-slate-900 border-2 border-slate-600 text-slate-400'} flex items-center justify-center text-xs shadow-lg shadow-black/50">
               🚖
             </div>
           </div>
@@ -222,10 +306,10 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
       className: 'driver-taxi-marker',
       html: `
         <div class="relative flex items-center justify-center transition-all duration-700 ease-out">
-          <div class="w-10 h-10 rounded-2xl bg-amber-400 border-2 border-white flex items-center justify-center shadow-xl shadow-amber-500/50 transform rotate-[${driverHeading}deg]">
+          <div class="w-10 h-10 rounded-2xl bg-amber-400 border-2 border-white flex items-center justify-center shadow-2xl shadow-black/80 transform rotate-[${driverHeading}deg]">
             <span class="text-base select-none">🚕</span>
           </div>
-          <div class="absolute -top-7 whitespace-nowrap bg-amber-500 text-slate-950 px-2 py-0.5 rounded-md text-[10px] font-mono font-black border border-amber-300 shadow-md">
+          <div class="absolute -top-7 whitespace-nowrap bg-amber-500 text-slate-950 px-2 py-0.5 rounded-md text-[10px] font-mono font-black border border-white/80 shadow-lg">
             TAXI 16-0482
           </div>
         </div>
@@ -328,26 +412,76 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
         )}
       </div>
 
-      {/* Real-Road Routing Info & Recenter (Bottom HUD) */}
+      {/* Interactive Map Style Switcher (Floating Quick-Bar) */}
+      <div className="absolute top-12 left-3 z-[1000] flex items-center space-x-1 p-1 bg-slate-950/92 backdrop-blur-md border border-white/10 rounded-2xl shadow-2xl pointer-events-auto">
+        <span className="hidden sm:flex items-center space-x-1 text-[9px] font-mono text-slate-400 px-2 uppercase tracking-wider font-semibold">
+          <Layers className="w-3 h-3 text-amber-400" />
+          <span>Fond :</span>
+        </span>
+        {(Object.keys(MAP_STYLES) as MapStyleKey[]).map(key => {
+          const cfg = MAP_STYLES[key];
+          const isActive = mapStyle === key;
+          return (
+            <button
+              key={key}
+              onClick={() => {
+                soundEngine.playClick();
+                setMapStyle(key);
+              }}
+              className={`px-2 py-1 rounded-xl text-[10px] font-mono font-bold flex items-center space-x-1 transition-all cursor-pointer ${
+                isActive
+                  ? 'bg-amber-400 text-slate-950 shadow-md shadow-amber-500/30'
+                  : 'text-slate-300 hover:text-white hover:bg-white/10'
+              }`}
+              title={`${cfg.label} (${cfg.tag})`}
+            >
+              <span>{cfg.icon}</span>
+              <span>{cfg.label}</span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Real-Road Routing Info & Navigation Controls (Bottom HUD) */}
       <div className="absolute bottom-3 inset-x-3 z-[1000] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-1.5 pointer-events-none">
-        <button
-          onClick={() => {
-            soundEngine.playClick();
-            const map = mapInstanceRef.current;
-            if (map) {
-              map.flyTo([driverLat, driverLng], 14, { duration: 1.2 });
-            }
-          }}
-          className="bg-slate-950/95 backdrop-blur-md border border-amber-500/40 pointer-events-auto px-2.5 py-1 rounded-xl text-[10px] font-mono font-bold text-amber-300 hover:text-white transition-all flex items-center justify-center space-x-1 shadow-xl cursor-pointer"
-        >
-          <span>🚕 Centrer Taxi</span>
-        </button>
+        <div className="flex items-center space-x-1.5 pointer-events-auto">
+          <button
+            onClick={() => {
+              soundEngine.playClick();
+              const map = mapInstanceRef.current;
+              if (map) {
+                map.flyTo([driverLat, driverLng], 15, { duration: 1.2 });
+              }
+            }}
+            className="bg-slate-950/95 backdrop-blur-md border border-amber-500/40 px-2.5 py-1 rounded-xl text-[10px] font-mono font-bold text-amber-300 hover:text-white hover:bg-amber-500/20 transition-all flex items-center space-x-1 shadow-xl cursor-pointer"
+          >
+            <span>🚕 Centrer Taxi</span>
+          </button>
+
+          <button
+            onClick={() => {
+              soundEngine.playClick();
+              const map = mapInstanceRef.current;
+              if (map) {
+                const b = L.latLngBounds([
+                  [origin.lat, origin.lng],
+                  [destination.lat, destination.lng],
+                  [driverLat, driverLng],
+                ]);
+                map.fitBounds(b, { padding: [50, 50], maxZoom: 15 });
+              }
+            }}
+            className="bg-slate-950/95 backdrop-blur-md border border-white/15 px-2.5 py-1 rounded-xl text-[10px] font-mono font-bold text-slate-200 hover:text-white hover:bg-white/10 transition-all flex items-center space-x-1 shadow-xl cursor-pointer"
+          >
+            <span>🗺️ Vue Trajet</span>
+          </button>
+        </div>
 
         {streetRoute && (
           <div className="bg-slate-950/95 backdrop-blur-md pointer-events-auto px-2.5 py-1 rounded-xl text-[10px] font-mono text-slate-200 flex items-center space-x-1.5 shadow-xl border border-amber-500/40">
             <Navigation className="w-3 h-3 text-amber-400 shrink-0" />
             <span>OSRM: <strong className="text-amber-300">{streetRoute.distanceKm} km</strong> (~{streetRoute.durationMins}m)</span>
-            <span className="text-slate-400 text-[9px] truncate max-w-[110px]">➔ {streetRoute.streetName}</span>
+            <span className="text-slate-400 text-[9px] truncate max-w-[130px]">➔ {streetRoute.streetName}</span>
           </div>
         )}
       </div>
