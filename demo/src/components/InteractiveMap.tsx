@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import L from 'leaflet';
 import type { LocationPoint } from '../types';
 import { soundEngine } from '../utils/audio';
+import { fetchAlgiersWeather, fetchStreetRoute, type WeatherData } from '../utils/publicApis';
+import { CloudSun, Navigation } from 'lucide-react';
 
 interface InteractiveMapProps {
   origin: LocationPoint;
@@ -41,6 +43,8 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
   const [telemetryBytes, setTelemetryBytes] = useState(14820);
   const [latencyMs, setLatencyMs] = useState(18);
+  const [weather, setWeather] = useState<WeatherData | null>(null);
+  const [streetRoute, setStreetRoute] = useState<{ distanceKm: number; durationMins: number; streetName: string } | null>(null);
 
   // Periodic Telemetry Packet simulation (1Hz Protobuf)
   useEffect(() => {
@@ -51,7 +55,12 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
     return () => clearInterval(timer);
   }, []);
 
-  // Initialize Leaflet Map
+  // Fetch Live Algiers Weather (Open-Meteo Zero-Key Public API)
+  useEffect(() => {
+    fetchAlgiersWeather().then(w => setWeather(w));
+  }, []);
+
+  // Initialize Leaflet Map with Zero-Key ESRI Dark Canvas Tiles
   useEffect(() => {
     if (!mapContainerRef.current) return;
     if (mapInstanceRef.current) return;
@@ -62,11 +71,16 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
       zoomControl: false,
     });
 
-    // Dark Tile Layer (CartoDB Dark Matter with high-contrast road lines)
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; OpenStreetMap &copy; CARTO &copy; DTW Alger',
-      subdomains: 'abcd',
-      maxZoom: 19,
+    // Zero-Key High-Contrast Dark Telematics Layer (ESRI World Dark Gray Base + Reference)
+    // 100% Free, Zero API Key required, Zero watermarks
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
+      attribution: '&copy; Esri, DeLorme, NAVTEQ &copy; OpenStreetMap &copy; DTW Alger',
+      maxZoom: 16,
+    }).addTo(map);
+
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
+      attribution: '',
+      maxZoom: 16,
     }).addTo(map);
 
     L.control.zoom({ position: 'bottomright' }).addTo(map);
@@ -79,7 +93,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
     };
   }, []);
 
-  // Render Fleet & Hexagonal H3 Grid
+  // Render Fleet, Route Polyline & Live OSRM Turn-by-Turn Routing
   useEffect(() => {
     const map = mapInstanceRef.current;
     if (!map) return;
@@ -117,52 +131,39 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
       iconAnchor: [16, 16],
     });
 
-    // 2. Active Driver Taxi Pin
-    const taxiIcon = L.divIcon({
-      className: 'taxi-marker',
-      html: `
-        <div class="relative flex items-center justify-center">
-          <div class="absolute w-12 h-12 rounded-full bg-amber-400/20 animate-ping-slow pointer-events-none"></div>
-          <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 to-amber-300 text-slate-950 flex items-center justify-center shadow-2xl shadow-amber-500/50 border-2 border-white font-black text-sm" style="transform: rotate(${driverHeading}deg); transition: transform 0.4s ease;">
-            🚕
-          </div>
-          <div class="absolute -top-5 whitespace-nowrap bg-amber-400 text-slate-950 px-2 py-0.5 rounded-md text-[9px] font-mono font-extrabold shadow-md border border-amber-300">
-            TAXI 16-0482
-          </div>
-        </div>
-      `,
-      iconSize: [40, 40],
-      iconAnchor: [20, 20],
-    });
-
-    if (!driverMarkerRef.current) {
-      driverMarkerRef.current = L.marker([driverLat, driverLng], { icon: taxiIcon }).addTo(map);
-    } else {
-      driverMarkerRef.current.setLatLng([driverLat, driverLng]);
-      driverMarkerRef.current.setIcon(taxiIcon);
-    }
-
     const originMarker = L.marker([origin.lat, origin.lng], { icon: originIcon }).addTo(map);
     const destMarker = L.marker([destination.lat, destination.lng], { icon: destIcon }).addTo(map);
 
-    // 3. Realistic Route Polyline with intermediate boulevard waypoints in Algiers
+    // 2. Realistic Route Polyline (OSRM Live Routing API with fallback)
     if (routePolylineRef.current) {
       routePolylineRef.current.remove();
     }
 
-    const routeWaypoints: L.LatLngExpression[] = [
+    const fallbackWaypoints: L.LatLngExpression[] = [
       [origin.lat, origin.lng],
       [(origin.lat * 0.7 + destination.lat * 0.3) + 0.002, (origin.lng * 0.7 + destination.lng * 0.3) - 0.003],
       [(origin.lat * 0.4 + destination.lat * 0.6) + 0.004, (origin.lng * 0.4 + destination.lng * 0.6) - 0.002],
       [destination.lat, destination.lng],
     ];
 
-    routePolylineRef.current = L.polyline(routeWaypoints, {
+    routePolylineRef.current = L.polyline(fallbackWaypoints, {
       color: '#f59e0b',
       weight: 4.5,
-      dashArray: '10, 10',
+      dashArray: '8, 8',
       opacity: 0.9,
     }).addTo(map);
+
+    // Call free OpenStreetMap OSRM Routing API for real street geometry in Algiers
+    fetchStreetRoute(origin.lng, origin.lat, destination.lng, destination.lat).then(geo => {
+      if (geo && routePolylineRef.current) {
+        routePolylineRef.current.setLatLngs(geo.coordinates);
+        setStreetRoute({
+          distanceKm: geo.distanceKm,
+          durationMins: geo.durationMins,
+          streetName: geo.streetName,
+        });
+      }
+    });
 
     // Initial camera frame bounds
     const bounds = L.latLngBounds([
@@ -172,7 +173,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
     ]);
     map.fitBounds(bounds, { padding: [60, 60], maxZoom: 14 });
 
-    // 4. Surrounding Fleet Markers
+    // 3. Surrounding Fleet Markers
     if (surroundingLayerRef.current) {
       surroundingLayerRef.current.clearLayers();
     } else {
@@ -210,7 +211,36 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
       originMarker.remove();
       destMarker.remove();
     };
-  }, [origin, destination, driverLat, driverLng, driverHeading, rideStatus]);
+  }, [origin, destination]);
+
+  // 4. Update Driver GPS Marker & Animated Heading
+  useEffect(() => {
+    const map = mapInstanceRef.current;
+    if (!map) return;
+
+    const taxiIcon = L.divIcon({
+      className: 'driver-taxi-marker',
+      html: `
+        <div class="relative flex items-center justify-center transition-all duration-700 ease-out">
+          <div class="w-10 h-10 rounded-2xl bg-amber-400 border-2 border-white flex items-center justify-center shadow-xl shadow-amber-500/50 transform rotate-[${driverHeading}deg]">
+            <span class="text-base select-none">🚕</span>
+          </div>
+          <div class="absolute -top-7 whitespace-nowrap bg-amber-500 text-slate-950 px-2 py-0.5 rounded-md text-[10px] font-mono font-black border border-amber-300 shadow-md">
+            TAXI 16-0482
+          </div>
+        </div>
+      `,
+      iconSize: [40, 40],
+      iconAnchor: [20, 20],
+    });
+
+    if (!driverMarkerRef.current) {
+      driverMarkerRef.current = L.marker([driverLat, driverLng], { icon: taxiIcon }).addTo(map);
+    } else {
+      driverMarkerRef.current.setLatLng([driverLat, driverLng]);
+      driverMarkerRef.current.setIcon(taxiIcon);
+    }
+  }, [driverLat, driverLng, driverHeading]);
 
   // 5. Mathematically Exact H3 Resolution 8 Hexagons
   useEffect(() => {
@@ -225,44 +255,43 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
 
     if (!showH3Hexes) return;
 
-    // Algiers Hexagon Centers (Res 8: ~460m radius)
-    const hexCenters = [
-      { lat: 36.7538, lng: 3.0588, count: 8, name: 'Centre-Ville Alger' },
-      { lat: 36.7262, lng: 3.0872, count: 5, name: 'Kouba Plateau' },
-      { lat: 36.7729, lng: 3.0583, count: 12, name: 'Bab El Oued / Casbah' },
-      { lat: 36.7456, lng: 3.0417, count: 4, name: 'El Biar / Telemly' },
-      { lat: 36.7865, lng: 3.0592, count: 9, name: 'Bologhine' },
-      { lat: 36.7350, lng: 3.1250, count: 7, name: 'Hussein Dey' },
+    const baseHexes = [
+      { lat: 36.7538, lng: 3.0588, name: 'Sidi M\'Hamed (881f18b52ffffff)' },
+      { lat: 36.7729, lng: 3.0583, name: 'Alger-Centre (881f18b53ffffff)' },
+      { lat: 36.7262, lng: 3.0872, name: 'Kouba (881f18b54ffffff)' },
+      { lat: 36.7456, lng: 3.0417, name: 'Hydra (881f18b55ffffff)' },
+      { lat: 36.7388, lng: 3.1098, name: 'Hussein Dey (881f18b56ffffff)' },
     ];
 
-    const radiusKm = 0.46; // Res 8 edge length
-    const dLat = radiusKm / 111.32;
-
-    hexCenters.forEach(hc => {
-      const dLng = radiusKm / (111.32 * Math.cos(hc.lat * (Math.PI / 180)));
-      const polygonCoords: L.LatLngTuple[] = [];
+    const generateHexPoints = (centerLat: number, centerLng: number, radiusKm: number): [number, number][] => {
+      const points: [number, number][] = [];
+      const latDegree = radiusKm / 110.574;
+      const lngDegree = radiusKm / (111.320 * Math.cos((centerLat * Math.PI) / 180));
 
       for (let i = 0; i < 6; i++) {
-        const angle = (Math.PI / 3) * i + (Math.PI / 6);
-        const pLat = hc.lat + dLat * Math.sin(angle);
-        const pLng = hc.lng + dLng * Math.cos(angle);
-        polygonCoords.push([pLat, pLng]);
+        const angle = (Math.PI / 3) * i;
+        const x = centerLng + lngDegree * Math.cos(angle);
+        const y = centerLat + latDegree * Math.sin(angle);
+        points.push([y, x]);
       }
+      return points;
+    };
 
-      const hexPoly = L.polygon(polygonCoords, {
+    baseHexes.forEach(h => {
+      const hexPoints = generateHexPoints(h.lat, h.lng, 0.72);
+      const hexPoly = L.polygon(hexPoints, {
         color: '#f59e0b',
         weight: 1.5,
         fillColor: '#f59e0b',
-        fillOpacity: Math.min(0.3, 0.08 + hc.count * 0.02),
+        fillOpacity: 0.12,
+        dashArray: '4, 4',
       });
 
-      hexPoly.bindTooltip(
-        `<div class="p-1.5 font-mono text-xs">
-          <div class="font-bold text-amber-300">H3 Res 8: ${hc.name}</div>
-          <div class="text-[10px] text-slate-300">${hc.count} Taxis Réglementés en veille</div>
-        </div>`,
-        { permanent: false, className: 'bg-slate-950 text-white border border-amber-500/40 rounded-xl' }
-      );
+      hexPoly.bindTooltip(`
+        <div class="px-2 py-1 bg-slate-950 text-amber-300 font-mono text-[10px] rounded-lg border border-amber-500/40">
+          <strong>H3 Res 8</strong> : ${h.name}
+        </div>
+      `, { className: 'bg-transparent border-0' });
 
       hexPoly.addTo(hexLayerRef.current!);
     });
@@ -272,7 +301,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
     <div className={`relative ${className}`}>
       <div ref={mapContainerRef} className="w-full h-full rounded-3xl overflow-hidden shadow-2xl" />
       
-      {/* Live 1Hz Telemetry OSD Pill */}
+      {/* Live 1Hz Telemetry OSD Pill (Top-Left) */}
       <div className="absolute top-4 left-4 z-[1000] glass-pill px-3 py-1.5 rounded-xl text-[11px] text-slate-200 flex items-center space-x-2.5 shadow-2xl">
         <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
         <span className="font-mono font-bold text-emerald-300">1Hz PROTOBUF</span>
@@ -281,8 +310,33 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
         <span className="text-white/20">|</span>
         <span className="font-mono text-amber-300 font-semibold">{telemetryBytes} B</span>
         <span className="text-white/20">|</span>
-        <span className="font-mono text-slate-400">H3: Res 8</span>
+        <span className="font-mono text-amber-400 font-bold uppercase">{rideStatus}</span>
+        <span className="text-white/20">|</span>
+        <span className="font-mono text-slate-400">ESRI Dark (0 Clé)</span>
       </div>
+
+      {/* Live Algiers Weather & Road Telematics Badge (Top-Right, Open-Meteo Free API) */}
+      {weather && (
+        <div className="absolute top-4 right-4 z-[1000] glass-pill px-3 py-1.5 rounded-xl text-[11px] text-slate-200 flex items-center space-x-2 shadow-2xl border border-sky-400/30">
+          <CloudSun className="w-3.5 h-3.5 text-sky-400" />
+          <span className="font-bold text-sky-300">Alger {weather.temperatureC}°C</span>
+          <span className="text-white/20">|</span>
+          <span className="text-[10px] text-slate-300">{weather.condition}</span>
+          <span className="text-white/20">|</span>
+          <span className={`text-[10px] font-bold ${weather.roadCondition === 'dry' ? 'text-emerald-400' : 'text-amber-400'}`}>
+            {weather.roadCondition === 'dry' ? 'Chaussée Sèche' : 'Chaussée Humide'}
+          </span>
+        </div>
+      )}
+
+      {/* Real-Road Routing Info (Bottom OSRM Badge) */}
+      {streetRoute && (
+        <div className="absolute bottom-14 left-4 z-[1000] glass-panel px-3 py-1.5 rounded-xl text-[11px] font-mono text-slate-200 flex items-center space-x-2 shadow-xl border border-amber-500/30">
+          <Navigation className="w-3.5 h-3.5 text-amber-400" />
+          <span>OSRM Routage : <strong className="text-amber-300">{streetRoute.distanceKm} km</strong> (~{streetRoute.durationMins} min)</span>
+          <span className="text-slate-400">➔ {streetRoute.streetName}</span>
+        </div>
+      )}
 
       {/* Recenter Map Button */}
       <button
@@ -293,7 +347,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
             map.flyTo([driverLat, driverLng], 14, { duration: 1.2 });
           }
         }}
-        className="absolute bottom-4 left-4 z-[1000] glass-panel px-3 py-1.5 rounded-xl text-xs font-mono font-bold text-amber-300 hover:text-white transition-all flex items-center space-x-1.5 shadow-xl"
+        className="absolute bottom-4 left-4 z-[1000] glass-panel px-3 py-1.5 rounded-xl text-xs font-mono font-bold text-amber-300 hover:text-white transition-all flex items-center space-x-1.5 shadow-xl cursor-pointer"
       >
         <span>Centrer sur Taxi 16-0482</span>
       </button>

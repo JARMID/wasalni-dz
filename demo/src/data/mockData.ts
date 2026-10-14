@@ -63,7 +63,7 @@ export const INITIAL_DRIVER: DriverProfile = {
   id: 'drv-016-848',
   fullName: 'Mohamed Amine Benali',
   phone: '0550 12 34 56',
-  photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=faces',
+  photoUrl: '/driver-avatar.svg',
   rating: 4.94,
   totalTrips: 1842,
   wilayaCode: 16,
