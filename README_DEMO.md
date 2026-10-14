@@ -107,9 +107,9 @@ Ouvrez ensuite votre navigateur sur : **`http://localhost:3000`**
 
 - **Module 1 : Base de Données & Schéma Core** :
   - `supabase/migrations/20261014000001_core_schema.sql` (10 tables, RLS, fonction PL/pgSQL sécurisée `execute_spare_change_credit` avec verrou `FOR UPDATE`).
-  - `supabase/seed.sql` (Comptes GL 1010, 1020, 4010).
+  - `supabase/seed.sql` (Comptes GL 1010, 1020, 4010 déployés sur l'instance cloud dédiée `jgctorgztxwrgdkfkuxv`).
 - **Module 2 : Moteur de Routage Valhalla Algérie** :
-  - `docker/valhalla/valhalla.json` (Configuration routière adaptée à l'Algérie).
+  - `docker/valhalla/valhalla.json` (Configuration routière adaptée aux spécificités d'Alger).
   - `scripts/build-valhalla-tiles.ps1` et `.sh` (Téléchargement de l'extrait OpenStreetMap Algérie et compilation des tuiles).
 - **Module 3 : Démon d'Ingestion Télématique 1Hz en Go** :
   - `proto/telemetry.proto` (Format binaire compact ~32 octets).
@@ -118,5 +118,28 @@ Ouvrez ensuite votre navigateur sur : **`http://localhost:3000`**
   - `internal/telemetry/flusher.go` (Compression et écriture périodique des trajectoires PostGIS LineStringM).
   - `internal/valhalla/client.go` (Client HTTP pour matrice de distance et calcul d'ETA en millisecondes).
   - `cmd/telemetry-daemon/main.go` (Point d'entrée du serveur avec endpoints `/ws`, `/candidates`, `/health`).
-- **Stack Déployable** :
-  - `docker/docker-compose.yml` (Stack complète avec PostgreSQL 16 + PostGIS, MinIO S3 local, Valhalla, et Démon Go sous 1.5 Go de RAM).
+- **Module 4 : Monorepo Mobile Flutter 3.44 / Dart 3.12** :
+  - `mobile/packages/naql_core` (Modèles de domaine, machine d'états scellée `RideState`, chiffrement d'enveloppe avec partage de clé Shamir 2-sur-3 en arithmétique GF(256), machine d'états thermique 38°C à 52°C, tests unitaires vérifiés).
+  - `mobile/packages/driver_app` (Application tablette cockpit chauffeur avec badge d'agrégation Décret 12-230, viseur dashcam CameraX, déclencheur choc 2.84G, taximètre fiscal et dialogue reliquat TrustDesk).
+  - `mobile/packages/rider_app` (Application smartphone passager avec sélecteur 3 modes, validation par code PIN, portefeuille TrustDesk et intégration de recharge CIB/Edahabia).
+- **Module 5 : Service de Vérification des Reçus BaridiMob** :
+  - `services/baridimob_verifier/parser.py` (Extraction des données de virement Algérie Poste et validation de clé RIP par formule modulo 97).
+  - `services/baridimob_verifier/verifier.py` (Garde anti-rejeu par signature d'idempotence SHA-256 et écriture des écritures comptables en partie double).
+  - `services/baridimob_verifier/test_verifier.py` (Suite de tests unitaires validée avec succès).
+- **Synchronisation Temps Réel Multi-Écrans** :
+  - Diffusion en direct des statuts, positions et recharges via Supabase Realtime Broadcast (`naql_fleet_room`).
+  - Accès réseau local disponible à l'adresse `http://192.168.100.20:3000` pour connecter un smartphone ou une tablette en direct.
+
+---
+
+## 5. Ce que Vous Devez Préparer pour la Suite (Checklist Projet)
+
+1. **Clés d'API Marchand Chargily Pay V2** :
+   - Pour passer du simulateur au paiement bancaire réel CIB et Edahabia, créez un compte marchand sur [chargily.com](https://chargily.com) et renseignez vos clés dans le fichier `.env` (`VITE_CHARGILY_PUBLIC_KEY` et `CHARGILY_SECRET_KEY`).
+2. **Convention avec l'Union Nationale des Taxis (UGCAA / SNTL)** :
+   - Présentez ce démonstrateur aux représentants syndicaux des taxis d'Alger pour négocier l'intégration pilote des 50 premiers chauffeurs municipaux de Sidi M'Hamed et Bab El Oued.
+3. **Tablettes Cockpit Android pour les Véhicules Pilotes** :
+   - Modèle recommandé : Tablettes 8 pouces avec connectivité 4G LTE et support de pare-brise ventilé (pour limiter l'exposition au soleil estival).
+4. **Hébergement National Souverain (Loi 18-07)** :
+   - Le schéma Supabase déployé sur le cloud (`jgctorgztxwrgdkfkuxv`) est opérationnel dès maintenant. Pour la production définitive, déployez la stack `docker/docker-compose.yml` sur un serveur dédié situé dans un centre de données en Algérie (Algérie Télécom Djezzy ou Ooredoo Business).
+
