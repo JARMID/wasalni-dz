@@ -25,6 +25,8 @@ export async function syncLiveWallets(fallbackWallets: WalletBalances): Promise<
       const bal = parseFloat(row.balance_dzd) || 0;
       if (code === '1010') updated.cashInTransit_1010 = bal;
       if (code === '1020') updated.digitalEscrow_1020 = bal;
+      if (code === '2010') updated.riderTrustDesk_2010 = bal;
+      if (code === '2020') updated.driverOperational_2020 = bal;
       if (code === '4010') updated.platformRevenue_4010 = bal;
     });
 
@@ -53,16 +55,23 @@ export async function persistLedgerEntry(entry: LedgerEntry) {
 export async function persistIncident(incident: DashcamIncident) {
   try {
     await supabase.from('dashcam_incidents').insert([{
-      trigger_type: incident.triggerType,
+      driver_id: '00000000-0000-0000-0000-000000002020',
+      trigger_type: incident.triggerType || 'g_sensor_impact',
       peak_g_force: incident.peakGForce,
-      speed_at_trigger_kmh: incident.speedKmh,
-      encryption_key_id: incident.encryptionKeyId,
-      status: incident.status,
+      vehicle_speed_kmh: incident.speedKmh,
+      incident_location: 'SRID=4326;POINT(3.0588 36.7538)',
+      storage_file_path: `incidents/${incident.id}.enc`,
+      video_duration_seconds: 60,
+      file_size_bytes: 4800000,
+      sha256_checksum: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+      aes_encryption_key_id: incident.encryptionKeyId,
+      review_status: 'pending_triage',
     }]);
   } catch (err) {
     console.warn('[Supabase] Non-blocking incident persistence error:', err);
   }
 }
+
 
 // Multi-Device Supabase Realtime Broadcast Channel
 export type RealtimeFleetMessage = 

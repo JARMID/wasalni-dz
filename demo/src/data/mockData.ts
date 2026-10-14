@@ -84,11 +84,11 @@ export const INITIAL_DRIVER: DriverProfile = {
 };
 
 export const INITIAL_WALLETS: WalletBalances = {
-  cashInTransit_1010: 14200.00,
-  digitalEscrow_1020: 8900.00,
-  riderTrustDesk_2010: 450.00,  // Initial Rider balance before spare change credit
-  driverOperational_2020: 3850.00,
-  platformRevenue_4010: 24600.00,
+  cashInTransit_1010: 0.00,
+  digitalEscrow_1020: 4300.00,
+  riderTrustDesk_2010: 450.00,  // Initial Rider balance backed by digital escrow
+  driverOperational_2020: 3850.00, // Initial Driver balance backed by digital escrow
+  platformRevenue_4010: 0.00,
 };
 
 export const INITIAL_LEDGER: LedgerEntry[] = [

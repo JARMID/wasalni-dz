@@ -307,13 +307,16 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('DÉCRET EXÉCUTIF 12-230 / CNRC 604103', style: TextStyle(fontSize: 10, color: Colors.amber, fontWeight: FontWeight.bold)),
-                            Text('Agrément Wilaya d\'Alger • Livret de Place Validé', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
-                          ],
+                        const Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('DÉCRET EXÉCUTIF 12-230 / CNRC 604103', style: TextStyle(fontSize: 10, color: Colors.amber, fontWeight: FontWeight.bold)),
+                              Text('Agrément Wilaya d\'Alger • Livret de Place Validé', style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600), overflow: TextOverflow.ellipsis),
+                            ],
+                          ),
                         ),
+                        const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(color: const Color(0xFF10B981).withOpacity(0.2), borderRadius: BorderRadius.circular(6)),
