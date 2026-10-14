@@ -7,10 +7,15 @@ import {
   FileKey,
   KeyRound,
   Send,
-  Server
+  Server,
+  Car,
+  MapPin,
+  Activity
 } from 'lucide-react';
 import type { DashcamIncident, DriverProfile, RideRequest } from '../types';
+import { ALGIERS_MUNICIPAL_FLEET } from '../data/mockData';
 import { soundEngine } from '../utils/audio';
+
 
 interface DispatchViewProps {
   incidents: DashcamIncident[];
@@ -254,6 +259,67 @@ export const DispatchView: React.FC<DispatchViewProps> = ({
 
       </div>
 
+      {/* Municipal Taxi Fleet Radar (Cadastre H3 Résolution 8) */}
+      <div className="pt-4 border-t border-white/10 space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Activity className="w-4 h-4 text-amber-400" />
+            <h3 className="font-extrabold text-sm text-white">
+              Cadastre Flotte Municipale en Patrouille • Wilaya d'Alger (H3 Res 8)
+            </h3>
+          </div>
+          <span className="text-[11px] font-mono text-emerald-400 font-bold">
+            5 Véhicules Agréés Décret 12-230
+          </span>
+        </div>
+
+        <div className="overflow-x-auto rounded-2xl border border-white/10 bg-slate-950/80">
+          <table className="w-full text-left text-xs font-mono">
+            <thead className="bg-white/5 text-slate-400 border-b border-white/10">
+              <tr>
+                <th className="p-3">Taxi / Matricule</th>
+                <th className="p-3">Chauffeur</th>
+                <th className="p-3">Agrément DTW</th>
+                <th className="p-3">Commune d'Attache</th>
+                <th className="p-3">Cellule H3 (Res 8)</th>
+                <th className="p-3">Vitesse</th>
+                <th className="p-3">Statut</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-white/5 text-slate-300">
+              {ALGIERS_MUNICIPAL_FLEET.map((tx) => (
+                <tr key={tx.id} className="hover:bg-white/5 transition-colors">
+                  <td className="p-3 font-bold text-white flex items-center gap-2">
+                    <Car className="w-3.5 h-3.5 text-amber-400" />
+                    <span>{tx.plate}</span>
+                  </td>
+                  <td className="p-3 text-white font-sans">{tx.driverName}</td>
+                  <td className="p-3 text-amber-300 font-bold">{tx.agrementNumber}</td>
+                  <td className="p-3 flex items-center gap-1">
+                    <MapPin className="w-3 h-3 text-sky-400" />
+                    <span>{tx.commune}</span>
+                  </td>
+                  <td className="p-3 text-emerald-300">{tx.h3Res8Index}</td>
+                  <td className="p-3 font-bold">{tx.speedKmh} km/h</td>
+                  <td className="p-3">
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                      tx.status === 'available'
+                        ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                        : tx.status === 'on_trip'
+                        ? 'bg-sky-500/20 text-sky-300 border border-sky-500/30'
+                        : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                    }`}>
+                      {tx.status === 'available' ? 'Disponible' : tx.status === 'on_trip' ? 'En Course' : 'En Patrouille'}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
   );
 };
+

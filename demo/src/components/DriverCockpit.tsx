@@ -18,7 +18,9 @@ import type {
 } from '../types';
 import { DashcamHUD } from './DashcamHUD';
 import { ChargilyTopupModal } from './ChargilyTopupModal';
+import { BaridiMobModal } from './BaridiMobModal';
 import { soundEngine } from '../utils/audio';
+
 
 interface DriverCockpitProps {
   driver: DriverProfile;
@@ -51,6 +53,8 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
   const [meterFareInput, setMeterFareInput] = useState<number>(750);
   const [pinError, setPinError] = useState(false);
   const [isTopupModalOpen, setIsTopupModalOpen] = useState(false);
+  const [isBaridiMobModalOpen, setIsBaridiMobModalOpen] = useState(false);
+
 
   const handleVerifyPin = () => {
     soundEngine.playClick();
@@ -139,14 +143,20 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
         
         {/* Top-Up Quick Bar & Voice Assistance */}
         <div className="bg-slate-950/80 px-4 py-2.5 rounded-2xl border border-white/10 flex items-center justify-between text-xs">
-          <div className="flex items-center space-x-2 text-slate-300">
+          <div className="flex items-center space-x-1.5 text-slate-300">
             <Wallet className="w-4 h-4 text-amber-400" />
-            <span>Recharge CIB / Edahabia:</span>
+            <span>Recharge:</span>
             <button
               onClick={() => { soundEngine.playClick(); setIsTopupModalOpen(true); }}
-              className="px-2 py-0.5 rounded-lg bg-sky-500/20 text-sky-300 border border-sky-400/30 font-bold text-[11px] hover:bg-sky-500/30 transition-colors"
+              className="px-2 py-0.5 rounded-lg bg-sky-500/20 text-sky-300 border border-sky-400/30 font-bold text-[10px] hover:bg-sky-500/30 transition-colors"
             >
-              Passerelle Chargily
+              CIB
+            </button>
+            <button
+              onClick={() => { soundEngine.playClick(); setIsBaridiMobModalOpen(true); }}
+              className="px-2 py-0.5 rounded-lg bg-amber-500/20 text-amber-300 border border-amber-400/30 font-bold text-[10px] hover:bg-amber-500/30 transition-colors"
+            >
+              BaridiMob
             </button>
           </div>
 
@@ -158,6 +168,7 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
             <span>Assistant Vocal</span>
           </button>
         </div>
+
 
         {/* 1. Integrated Dashcam Telematics HUD */}
         <DashcamHUD
@@ -380,10 +391,16 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
 
       </div>
 
-      {/* Topup Modal */}
+      {/* Topup Modals */}
       <ChargilyTopupModal
         isOpen={isTopupModalOpen}
         onClose={() => setIsTopupModalOpen(false)}
+        onSuccess={(amt) => onTopupDriverWallet(amt)}
+        targetAccountName="Compte 2020 Chauffeur"
+      />
+      <BaridiMobModal
+        isOpen={isBaridiMobModalOpen}
+        onClose={() => setIsBaridiMobModalOpen(false)}
         onSuccess={(amt) => onTopupDriverWallet(amt)}
         targetAccountName="Compte 2020 Chauffeur"
       />
@@ -391,3 +408,4 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
     </div>
   );
 };
+

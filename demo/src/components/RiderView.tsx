@@ -11,10 +11,10 @@ import {
   Wallet, 
   Banknote, 
   Clock,
-  PlusCircle,
   Copy,
   Check
 } from 'lucide-react';
+
 import type { 
   LocationPoint, 
   ServiceMode, 
@@ -24,6 +24,7 @@ import type {
 } from '../types';
 import { ALGIERS_LOCATIONS } from '../data/mockData';
 import { ChargilyTopupModal } from './ChargilyTopupModal';
+import { BaridiMobModal } from './BaridiMobModal';
 import { soundEngine } from '../utils/audio';
 
 interface RiderViewProps {
@@ -51,7 +52,9 @@ export const RiderView: React.FC<RiderViewProps> = ({
   const [selectedSeat, setSelectedSeat] = useState<number>(2);
   const [interWilayaLine, setInterWilayaLine] = useState('09_BLIDA');
   const [isTopupOpen, setIsTopupOpen] = useState(false);
+  const [isBaridiMobOpen, setIsBaridiMobOpen] = useState(false);
   const [copiedPin, setCopiedPin] = useState(false);
+
 
   const estimatedFare = selectedMode === 'taxi_individuel_metered' ? 850 : selectedMode === 'taxi_collectif_urbain' ? 50 : 350;
 
@@ -85,23 +88,35 @@ export const RiderView: React.FC<RiderViewProps> = ({
           <p className="text-[10px] text-slate-400">Taxis agréés par la DTW Alger</p>
         </div>
 
-        {/* Stored-Value Wallet Badge with Top-up Trigger */}
-        <div className="flex items-center space-x-1">
+        {/* Stored-Value Wallet Badge with Top-up Triggers */}
+        <div className="flex items-center space-x-1.5">
           <div className="flex items-center space-x-1.5 px-2.5 py-1 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs font-mono font-bold">
             <Wallet className="w-3.5 h-3.5 text-emerald-400" />
             <span>{riderWalletBalanceDzd.toFixed(2)} DA</span>
           </div>
           {onTopupRiderWallet && (
-            <button
-              onClick={() => { soundEngine.playClick(); setIsTopupOpen(true); }}
-              title="Recharger solde passager via Chargily Pay"
-              className="p-1 rounded-xl bg-sky-500/20 text-sky-300 border border-sky-400/30 hover:bg-sky-500/30 transition-colors"
-            >
-              <PlusCircle className="w-3.5 h-3.5" />
-            </button>
+            <div className="flex items-center space-x-1">
+              <button
+                onClick={() => { soundEngine.playClick(); setIsTopupOpen(true); }}
+                title="Recharge par Carte CIB / Edahabia (Chargily)"
+                className="px-2 py-1 rounded-xl bg-sky-500/20 text-sky-300 border border-sky-400/30 hover:bg-sky-500/30 transition-colors text-[10px] font-bold flex items-center gap-1"
+              >
+                <CreditCard className="w-3 h-3" />
+                CIB
+              </button>
+              <button
+                onClick={() => { soundEngine.playClick(); setIsBaridiMobOpen(true); }}
+                title="Recharge par BaridiMob / Algérie Poste"
+                className="px-2 py-1 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-400/30 hover:bg-amber-500/30 transition-colors text-[10px] font-bold flex items-center gap-1"
+              >
+                <Banknote className="w-3 h-3" />
+                BaridiMob
+              </button>
+            </div>
           )}
         </div>
       </div>
+
 
       {/* Scrollable Body */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -480,16 +495,25 @@ export const RiderView: React.FC<RiderViewProps> = ({
 
       </div>
 
-      {/* Topup Modal */}
+      {/* Topup Modals */}
       {onTopupRiderWallet && (
-        <ChargilyTopupModal
-          isOpen={isTopupOpen}
-          onClose={() => setIsTopupOpen(false)}
-          onSuccess={(amt) => onTopupRiderWallet(amt)}
-          targetAccountName="Compte 2010 Passager TrustDesk"
-        />
+        <>
+          <ChargilyTopupModal
+            isOpen={isTopupOpen}
+            onClose={() => setIsTopupOpen(false)}
+            onSuccess={(amt) => onTopupRiderWallet(amt)}
+            targetAccountName="Compte 2010 Passager TrustDesk"
+          />
+          <BaridiMobModal
+            isOpen={isBaridiMobOpen}
+            onClose={() => setIsBaridiMobOpen(false)}
+            onSuccess={(amt) => onTopupRiderWallet(amt)}
+            targetAccountName="Compte 2010 Passager TrustDesk"
+          />
+        </>
       )}
 
     </div>
   );
 };
+

@@ -120,3 +120,92 @@ export const INITIAL_LEDGER: LedgerEntry[] = [
     description: 'Driver operational balance top-up via Chargily Pay (Edahabia card)',
   },
 ];
+
+export interface MunicipalTaxiVehicle {
+  id: string;
+  driverName: string;
+  agrementNumber: string;
+  livretNumber: string;
+  plate: string;
+  vehicleModel: string;
+  commune: string;
+  h3Res8Index: string;
+  lat: number;
+  lng: number;
+  speedKmh: number;
+  status: 'available' | 'on_trip' | 'patrol';
+}
+
+export const ALGIERS_MUNICIPAL_FLEET: MunicipalTaxiVehicle[] = [
+  {
+    id: 'TX-16-01',
+    driverName: 'Mohamed Amine Benali',
+    agrementNumber: '16/2024/0482',
+    livretNumber: 'LP-88392-16',
+    plate: '10482-116-16',
+    vehicleModel: 'Peugeot 301 Jaune',
+    commune: 'Kouba',
+    h3Res8Index: '8839218205fffff',
+    lat: 36.7262,
+    lng: 3.0872,
+    speedKmh: 42,
+    status: 'available',
+  },
+  {
+    id: 'TX-16-02',
+    driverName: 'Karim Messaoudi',
+    agrementNumber: '16/2022/1190',
+    livretNumber: 'LP-44102-16',
+    plate: '09812-118-16',
+    vehicleModel: 'Dacia Logan Jaune',
+    commune: 'Bab El Oued',
+    h3Res8Index: '8839218251fffff',
+    lat: 36.7865,
+    lng: 3.0592,
+    speedKmh: 35,
+    status: 'patrol',
+  },
+  {
+    id: 'TX-16-03',
+    driverName: 'Sofiane Cherif',
+    agrementNumber: '16/2023/0744',
+    livretNumber: 'LP-33921-16',
+    plate: '18491-121-16',
+    vehicleModel: 'Hyundai Accent Jaune',
+    commune: 'Hydra',
+    h3Res8Index: '8839218243fffff',
+    lat: 36.7456,
+    lng: 3.0417,
+    speedKmh: 48,
+    status: 'available',
+  },
+  {
+    id: 'TX-16-04',
+    driverName: 'Yacine Bouzid',
+    agrementNumber: '16/2021/0312',
+    livretNumber: 'LP-91024-16',
+    plate: '04712-119-16',
+    vehicleModel: 'Citroën C-Elysée Jaune',
+    commune: 'Sidi M\'Hamed',
+    h3Res8Index: '8839218217fffff',
+    lat: 36.7538,
+    lng: 3.0588,
+    speedKmh: 28,
+    status: 'on_trip',
+  },
+  {
+    id: 'TX-16-05',
+    driverName: 'Farouk Hamidi',
+    agrementNumber: '16/2025/0089',
+    livretNumber: 'LP-12948-16',
+    plate: '22910-123-16',
+    vehicleModel: 'Peugeot 508 Inter-Wilaya',
+    commune: 'Caroubier (Hussein Dey)',
+    h3Res8Index: '8839218265fffff',
+    lat: 36.7388,
+    lng: 3.1098,
+    speedKmh: 55,
+    status: 'available',
+  },
+];
+
