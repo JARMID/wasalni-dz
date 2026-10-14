@@ -301,56 +301,56 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
     <div className={`relative ${className}`}>
       <div ref={mapContainerRef} className="w-full h-full rounded-3xl overflow-hidden shadow-2xl" />
       
-      {/* Live 1Hz Telemetry OSD Pill (Top-Left) */}
-      <div className="absolute top-4 left-4 z-[1000] glass-pill px-3 py-1.5 rounded-xl text-[11px] text-slate-200 flex items-center space-x-2.5 shadow-2xl">
-        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-        <span className="font-mono font-bold text-emerald-300">1Hz PROTOBUF</span>
-        <span className="text-white/20">|</span>
-        <span className="font-mono text-slate-300">{latencyMs}ms</span>
-        <span className="text-white/20">|</span>
-        <span className="font-mono text-amber-300 font-semibold">{telemetryBytes} B</span>
-        <span className="text-white/20">|</span>
-        <span className="font-mono text-amber-400 font-bold uppercase">{rideStatus}</span>
-        <span className="text-white/20">|</span>
-        <span className="font-mono text-slate-400">ESRI Dark (0 Clé)</span>
+      {/* Live Map Telemetry Header HUD (Top Bar) */}
+      <div className="absolute top-3 inset-x-3 z-[1000] flex flex-wrap items-center justify-between gap-1.5 pointer-events-none">
+        {/* Live 1Hz Telemetry OSD Pill */}
+        <div className="glass-pill pointer-events-auto px-2.5 py-1 rounded-xl text-[10px] text-slate-200 flex items-center space-x-1.5 shadow-xl">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+          <span className="font-mono font-bold text-emerald-300">1Hz PROTOBUF</span>
+          <span className="text-white/20">|</span>
+          <span className="font-mono text-slate-300">{latencyMs}ms</span>
+          <span className="text-white/20">|</span>
+          <span className="font-mono text-amber-300 font-semibold">{telemetryBytes} B</span>
+          <span className="text-white/20">|</span>
+          <span className="font-mono text-amber-400 font-bold uppercase">{rideStatus}</span>
+        </div>
+
+        {/* Live Algiers Weather & Road Telematics Badge (Open-Meteo Free API) */}
+        {weather && (
+          <div className="glass-pill pointer-events-auto px-2.5 py-1 rounded-xl text-[10px] text-slate-200 flex items-center space-x-1.5 shadow-xl border border-sky-400/30">
+            <CloudSun className="w-3 h-3 text-sky-400" />
+            <span className="font-bold text-sky-300">Alger {weather.temperatureC}°C</span>
+            <span className="text-white/20">|</span>
+            <span className={`font-semibold ${weather.roadCondition === 'dry' ? 'text-emerald-400' : 'text-amber-400'}`}>
+              {weather.roadCondition === 'dry' ? 'Sèche' : 'Humide'}
+            </span>
+          </div>
+        )}
       </div>
 
-      {/* Live Algiers Weather & Road Telematics Badge (Top-Right, Open-Meteo Free API) */}
-      {weather && (
-        <div className="absolute top-4 right-4 z-[1000] glass-pill px-3 py-1.5 rounded-xl text-[11px] text-slate-200 flex items-center space-x-2 shadow-2xl border border-sky-400/30">
-          <CloudSun className="w-3.5 h-3.5 text-sky-400" />
-          <span className="font-bold text-sky-300">Alger {weather.temperatureC}°C</span>
-          <span className="text-white/20">|</span>
-          <span className="text-[10px] text-slate-300">{weather.condition}</span>
-          <span className="text-white/20">|</span>
-          <span className={`text-[10px] font-bold ${weather.roadCondition === 'dry' ? 'text-emerald-400' : 'text-amber-400'}`}>
-            {weather.roadCondition === 'dry' ? 'Chaussée Sèche' : 'Chaussée Humide'}
-          </span>
-        </div>
-      )}
+      {/* Real-Road Routing Info & Recenter (Bottom HUD) */}
+      <div className="absolute bottom-3 inset-x-3 z-[1000] flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-1.5 pointer-events-none">
+        <button
+          onClick={() => {
+            soundEngine.playClick();
+            const map = mapInstanceRef.current;
+            if (map) {
+              map.flyTo([driverLat, driverLng], 14, { duration: 1.2 });
+            }
+          }}
+          className="glass-panel pointer-events-auto px-2.5 py-1 rounded-xl text-[10px] font-mono font-bold text-amber-300 hover:text-white transition-all flex items-center justify-center space-x-1 shadow-xl cursor-pointer"
+        >
+          <span>🚕 Centrer Taxi</span>
+        </button>
 
-      {/* Real-Road Routing Info (Bottom OSRM Badge) */}
-      {streetRoute && (
-        <div className="absolute bottom-14 left-4 z-[1000] glass-panel px-3 py-1.5 rounded-xl text-[11px] font-mono text-slate-200 flex items-center space-x-2 shadow-xl border border-amber-500/30">
-          <Navigation className="w-3.5 h-3.5 text-amber-400" />
-          <span>OSRM Routage : <strong className="text-amber-300">{streetRoute.distanceKm} km</strong> (~{streetRoute.durationMins} min)</span>
-          <span className="text-slate-400">➔ {streetRoute.streetName}</span>
-        </div>
-      )}
-
-      {/* Recenter Map Button */}
-      <button
-        onClick={() => {
-          soundEngine.playClick();
-          const map = mapInstanceRef.current;
-          if (map) {
-            map.flyTo([driverLat, driverLng], 14, { duration: 1.2 });
-          }
-        }}
-        className="absolute bottom-4 left-4 z-[1000] glass-panel px-3 py-1.5 rounded-xl text-xs font-mono font-bold text-amber-300 hover:text-white transition-all flex items-center space-x-1.5 shadow-xl cursor-pointer"
-      >
-        <span>Centrer sur Taxi 16-0482</span>
-      </button>
+        {streetRoute && (
+          <div className="glass-panel pointer-events-auto px-2 py-1 rounded-xl text-[10px] font-mono text-slate-200 flex items-center space-x-1.5 shadow-xl border border-amber-500/30">
+            <Navigation className="w-3 h-3 text-amber-400 shrink-0" />
+            <span>OSRM: <strong className="text-amber-300">{streetRoute.distanceKm} km</strong> (~{streetRoute.durationMins}m)</span>
+            <span className="text-slate-400 text-[9px] truncate max-w-[110px]">➔ {streetRoute.streetName}</span>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
