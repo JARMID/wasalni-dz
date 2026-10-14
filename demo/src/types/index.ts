@@ -16,9 +16,35 @@ export type RideStatus =
   | 'spare_change_prompt'
   | 'completed';
 
-export type PaymentMethod = 'cash' | 'edahabia' | 'cib' | 'trustdesk_wallet';
+export type PaymentMethod = 'cash' | 'edahabia' | 'cib' | 'trustdesk_wallet' | 'baridimob';
 
 export type ThermalState = 'NORMAL' | 'MODERATE' | 'SEVERE' | 'CRITICAL';
+
+export type BookingType = 'instant' | 'recurring_chauffeur';
+
+export type RecurringDay = 'dim' | 'lun' | 'mar' | 'mer' | 'jeu' | 'ven' | 'sam';
+
+export interface RecurringSchedule {
+  days: RecurringDay[];
+  pickupTime: string;          // e.g. "07:45"
+  hasReturnTrip: boolean;
+  returnTime?: string;         // e.g. "16:30"
+  durationWeeks: number;       // e.g. 1, 2, 4 weeks
+  purpose: 'school_run' | 'work_commute' | 'medical_regular' | 'custom';
+  dedicatedChauffeurName?: string;
+  totalTripsCount: number;
+  weeklyBaseFareDzd: number;
+}
+
+export interface ThirdPartySponsor {
+  isSponsored: boolean;
+  sponsorName: string;
+  sponsorPhone: string;
+  sponsorRelation: 'parent' | 'enterprise' | 'relative' | 'other';
+  sponsorPaymentMethod: 'cib' | 'edahabia' | 'baridimob' | 'trustdesk_wallet';
+  isPaidInAdvance: boolean;
+  satimAuthCode?: string;
+}
 
 export interface LocationPoint {
   id: string;
@@ -57,6 +83,7 @@ export interface RideRequest {
   id: string;
   rideCode: string;
   serviceMode: ServiceMode;
+  bookingType?: BookingType;
   origin: LocationPoint;
   destination: LocationPoint;
   status: RideStatus;
@@ -71,6 +98,8 @@ export interface RideRequest {
   paymentMethod: PaymentMethod;
   tenderedCashDzd?: number;
   spareChangeCreditedDzd?: number;
+  recurringSchedule?: RecurringSchedule;
+  sponsor?: ThirdPartySponsor;
   createdAt: string;
 }
 
@@ -89,10 +118,18 @@ export interface DashcamIncident {
   status: 'pending_triage' | 'under_investigation' | 'cleared_no_fault' | 'forwarded_to_police';
 }
 
+export type LedgerEntryType = 
+  | 'fare_settlement' 
+  | 'commission_debit' 
+  | 'spare_change_credit' 
+  | 'wallet_topup'
+  | 'recurring_subscription_escrow'
+  | 'sponsored_cib_prepayment';
+
 export interface LedgerEntry {
   id: string;
   timestamp: string;
-  entryType: 'fare_settlement' | 'commission_debit' | 'spare_change_credit' | 'wallet_topup';
+  entryType: LedgerEntryType;
   debitAccount: string;
   creditAccount: string;
   amountDzd: number;

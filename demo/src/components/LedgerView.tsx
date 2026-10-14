@@ -187,6 +187,10 @@ export const LedgerView: React.FC<LedgerViewProps> = ({
                           ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-300'
                           : e.entryType === 'commission_debit'
                           ? 'bg-amber-500/20 text-amber-600 dark:text-amber-300'
+                          : e.entryType === 'sponsored_cib_prepayment'
+                          ? 'bg-purple-500/20 text-purple-600 dark:text-purple-300'
+                          : e.entryType === 'recurring_subscription_escrow'
+                          ? 'bg-indigo-500/20 text-indigo-600 dark:text-indigo-300'
                           : 'bg-sky-500/20 text-sky-600 dark:text-sky-300'
                       }`}>
                         {e.entryType}

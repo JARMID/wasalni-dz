@@ -16,7 +16,10 @@ import type {
   PaymentMethod, 
   DashcamIncident, 
   LedgerEntry, 
-  WalletBalances 
+  WalletBalances,
+  BookingType,
+  RecurringSchedule,
+  ThirdPartySponsor
 } from './types';
 import { 
   INITIAL_DRIVER, 
@@ -173,16 +176,30 @@ export function App() {
     mode: ServiceMode,
     newOrigin: LocationPoint,
     newDest: LocationPoint,
-    paymentMethod: PaymentMethod
+    paymentMethod: PaymentMethod,
+    options?: {
+      bookingType?: BookingType;
+      recurringSchedule?: RecurringSchedule;
+      sponsor?: ThirdPartySponsor;
+    }
   ) => {
     setOrigin(newOrigin);
     setDestination(newDest);
 
     const generatedPin = Math.floor(1000 + Math.random() * 9000).toString();
+    const isRecurring = options?.bookingType === 'recurring_chauffeur';
+    const isSponsored = !!options?.sponsor?.isSponsored;
+
+    // Pricing calculation: package pricing if recurring, or standard regulated metered
+    const calculatedFare = isRecurring && options?.recurringSchedule 
+      ? options.recurringSchedule.totalTripsCount * 700 
+      : 850.00;
+
     const newRide: RideRequest = {
       id: `DZ-RIDE-${Date.now().toString().slice(-5)}`,
       rideCode: `DZ-${Math.floor(10000 + Math.random() * 90000)}`,
       serviceMode: mode,
+      bookingType: options?.bookingType || 'instant',
       origin: newOrigin,
       destination: newDest,
       status: 'requesting',
@@ -192,11 +209,47 @@ export function App() {
       estimatedDistanceKm: 8.4,
       estimatedDurationMins: 18,
       fraisApprocheDzd: 100.00,
-      meterFinalDzd: 750.00,
-      totalFareDzd: 850.00,
+      meterFinalDzd: calculatedFare - 100.00,
+      totalFareDzd: calculatedFare,
       paymentMethod,
+      recurringSchedule: options?.recurringSchedule,
+      sponsor: options?.sponsor,
       createdAt: new Date().toISOString(),
     };
+
+    // If sponsored payment is made in advance via CIB / Edahabia / BaridiMob:
+    if (isSponsored) {
+      const timestampStr = new Date().toISOString().replace('T', ' ').slice(0, 19);
+      const sponsorAmount = calculatedFare;
+      const commissionDzd = 100.00;
+
+      // Update double entry: Assets (1020 Escrow Chargily) +850 DA, Liabilities (2020 Driver) +750 DA, Revenue (4010 Platform) +100 DA
+      setWallets(prev => ({
+        ...prev,
+        digitalEscrow_1020: prev.digitalEscrow_1020 + sponsorAmount,
+        driverOperational_2020: prev.driverOperational_2020 + sponsorAmount - commissionDzd,
+        platformRevenue_4010: prev.platformRevenue_4010 + commissionDzd,
+      }));
+
+      // Update Driver Balance locally
+      setDriver(prev => ({
+        ...prev,
+        walletBalanceDzd: prev.walletBalanceDzd + sponsorAmount - commissionDzd,
+      }));
+
+      const sponsoredEntry: LedgerEntry = {
+        id: `SPONSOR-${Math.floor(1000 + Math.random() * 9000)}`,
+        timestamp: timestampStr,
+        entryType: 'sponsored_cib_prepayment',
+        debitAccount: '1020 (Escrow Chargily / SATIM 3DS)',
+        creditAccount: '2020 (Compte Opérationnel Chauffeur)',
+        amountDzd: sponsorAmount,
+        description: `Billet sponsorisé réglé par ${options?.sponsor?.sponsorName} (${options?.sponsor?.sponsorPaymentMethod?.toUpperCase()}) pour course ${newRide.rideCode}`,
+      };
+
+      setLedgerEntries(prev => [sponsoredEntry, ...prev]);
+      persistLedgerEntry(sponsoredEntry);
+    }
 
     setCurrentRide(newRide);
     broadcastFleetEvent({ type: 'RIDE_REQUEST', payload: newRide });
@@ -238,6 +291,29 @@ export function App() {
   const handleCompleteTrip = (meterAmount: number) => {
     if (!currentRide) return;
     const finalFare = meterAmount + currentRide.fraisApprocheDzd;
+    
+    // If the trip was already sponsored & paid in advance, complete immediately without spare change modal
+    if (currentRide.sponsor?.isSponsored) {
+      soundEngine.playSuccessChime();
+      setCurrentRide(prev => prev ? { 
+        ...prev, 
+        meterFinalDzd: meterAmount, 
+        totalFareDzd: finalFare,
+        status: 'completed',
+      } : null);
+
+      setDriver(prev => ({
+        ...prev,
+        totalTrips: prev.totalTrips + 1,
+      }));
+
+      broadcastFleetEvent({ 
+        type: 'RIDE_STATUS_CHANGE', 
+        payload: { status: 'completed' } 
+      });
+      return;
+    }
+
     setCurrentRide(prev => prev ? { 
       ...prev, 
       meterFinalDzd: meterAmount, 

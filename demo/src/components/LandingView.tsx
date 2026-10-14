@@ -11,7 +11,9 @@ import {
   Lock, 
   ChevronRight, 
   Gauge, 
-  Layers 
+  Layers,
+  Calendar,
+  HeartHandshake
 } from 'lucide-react';
 import type { AppLang } from '../utils/i18n';
 import { getTranslation } from '../utils/i18n';
@@ -263,6 +265,72 @@ export const LandingView: React.FC<LandingViewProps> = ({
                 Inspecter le Grand Livre Comptable
               </button>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* NEW: Dedicated Chauffeur & Third-Party Sponsored Payment Section */}
+      <section className="max-w-5xl mx-auto px-4">
+        <div className="glass-panel rounded-3xl p-6 sm:p-10 border border-sky-500/20 bg-gradient-to-br from-sky-500/5 via-transparent to-amber-500/5">
+          <div className="text-center max-w-2xl mx-auto mb-8">
+            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-lg bg-sky-500/15 text-sky-600 dark:text-sky-300 font-bold text-xs mb-3">
+              <HeartHandshake className="w-3.5 h-3.5" />
+              <span>NOUVEAUTÉ TRANSPORT RÉGULIER & SOCIAL</span>
+            </div>
+            <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
+              Chauffeur Dédié & Billet Sponsorisé pour vos Proches
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-2">
+              Une réponse adaptée aux habitudes des familles algériennes et des entreprises : abonnements réguliers et prise en charge des trajets à distance.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            {/* Card 1: Chauffeur Titulaire & Navette Programmée */}
+            <div className="p-6 rounded-2xl border border-amber-500/30 bg-white/40 dark:bg-slate-900/40 space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center font-bold">
+                <Calendar className="w-5 h-5" />
+              </div>
+              <h4 className="font-extrabold text-base text-slate-900 dark:text-white">
+                Navette Programmée & Chauffeur Titulaire
+              </h4>
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                Idéal pour le ramassage scolaire (Dimanche à Jeudi) ou les navettes domicile - bureau. Vous choisissez vos jours, vos horaires fixes (matin et soir), et le même chauffeur agréé vous prend en charge chaque jour.
+              </p>
+              <div className="pt-2 flex items-center justify-between text-xs font-bold text-amber-600 dark:text-amber-400">
+                <span>Agrément DTW garanti</span>
+                <span>Tarif forfaitaire avantageux</span>
+              </div>
+            </div>
+
+            {/* Card 2: Payer pour un Proche / Billet Sponsorisé */}
+            <div className="p-6 rounded-2xl border border-sky-500/30 bg-white/40 dark:bg-slate-900/40 space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-sky-500/20 text-sky-500 flex items-center justify-center font-bold">
+                <HeartHandshake className="w-5 h-5" />
+              </div>
+              <h4 className="font-extrabold text-base text-slate-900 dark:text-white">
+                Billet Sponsorisé CIB & Edahabia
+              </h4>
+              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                Vos enfants, parents ou collaborateurs n'ont pas de carte bancaire ? Vous réglez leur course à distance via SATIM 3DS ou BaridiMob. Ils reçoivent un code PIN d'embarquement digital et n'ont aucun sou à payer en espèces.
+              </p>
+              <div className="pt-2 flex items-center justify-between text-xs font-bold text-sky-600 dark:text-sky-400">
+                <span>Reçu fiscal électronique</span>
+                <span>0 DA d'espèces à bord</span>
+              </div>
+            </div>
+
+          </div>
+
+          <div className="mt-8 text-center">
+            <button
+              onClick={() => onNavigateTab('rider')}
+              className="inline-flex items-center space-x-2 px-6 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-bold text-xs hover:opacity-90 transition-all cursor-pointer shadow-md"
+            >
+              <span>Tester la Réservation d'un Chauffeur Dédié</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
           </div>
         </div>
       </section>
