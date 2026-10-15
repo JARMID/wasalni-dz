@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="blueRibbon" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60A5FA"/>
+      <stop offset="50%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#1D4ED8"/>
+    </linearGradient>
+    <linearGradient id="goldLantern" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FDE047"/>
+      <stop offset="50%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#B45309"/>
+    </linearGradient>
+    <filter id="lanternGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="512" height="512" rx="96" fill="url(#bgGrad2)"/>
+
+  <!-- Speed Arc Accent Rings -->
+  <path d="M 80,260 A 180,180 0 0,1 432,260" fill="none" stroke="#2563EB" stroke-width="2" stroke-opacity="0.25" stroke-dasharray="10 6"/>
+
+  <!-- Golden Taxi Roof Lantern (Lanterneau Lumineux 12-230) -->
+  <g transform="translate(256, 120)">
+    <!-- Base Plate -->
+    <rect x="-44" y="18" width="88" height="6" rx="3" fill="#64748B"/>
+    <!-- Trapezoid Illuminated Box -->
+    <path d="M -36,18 L -26,-10 L 26,-10 L 36,18 Z" fill="url(#goldLantern)" filter="url(#lanternGlow)"/>
+    <!-- TAXI Lettering on Lantern -->
+    <text x="0" y="8" font-family="'Inter', system-ui, sans-serif" font-weight="900" font-size="11" fill="#1E293B" text-anchor="middle" letter-spacing="2">TAXI</text>
+  </g>
+
+  <!-- Aerodynamic 'W' Monogram Ribbons -->
+  <g transform="translate(0, 40)">
+    <!-- Left Wing -->
+    <path d="M 100,160 L 145,160 L 195,290 L 165,290 Z" fill="url(#blueRibbon)"/>
+    <!-- Left Incline -->
+    <path d="M 165,290 L 195,290 L 245,170 L 220,170 Z" fill="url(#blueRibbon)" opacity="0.85"/>
+    <!-- Right Incline -->
+    <path d="M 292,170 L 267,170 L 317,290 L 347,290 Z" fill="url(#blueRibbon)" opacity="0.85"/>
+    <!-- Right Wing -->
+    <path d="M 347,290 L 317,290 L 367,160 L 412,160 Z" fill="url(#blueRibbon)"/>
+    <!-- Center Golden Triangle Connecting to Lantern -->
+    <polygon points="256,180 236,240 276,240" fill="url(#goldLantern)"/>
+  </g>
+
+  <!-- Brand Typography -->
+  <text x="256" y="415" font-family="'Inter', system-ui, -apple-system, sans-serif" font-weight="900" font-size="36" fill="#FFFFFF" text-anchor="middle" letter-spacing="8">WASSLANI</text>
+  <text x="256" y="445" font-family="'Inter', system-ui, sans-serif" font-weight="600" font-size="14" fill="#94A3B8" text-anchor="middle" letter-spacing="4">DÉCRET EXÉCUTIF 12-230</text>
+</svg>

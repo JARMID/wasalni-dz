@@ -28,6 +28,7 @@ import {
   ALGIERS_LOCATIONS 
 } from './data/mockData';
 import { AiCopilotModal } from './components/AiCopilotModal';
+import { LogoShowcaseModal } from './components/LogoShowcaseModal';
 import { InspectorView } from './components/InspectorView';
 import { SurfaceSwitcher } from './components/SurfaceSwitcher';
 import { soundEngine } from './utils/audio';
@@ -52,6 +53,14 @@ export function App() {
   });
   const [lang, setLang] = useState<AppLang>('fr');
   const [selectedBrand, setSelectedBrand] = useState<BrandOption>(BRAND_OPTIONS[0]);
+  const [selectedLogoId, setSelectedLogoId] = useState<string>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('wasslani_selected_logo');
+      if (saved) return saved;
+    }
+    return 'logo-01';
+  });
+  const [isLogoModalOpen, setIsLogoModalOpen] = useState<boolean>(false);
   const [isDark, setIsDark] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('naql_theme');
@@ -59,6 +68,13 @@ export function App() {
     }
     return true;
   });
+
+  // Sync selected logo to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem('wasslani_selected_logo', selectedLogoId);
+    } catch (_) {}
+  }, [selectedLogoId]);
 
   // Listen to hash changes for standalone direct-URL portal navigation
   useEffect(() => {
@@ -523,6 +539,8 @@ export function App() {
         onOpenCopilot={() => setIsCopilotOpen(true)}
         selectedBrand={selectedBrand}
         onSelectBrand={setSelectedBrand}
+        selectedLogoId={selectedLogoId}
+        onOpenLogoShowcase={() => setIsLogoModalOpen(true)}
       />
 
       {/* Main Content Arena */}
@@ -721,6 +739,14 @@ export function App() {
         isOpen={isCopilotOpen}
         onClose={() => setIsCopilotOpen(false)}
         lang={lang}
+      />
+
+      {/* 10 Official WASSLANI Brand Logos Showcase Modal */}
+      <LogoShowcaseModal
+        isOpen={isLogoModalOpen}
+        onClose={() => setIsLogoModalOpen(false)}
+        selectedLogoId={selectedLogoId}
+        onSelectLogo={(concept) => setSelectedLogoId(concept.id)}
       />
 
     </div>

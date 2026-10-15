@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad10" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B132B"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="chevBlue1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#1E3A8A"/>
+    </linearGradient>
+    <linearGradient id="chevBlue2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#60A5FA"/>
+      <stop offset="100%" stop-color="#2563EB"/>
+    </linearGradient>
+    <linearGradient id="chevGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FEF08A"/>
+      <stop offset="50%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#D97706"/>
+    </linearGradient>
+    <filter id="glow10" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="512" height="512" rx="96" fill="url(#bgGrad10)"/>
+
+  <!-- Speed Grid Rays -->
+  <g opacity="0.15" stroke="#3B82F6" stroke-width="1.5">
+    <line x1="256" y1="200" x2="100" y2="70"/>
+    <line x1="256" y1="200" x2="412" y2="70"/>
+    <line x1="256" y1="200" x2="80" y2="200"/>
+    <line x1="256" y1="200" x2="432" y2="200"/>
+    <circle cx="256" cy="200" r="140" fill="none" stroke-dasharray="4 8"/>
+  </g>
+
+  <!-- Celestial Wilaya Node Constellation -->
+  <g fill="#F59E0B" opacity="0.6">
+    <circle cx="150" cy="110" r="3"/>
+    <circle cx="190" cy="90" r="2.5"/>
+    <circle cx="256" cy="75" r="4"/>
+    <circle cx="322" cy="90" r="2.5"/>
+    <circle cx="362" cy="110" r="3"/>
+  </g>
+
+  <!-- Triple Forward-Surging Speed Chevrons -->
+  <g transform="translate(256, 205)">
+    <!-- Rear Chevron (Deep Blue Baseline) -->
+    <path d="M 0,40 L 95,95 L 80,125 L 0,80 L -80,125 L -95,95 Z" 
+          fill="url(#chevBlue1)"/>
+    
+    <!-- Middle Chevron (Electric Sapphire Acceleration) -->
+    <path d="M 0,-15 L 105,45 L 88,75 L 0,25 L -88,75 L -105,45 Z" 
+          fill="url(#chevBlue2)" opacity="0.9"/>
+
+    <!-- Front Leading Chevron (Taxi Gold Velocity Tip) -->
+    <path d="M 0,-70 L 115,-5 L 96,25 L 0,-30 L -96,25 L -115,-5 Z" 
+          fill="url(#chevGold)" filter="url(#glow10)"/>
+
+    <!-- Apex Guiding Diamond Beacon -->
+    <polygon points="0,-115 15,-92 0,-70 -15,-92" fill="#FFFFFF"/>
+    <circle cx="0" cy="-92" r="4" fill="#F59E0B"/>
+    
+    <!-- Wingtip Kinetic Sparks -->
+    <circle cx="-115" cy="-5" r="4" fill="#FDE68A"/>
+    <circle cx="115" cy="-5" r="4" fill="#FDE68A"/>
+    <circle cx="-105" cy="45" r="3" fill="#60A5FA"/>
+    <circle cx="105" cy="45" r="3" fill="#60A5FA"/>
+  </g>
+
+  <!-- Brand Typography -->
+  <text x="256" y="415" font-family="'Inter', system-ui, -apple-system, sans-serif" font-weight="900" font-size="36" fill="#FFFFFF" text-anchor="middle" letter-spacing="8">WASSLANI</text>
+  <text x="256" y="445" font-family="'Traditional Arabic', 'Amiri', serif" font-weight="700" font-size="20" fill="#F59E0B" text-anchor="middle" letter-spacing="4">وصلني • سرعة وموثوقية عبر 58 ولاية</text>
+</svg>

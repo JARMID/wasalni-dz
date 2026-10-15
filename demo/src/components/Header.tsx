@@ -21,6 +21,7 @@ import { soundEngine } from '../utils/audio';
 import type { AppLang } from '../utils/i18n';
 export type { AppLang };
 import { getTranslation } from '../utils/i18n';
+import { LOGO_CONCEPTS } from './LogoShowcaseModal';
 
 export type ActiveTab = 'home' | 'rider' | 'driver' | 'dispatch' | 'ledger' | 'sync' | 'inspector';
 
@@ -49,6 +50,8 @@ interface HeaderProps {
   onOpenCopilot: () => void;
   selectedBrand?: BrandOption;
   onSelectBrand?: (brand: BrandOption) => void;
+  selectedLogoId?: string;
+  onOpenLogoShowcase?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -62,10 +65,14 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenCopilot,
   selectedBrand = BRAND_OPTIONS[0],
   onSelectBrand,
+  selectedLogoId = 'logo-01',
+  onOpenLogoShowcase,
 }) => {
   const [soundOn, setSoundOn] = useState(true);
   const [isBrandMenuOpen, setIsBrandMenuOpen] = useState(false);
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(lang, key);
+
+  const activeLogo = LOGO_CONCEPTS.find(c => c.id === selectedLogoId) || LOGO_CONCEPTS[0];
 
   const isMarketingMode = activeTab === 'home';
 
@@ -165,8 +172,12 @@ export const Header: React.FC<HeaderProps> = ({
                 onClick={() => handleTabChange('home')}
                 className="flex items-center space-x-3 cursor-pointer text-left focus:outline-none"
               >
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-600/25 text-white font-black group-hover:scale-105 transition-transform border border-blue-400/40">
-                  <Car className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2]" />
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-slate-950 border border-blue-500/40 p-1 shadow-lg shadow-blue-600/25 flex items-center justify-center group-hover:scale-105 transition-transform overflow-hidden">
+                  <img 
+                    src={`/logos/${activeLogo.fileName}`} 
+                    alt={activeLogo.titleFr} 
+                    className="w-full h-full object-contain"
+                  />
                 </div>
                 <div>
                   <div className="flex items-center space-x-2">
@@ -192,6 +203,21 @@ export const Header: React.FC<HeaderProps> = ({
               >
                 <ChevronDown className="w-3.5 h-3.5" />
               </button>
+
+              {/* 10 Logos Showcase Button */}
+              {onOpenLogoShowcase && (
+                <button
+                  onClick={() => {
+                    soundEngine.playClick();
+                    onOpenLogoShowcase();
+                  }}
+                  title="Explorer et choisir parmi les 10 logos officiels WASSLANI"
+                  className="flex items-center space-x-1.5 px-2.5 py-1 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/35 text-amber-500 dark:text-amber-400 text-xs font-bold transition-all shadow-sm cursor-pointer ml-1"
+                >
+                  <Sparkles className="w-3 h-3 text-amber-500 animate-pulse" />
+                  <span className="hidden sm:inline">10 Logos</span>
+                </button>
+              )}
 
               {/* Brand Dropdown Menu */}
               {isBrandMenuOpen && (
@@ -388,6 +414,21 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Right: Quick Application Utility Controls */}
             <div className="flex items-center space-x-2 sm:space-x-2.5">
               
+              {/* 10 Logos Showcase Button */}
+              {onOpenLogoShowcase && (
+                <button
+                  onClick={() => {
+                    soundEngine.playClick();
+                    onOpenLogoShowcase();
+                  }}
+                  title="Explorer et choisir parmi les 10 logos officiels WASSLANI"
+                  className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/35 text-amber-500 dark:text-amber-400 text-xs font-bold transition-all shadow-sm cursor-pointer"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
+                  <span className="hidden sm:inline">10 Logos</span>
+                </button>
+              )}
+
               {/* AI Copilot */}
               <button
                 onClick={() => {

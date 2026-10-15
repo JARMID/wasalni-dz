@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#020617"/>
+      <stop offset="100%" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="meterArc" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2563EB"/>
+      <stop offset="50%" stop-color="#3B82F6"/>
+      <stop offset="80%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#FDE047"/>
+    </linearGradient>
+    <filter id="dialGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="8" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="512" height="512" rx="96" fill="url(#bgGrad5)"/>
+
+  <!-- Instrument Chassis -->
+  <circle cx="256" cy="205" r="140" fill="#0B132B" stroke="#1E293B" stroke-width="8"/>
+  <circle cx="256" cy="205" r="126" fill="none" stroke="#334155" stroke-width="1.5" stroke-dasharray="2 6"/>
+
+  <!-- Calibrated Tick Marks -->
+  <g transform="translate(256, 205)" stroke="#64748B" stroke-width="2" opacity="0.6">
+    <line x1="0" y1="-115" x2="0" y2="-100"/>
+    <line x1="0" y1="-115" x2="0" y2="-100" transform="rotate(30)"/>
+    <line x1="0" y1="-115" x2="0" y2="-100" transform="rotate(60)"/>
+    <line x1="0" y1="-115" x2="0" y2="-100" transform="rotate(90)"/>
+    <line x1="0" y1="-115" x2="0" y2="-100" transform="rotate(120)"/>
+    <line x1="0" y1="-115" x2="0" y2="-100" transform="rotate(-30)"/>
+    <line x1="0" y1="-115" x2="0" y2="-100" transform="rotate(-60)"/>
+    <line x1="0" y1="-115" x2="0" y2="-100" transform="rotate(-90)"/>
+    <line x1="0" y1="-115" x2="0" y2="-100" transform="rotate(-120)"/>
+  </g>
+
+  <!-- Dynamic Active Fare Arc (Decree 12-230) -->
+  <path d="M 152,270 A 120,120 0 1,1 360,270" 
+        fill="none" 
+        stroke="url(#meterArc)" 
+        stroke-width="16" 
+        stroke-linecap="round"
+        filter="url(#dialGlow)"/>
+
+  <!-- Center Hub and Needle -->
+  <g transform="translate(256, 205)">
+    <!-- Digital Fare Readout Box -->
+    <rect x="-45" y="32" width="90" height="28" rx="8" fill="#1E293B" stroke="#F59E0B" stroke-width="1"/>
+    <text x="0" y="51" font-family="'Courier New', monospace" font-weight="900" font-size="16" fill="#F59E0B" text-anchor="middle" letter-spacing="1">12-230</text>
+
+    <!-- Speed & Fare Needle (Pointing Up-Right) -->
+    <polygon points="-6,15 6,15 2,-90 -2,-90" transform="rotate(45)" fill="#FFFFFF"/>
+    <polygon points="-4,15 4,15 1,-85 -1,-85" transform="rotate(45)" fill="#F59E0B"/>
+
+    <!-- Central Screw Cap -->
+    <circle cx="0" cy="0" r="18" fill="#1E293B" stroke="#2563EB" stroke-width="4"/>
+    <circle cx="0" cy="0" r="6" fill="#60A5FA"/>
+  </g>
+
+  <!-- Brand Typography -->
+  <text x="256" y="415" font-family="'Inter', system-ui, -apple-system, sans-serif" font-weight="900" font-size="34" fill="#FFFFFF" text-anchor="middle" letter-spacing="8">WASSLANI</text>
+  <text x="256" y="445" font-family="'Inter', system-ui, sans-serif" font-weight="700" font-size="13" fill="#60A5FA" text-anchor="middle" letter-spacing="4">TAXIMÈTRE FISCAL HOMOLOGUÉ</text>
+</svg>
