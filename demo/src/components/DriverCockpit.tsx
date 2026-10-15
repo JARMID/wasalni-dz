@@ -8,7 +8,11 @@ import {
   HeartHandshake,
   Car,
   MessageSquare,
-  Volume2
+  Volume2,
+  ShieldCheck,
+  AlertTriangle,
+  FileText,
+  CheckCircle2
 } from 'lucide-react';
 import type { 
   DriverProfile, 
@@ -54,8 +58,8 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
   lang = 'fr',
   isDark: _isDark,
 }) => {
-  // Cockpit View Sub-Tab: Live View vs Weekly Shuttle Planning
-  const [activeSubTab, setActiveSubTab] = useState<'live' | 'schedule'>('live');
+  // Cockpit View Sub-Tab: Live View vs Weekly Shuttle Planning vs Safety/DTW
+  const [activeSubTab, setActiveSubTab] = useState<'live' | 'schedule' | 'safety'>('live');
 
   const [pinInput, setPinInput] = useState('');
   const [meterFareInput, setMeterFareInput] = useState<number>(750);
@@ -163,6 +167,18 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
             <span className="px-1.5 py-0.2 rounded-full bg-slate-900/20 dark:bg-white/20 text-[9px] font-mono">
               3
             </span>
+          </button>
+
+          <button
+            onClick={() => { soundEngine.playSelection(); setActiveSubTab('safety'); }}
+            className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 cursor-pointer ${
+              activeSubTab === 'safety'
+                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <ShieldCheck className="w-3.5 h-3.5" />
+            <span>Sécurité DTW</span>
           </button>
         </div>
 
@@ -630,6 +646,134 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
 
           <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-900/60 border text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
             🛡️ <strong>Garantie Décret 12-230 :</strong> Les navettes programmées constituent des courses réservées prioritaires. Les fonds sont prélevés auprès des sponsors ou employeurs et garantis sur votre compte opérationnel 2020.
+          </div>
+        </div>
+      )}
+
+      {/* VIEW 3: SAFETY & TELEMATICS DTW CONFORMITY */}
+      {activeSubTab === 'safety' && (
+        <div className="space-y-4 animate-fadeIn">
+          {/* Regulatory Credentials Card */}
+          <div className="p-4 rounded-2xl border border-blue-500/30 bg-blue-500/10 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <ShieldCheck className="w-5 h-5 text-blue-500" />
+                <div>
+                  <h4 className="font-extrabold text-sm text-slate-900 dark:text-white">
+                    Agrément et Titre d'Exploitation DTW
+                  </h4>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400">
+                    Direction des Transports de la Wilaya d'Alger • CNRC 604103
+                  </p>
+                </div>
+              </div>
+              <span className="px-2.5 py-1 rounded-full bg-blue-600 text-white font-bold text-[10px] font-mono">
+                CONFORME 2026
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs pt-1">
+              <div className="p-2.5 rounded-xl bg-white/70 dark:bg-slate-900/60 border border-slate-200 dark:border-white/10">
+                <span className="text-slate-400 block text-[9px]">Agrément DTW :</span>
+                <span className="font-mono font-bold text-slate-900 dark:text-white">{driver.agrementNumber}</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-white/70 dark:bg-slate-900/60 border border-slate-200 dark:border-white/10">
+                <span className="text-slate-400 block text-[9px]">Livret de Place :</span>
+                <span className="font-mono font-bold text-slate-900 dark:text-white">{driver.livretDePlaceNumber}</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-white/70 dark:bg-slate-900/60 border border-slate-200 dark:border-white/10">
+                <span className="text-slate-400 block text-[9px]">Immatriculation :</span>
+                <span className="font-mono font-bold text-slate-900 dark:text-white">{driver.licensePlate}</span>
+              </div>
+              <div className="p-2.5 rounded-xl bg-white/70 dark:bg-slate-900/60 border border-slate-200 dark:border-white/10">
+                <span className="text-slate-400 block text-[9px]">Contrôle Technique :</span>
+                <span className="font-bold text-blue-600 dark:text-blue-400">Valide (Jusqu'au 11/2026)</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Emergency Hotlines for Drivers */}
+          <div className="p-4 rounded-2xl border-2 border-rose-500/30 bg-rose-500/5 space-y-3">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <AlertTriangle className="w-4 h-4 text-rose-500" />
+                <h4 className="font-extrabold text-sm text-rose-600 dark:text-rose-400">
+                  Lignes d'Urgence et Assistance Chauffeur
+                </h4>
+              </div>
+              <span className="text-[10px] text-slate-500">24h/24 • Appel Gratuit</span>
+            </div>
+
+            <div className="grid grid-cols-3 gap-2">
+              <a
+                href="tel:1548"
+                className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-rose-500/30 text-center hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer shadow-sm"
+              >
+                <span className="text-2xl font-black font-mono text-rose-600 dark:text-rose-400 block">1548</span>
+                <span className="text-[10px] font-bold text-slate-800 dark:text-slate-200 block">Sûreté Nationale</span>
+                <span className="text-[8px] text-slate-400 block">Police Urbaine</span>
+              </a>
+
+              <a
+                href="tel:14"
+                className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-rose-500/30 text-center hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer shadow-sm"
+              >
+                <span className="text-2xl font-black font-mono text-rose-600 dark:text-rose-400 block">14</span>
+                <span className="text-[10px] font-bold text-slate-800 dark:text-slate-200 block">Protection Civile</span>
+                <span className="text-[8px] text-slate-400 block">Accidents & Secours</span>
+              </a>
+
+              <a
+                href="tel:1055"
+                className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-rose-500/30 text-center hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer shadow-sm"
+              >
+                <span className="text-2xl font-black font-mono text-rose-600 dark:text-rose-400 block">1055</span>
+                <span className="text-[10px] font-bold text-slate-800 dark:text-slate-200 block">Gendarmerie</span>
+                <span className="text-[8px] text-slate-400 block">Réseau Autoroutier</span>
+              </a>
+            </div>
+          </div>
+
+          {/* Legal Checklist under Executive Decree 12-230 */}
+          <div className="p-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900/40 space-y-3">
+            <h4 className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+              <FileText className="w-4 h-4 text-amber-500" />
+              <span>Contrôle Réglementaire Véhicule (Décret 12-230)</span>
+            </h4>
+
+            <div className="space-y-2 text-xs">
+              <div className="flex items-center justify-between p-2 rounded-xl bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-white/5">
+                <div className="flex items-center space-x-2">
+                  <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />
+                  <span>Compteur fiscal horokilométrique avec plombage DTW intact</span>
+                </div>
+                <span className="font-bold text-blue-600 dark:text-blue-400 text-[10px]">SCELLEMENT OK</span>
+              </div>
+
+              <div className="flex items-center justify-between p-2 rounded-xl bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-white/5">
+                <div className="flex items-center space-x-2">
+                  <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />
+                  <span>Lanterneau lumineux avec voyant tarifaire conforme (Jour / Nuit)</span>
+                </div>
+                <span className="font-bold text-blue-600 dark:text-blue-400 text-[10px]">OPÉRATIONNEL</span>
+              </div>
+
+              <div className="flex items-center justify-between p-2 rounded-xl bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-white/5">
+                <div className="flex items-center space-x-2">
+                  <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />
+                  <span>Trousse de secours médicale et extincteur à poudre 2kg</span>
+                </div>
+                <span className="font-bold text-blue-600 dark:text-blue-400 text-[10px]">CONTRÔLÉ</span>
+              </div>
+
+              <div className="flex items-center justify-between p-2 rounded-xl bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-white/5">
+                <div className="flex items-center space-x-2">
+                  <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />
+                  <span>Boîtier CameraX télématique avec chiffrement Shamir 2-of-3</span>
+                </div>
+                <span className="font-bold text-blue-600 dark:text-blue-400 text-[10px]">SÉCURISÉ AES-256</span>
+              </div>
+            </div>
           </div>
         </div>
       )}

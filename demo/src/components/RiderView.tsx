@@ -26,7 +26,10 @@ import {
   PhoneCall,
   AlertTriangle,
   FileText,
-  MessageSquare
+  MessageSquare,
+  ArrowUpDown,
+  RotateCcw,
+  Coins
 } from 'lucide-react';
 
 import type { 
@@ -99,6 +102,64 @@ const POPULAR_CHIPS = [
   { id: 'loc-3', name: 'Kouba Centre', nameAr: 'وسط القبة', icon: '📍', tag: 'Kouba' },
 ];
 
+const MOCK_RIDER_HISTORY: RideRequest[] = [
+  {
+    id: 'req-hist-01',
+    rideCode: 'DZ-8812',
+    serviceMode: 'taxi_individuel_metered',
+    origin: ALGIERS_LOCATIONS[0],
+    destination: ALGIERS_LOCATIONS[5],
+    status: 'completed',
+    pickupPin: '5812',
+    seatsBooked: 1,
+    totalSeats: 4,
+    estimatedDistanceKm: 18.5,
+    estimatedDurationMins: 28,
+    fraisApprocheDzd: 100,
+    meterFinalDzd: 1350,
+    totalFareDzd: 1450,
+    paymentMethod: 'edahabia',
+    createdAt: '14 Oct 11:24',
+  },
+  {
+    id: 'req-hist-02',
+    rideCode: 'DZ-7634',
+    serviceMode: 'taxi_collectif_urbain',
+    origin: ALGIERS_LOCATIONS[1],
+    destination: ALGIERS_LOCATIONS[2],
+    status: 'completed',
+    pickupPin: '3190',
+    seatsBooked: 1,
+    totalSeats: 4,
+    estimatedDistanceKm: 6.2,
+    estimatedDurationMins: 14,
+    fraisApprocheDzd: 0,
+    meterFinalDzd: 50,
+    totalFareDzd: 50,
+    paymentMethod: 'cash',
+    spareChangeCreditedDzd: 50,
+    createdAt: '12 Oct 16:45',
+  },
+  {
+    id: 'req-hist-03',
+    rideCode: 'DZ-6921',
+    serviceMode: 'taxi_individuel_metered',
+    origin: ALGIERS_LOCATIONS[3],
+    destination: ALGIERS_LOCATIONS[4],
+    status: 'completed',
+    pickupPin: '4271',
+    seatsBooked: 1,
+    totalSeats: 4,
+    estimatedDistanceKm: 8.4,
+    estimatedDurationMins: 22,
+    fraisApprocheDzd: 100,
+    meterFinalDzd: 650,
+    totalFareDzd: 750,
+    paymentMethod: 'trustdesk_wallet',
+    createdAt: '09 Oct 09:15',
+  },
+];
+
 export const RiderView: React.FC<RiderViewProps> = ({
   currentRide,
   driver,
@@ -108,6 +169,16 @@ export const RiderView: React.FC<RiderViewProps> = ({
   onTopupRiderWallet,
   lang = 'fr',
 }) => {
+  // Rider Internal Navigation: 'book' | 'history' | 'wallet' | 'safety'
+  const [riderActiveTab, setRiderActiveTab] = useState<'book' | 'history' | 'wallet' | 'safety'>('book');
+  const [historyRideForReceipt, setHistoryRideForReceipt] = useState<RideRequest | null>(null);
+  const [historyFilter, setHistoryFilter] = useState<'all' | 'completed' | 'recurring'>('all');
+
+  // Interactive PIN testing tool for Law 18-07 privacy verification
+  const [pinTestInput, setPinTestInput] = useState<string>('5421');
+  const [pinTestAudit, setPinTestAudit] = useState<PwnedCheckResult | null>(null);
+  const [isAuditingPin, setIsAuditingPin] = useState<boolean>(false);
+
   // Display Viewport Mode: Smartphone Mockup vs Wide Desktop Canvas
   const [isFullScreen, setIsFullScreen] = useState(false);
 
@@ -234,6 +305,25 @@ export const RiderView: React.FC<RiderViewProps> = ({
     setDestination(newLocation);
     setSearchQuery('');
     setSearchResults([]);
+  };
+
+  const handleSwapLocations = () => {
+    soundEngine.playClick();
+    const temp = origin;
+    setOrigin(destination);
+    setDestination(temp);
+  };
+
+  const handleAuditTestPin = async (val: string) => {
+    setPinTestInput(val);
+    if (val.trim().length === 4) {
+      setIsAuditingPin(true);
+      const res = await checkPwnedPinOrPassword(val.trim());
+      setPinTestAudit(res);
+      setIsAuditingPin(false);
+    } else {
+      setPinTestAudit(null);
+    }
   };
 
   const handleOrder = () => {
@@ -631,6 +721,18 @@ export const RiderView: React.FC<RiderViewProps> = ({
               <span className="truncate">{pickupAddress.formatted}</span>
             </div>
           )}
+        </div>
+
+        {/* Swap Origin and Destination Button */}
+        <div className="flex justify-center -my-1 relative z-10">
+          <button
+            type="button"
+            onClick={handleSwapLocations}
+            className="p-1.5 rounded-full bg-white dark:bg-slate-800 border border-slate-300 dark:border-white/20 text-slate-500 hover:text-blue-600 dark:hover:text-blue-400 shadow-sm hover:scale-105 transition-all cursor-pointer"
+            title="Inverser le point de départ et la destination"
+          >
+            <ArrowUpDown className="w-3.5 h-3.5" />
+          </button>
         </div>
 
         <div className="space-y-1 relative">
@@ -1141,17 +1243,427 @@ export const RiderView: React.FC<RiderViewProps> = ({
     return null;
   };
 
+  const renderHistoryPanel = () => (
+    <div className="space-y-4 animate-fadeIn">
+      <div className="flex items-center justify-between">
+        <div>
+          <h3 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-1.5">
+            <Clock className="w-4 h-4 text-blue-500" />
+            <span>Historique des Courses DTW</span>
+          </h3>
+          <p className="text-[10px] text-slate-500 dark:text-slate-400">
+            Quittances officielles et justificatifs de transport
+          </p>
+        </div>
+        <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-600 dark:text-blue-400">
+          3 courses certifiées
+        </span>
+      </div>
+
+      {/* Filter Chips */}
+      <div className="flex items-center space-x-1.5 text-[11px] font-bold">
+        <button
+          type="button"
+          onClick={() => setHistoryFilter('all')}
+          className={`px-3 py-1 rounded-xl transition-all cursor-pointer ${
+            historyFilter === 'all'
+              ? 'bg-blue-600 text-white shadow-sm'
+              : 'bg-white/70 dark:bg-slate-900/60 text-slate-500 border border-slate-200 dark:border-white/10'
+          }`}
+        >
+          Toutes
+        </button>
+        <button
+          type="button"
+          onClick={() => setHistoryFilter('completed')}
+          className={`px-3 py-1 rounded-xl transition-all cursor-pointer ${
+            historyFilter === 'completed'
+              ? 'bg-blue-600 text-white shadow-sm'
+              : 'bg-white/70 dark:bg-slate-900/60 text-slate-500 border border-slate-200 dark:border-white/10'
+          }`}
+        >
+          Individuel
+        </button>
+        <button
+          type="button"
+          onClick={() => setHistoryFilter('recurring')}
+          className={`px-3 py-1 rounded-xl transition-all cursor-pointer ${
+            historyFilter === 'recurring'
+              ? 'bg-blue-600 text-white shadow-sm'
+              : 'bg-white/70 dark:bg-slate-900/60 text-slate-500 border border-slate-200 dark:border-white/10'
+          }`}
+        >
+          Collectif
+        </button>
+      </div>
+
+      {/* List of Historical Trips */}
+      <div className="space-y-3">
+        {MOCK_RIDER_HISTORY.filter(h => {
+          if (historyFilter === 'completed') return h.serviceMode === 'taxi_individuel_metered';
+          if (historyFilter === 'recurring') return h.serviceMode === 'taxi_collectif_urbain';
+          return true;
+        }).map(hist => (
+          <div
+            key={hist.id}
+            className="p-3.5 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-slate-900/60 shadow-sm space-y-2.5 hover:border-blue-500/30 transition-all"
+          >
+            <div className="flex items-center justify-between text-xs">
+              <div className="flex items-center space-x-2">
+                <span className="font-mono font-bold text-slate-900 dark:text-white">{hist.rideCode}</span>
+                <span className={`px-2 py-0.5 rounded-md text-[9px] font-bold ${
+                  hist.serviceMode === 'taxi_individuel_metered' 
+                    ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400' 
+                    : 'bg-blue-500/15 text-blue-600 dark:text-blue-400'
+                }`}>
+                  {hist.serviceMode === 'taxi_individuel_metered' ? 'Individuel' : 'Collectif'}
+                </span>
+              </div>
+              <span className="text-[10px] text-slate-400">{hist.createdAt}</span>
+            </div>
+
+            <div className="space-y-1 text-xs border-y border-slate-100 dark:border-white/5 py-2">
+              <div className="flex items-center space-x-2">
+                <MapPin className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+                <span className="truncate text-slate-700 dark:text-slate-300 font-medium">{hist.origin.name}</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Navigation2 className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                <span className="truncate text-slate-900 dark:text-white font-bold">{hist.destination.name}</span>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-between text-xs pt-1">
+              <div>
+                <span className="text-[10px] text-slate-400 block">Total réglé</span>
+                <span className="font-mono font-black text-blue-600 dark:text-blue-400 text-sm">
+                  {hist.totalFareDzd.toFixed(0)} DA
+                </span>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    soundEngine.playClick();
+                    setHistoryRideForReceipt(hist);
+                    setIsReceiptOpen(true);
+                  }}
+                  className="px-2.5 py-1.5 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 text-[11px] font-bold border border-blue-500/20 flex items-center gap-1 cursor-pointer transition-colors"
+                >
+                  <FileText className="w-3 h-3" />
+                  <span>Quittance</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    soundEngine.playSelection();
+                    setOrigin(hist.origin);
+                    setDestination(hist.destination);
+                    setSelectedMode(hist.serviceMode);
+                    setRiderActiveTab('book');
+                  }}
+                  className="p-1.5 rounded-xl border border-slate-200 dark:border-white/10 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-500 hover:text-slate-900 dark:hover:text-white cursor-pointer transition-colors"
+                  title="Reprendre ce trajet"
+                >
+                  <RotateCcw className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderWalletPanel = () => (
+    <div className="space-y-4 animate-fadeIn">
+      {/* Hero Wallet Card */}
+      <div className="p-5 rounded-3xl bg-gradient-to-br from-blue-700 via-blue-600 to-indigo-800 text-white shadow-xl shadow-blue-500/20 space-y-4 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Wallet className="w-4 h-4 text-amber-300" />
+            <span className="text-[10px] font-bold tracking-wider uppercase text-blue-100">
+              PORTEFEUILLE WASSLANI
+            </span>
+          </div>
+          <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-white/20 text-white font-bold">
+            Séquestre 2010
+          </span>
+        </div>
+
+        <div>
+          <span className="text-[11px] text-blue-200 block">Solde Disponible</span>
+          <div className="text-3xl font-black font-mono tracking-tight mt-0.5">
+            {riderWalletBalanceDzd.toFixed(2)} <span className="text-sm font-semibold text-amber-300">DZD</span>
+          </div>
+        </div>
+
+        {/* Flywheel badge */}
+        <div className="p-2.5 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-between text-xs">
+          <div className="flex items-center space-x-2">
+            <Coins className="w-4 h-4 text-amber-300 shrink-0" />
+            <div>
+              <span className="text-[10px] font-bold block leading-none">Monnaie Flywheel Épargnée</span>
+              <span className="text-[9px] text-blue-200">Reliquats d'espèces récupérés</span>
+            </div>
+          </div>
+          <span className="font-mono font-bold text-amber-300 text-sm">+350.00 DA</span>
+        </div>
+
+        {/* Quick Topup Buttons */}
+        {onTopupRiderWallet && (
+          <div className="grid grid-cols-2 gap-2 pt-1">
+            <button
+              type="button"
+              onClick={() => { soundEngine.playClick(); setIsTopupOpen(true); }}
+              className="py-2.5 px-3 rounded-xl bg-white text-blue-700 hover:bg-blue-50 font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-md cursor-pointer transition-all"
+            >
+              <CreditCard className="w-3.5 h-3.5 text-blue-600" />
+              <span>CIB / Edahabia</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => { soundEngine.playClick(); setIsBaridiMobOpen(true); }}
+              className="py-2.5 px-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-xs flex items-center justify-center gap-1.5 shadow-md cursor-pointer transition-all"
+            >
+              <Banknote className="w-3.5 h-3.5" />
+              <span>BaridiMob OCR</span>
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* Flywheel Cashless Explanation */}
+      <div className="p-3.5 rounded-2xl border border-blue-500/20 bg-blue-500/5 space-y-1.5 text-xs">
+        <div className="flex items-center space-x-1.5 font-bold text-blue-600 dark:text-blue-400">
+          <Coins className="w-4 h-4" />
+          <span>Solution Nationale au Problème de la Monnaie</span>
+        </div>
+        <p className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed">
+          En Algérie, le manque récurrent de pièces de 50 DA et 100 DA est résolu par WASSLANI. Lors d'un paiement en espèces, tout reliquat que le chauffeur ne peut rendre est instantanément crédité sur votre compte digital.
+        </p>
+      </div>
+
+      {/* Recent Ledger Movements */}
+      <div className="space-y-2">
+        <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider block">
+          Derniers mouvements comptables
+        </span>
+
+        <div className="space-y-1.5 text-xs">
+          <div className="p-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/50 flex items-center justify-between">
+            <div>
+              <div className="font-bold text-slate-900 dark:text-white text-[11px]">Recharge CIB SATIM 3DS</div>
+              <div className="text-[9px] text-slate-400 font-mono">Auth: SATIM-948201 • 14 Oct</div>
+            </div>
+            <span className="font-mono font-bold text-blue-600 dark:text-blue-400">+1 000.00 DA</span>
+          </div>
+
+          <div className="p-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/50 flex items-center justify-between">
+            <div>
+              <div className="font-bold text-slate-900 dark:text-white text-[11px]">Course Taxi Individuel DZ-8812</div>
+              <div className="text-[9px] text-slate-400 font-mono">Taximètre 12-230 • 14 Oct</div>
+            </div>
+            <span className="font-mono font-bold text-slate-700 dark:text-slate-300">-1 450.00 DA</span>
+          </div>
+
+          <div className="p-2.5 rounded-xl border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-slate-900/50 flex items-center justify-between">
+            <div>
+              <div className="font-bold text-amber-600 dark:text-amber-400 text-[11px]">Reliquat Espèces Flywheel</div>
+              <div className="text-[9px] text-slate-400 font-mono">Course DZ-7634 • 12 Oct</div>
+            </div>
+            <span className="font-mono font-bold text-amber-600 dark:text-amber-400">+50.00 DA</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderSafetyPanel = () => (
+    <div className="space-y-4 animate-fadeIn">
+      {/* Emergency Hotlines */}
+      <div className="p-4 rounded-2xl border-2 border-rose-500/30 bg-rose-500/5 space-y-3">
+        <div>
+          <h3 className="font-extrabold text-sm text-rose-600 dark:text-rose-400 flex items-center gap-1.5">
+            <AlertTriangle className="w-4 h-4 text-rose-500" />
+            <span>Numéros d'Urgence Nationaux Algériens</span>
+          </h3>
+          <p className="text-[10px] text-slate-500 dark:text-slate-400">
+            Lignes gratuites 24h/24 interconnectées au système de secours
+          </p>
+        </div>
+
+        <div className="grid grid-cols-3 gap-2">
+          <a
+            href="tel:1548"
+            className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-rose-500/30 text-center hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer shadow-sm"
+          >
+            <span className="text-xl font-black font-mono text-rose-600 dark:text-rose-400 block">1548</span>
+            <span className="text-[9px] font-bold text-slate-700 dark:text-slate-300 block">Sûreté Nationale</span>
+            <span className="text-[8px] text-slate-400 block">Police Secours</span>
+          </a>
+
+          <a
+            href="tel:14"
+            className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-rose-500/30 text-center hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer shadow-sm"
+          >
+            <span className="text-xl font-black font-mono text-rose-600 dark:text-rose-400 block">14</span>
+            <span className="text-[9px] font-bold text-slate-700 dark:text-slate-300 block">Protection Civile</span>
+            <span className="text-[8px] text-slate-400 block">Pompiers / Secours</span>
+          </a>
+
+          <a
+            href="tel:1055"
+            className="p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-rose-500/30 text-center hover:bg-rose-50 dark:hover:bg-rose-950/30 transition-all cursor-pointer shadow-sm"
+          >
+            <span className="text-xl font-black font-mono text-rose-600 dark:text-rose-400 block">1055</span>
+            <span className="text-[9px] font-bold text-slate-700 dark:text-slate-300 block">Gendarmerie</span>
+            <span className="text-[8px] text-slate-400 block">Sécurité Routière</span>
+          </a>
+        </div>
+      </div>
+
+      {/* Interactive PIN Auditor with HaveIBeenPwned API */}
+      <div className="p-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900/40 space-y-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <ShieldCheck className="w-4 h-4 text-blue-500" />
+            <h4 className="font-bold text-xs text-slate-900 dark:text-white">Audit Code PIN Embarquement</h4>
+          </div>
+          <span className="text-[9px] font-mono font-bold text-blue-600 dark:text-blue-400">Loi 18-07</span>
+        </div>
+        <p className="text-[10px] text-slate-500">
+          Vérification cryptographique en temps réel sans divulgation du code (k-anonymat SHA-1)
+        </p>
+
+        <div className="flex items-center space-x-2">
+          <input
+            type="text"
+            maxLength={4}
+            value={pinTestInput}
+            onChange={(e) => handleAuditTestPin(e.target.value)}
+            placeholder="Code PIN"
+            className="w-28 p-2 rounded-xl border border-slate-200 dark:border-white/10 font-mono font-black text-center text-lg bg-white dark:bg-slate-950 text-slate-900 dark:text-white"
+          />
+          <div className="text-[11px] flex-1">
+            {isAuditingPin ? (
+              <span className="text-slate-400 flex items-center gap-1">
+                <span className="w-3 h-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                Vérification en cours...
+              </span>
+            ) : pinTestAudit ? (
+              <div className={pinTestAudit.isCompromised ? 'text-rose-500 font-bold' : 'text-blue-600 dark:text-blue-400 font-bold'}>
+                {pinTestAudit.statusLabel}
+                <div className="text-[9px] text-slate-400 font-normal">{pinTestAudit.lawComplianceText}</div>
+              </div>
+            ) : (
+              <span className="text-slate-400 text-[10px]">Tapez 4 chiffres pour tester la robustesse</span>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Décret 12-230 Legal Tariff Matrix */}
+      <div className="p-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900/40 space-y-2.5">
+        <h4 className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1.5">
+          <FileText className="w-4 h-4 text-amber-500" />
+          <span>Barème Légal DTW (Décret Exécutif 12-230)</span>
+        </h4>
+
+        <div className="space-y-1.5 text-xs text-slate-600 dark:text-slate-300">
+          <div className="flex justify-between p-2 rounded-xl bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-white/5">
+            <span>Prise en charge (Tarif 1 Jour) :</span>
+            <span className="font-mono font-bold text-slate-900 dark:text-white">25.00 DA</span>
+          </div>
+          <div className="flex justify-between p-2 rounded-xl bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-white/5">
+            <span>Trajet horokilométrique :</span>
+            <span className="font-mono font-bold text-slate-900 dark:text-white">35.00 DA / km</span>
+          </div>
+          <div className="flex justify-between p-2 rounded-xl bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-white/5">
+            <span>Attente ou circulation ralentie :</span>
+            <span className="font-mono font-bold text-slate-900 dark:text-white">5.00 DA / min (300 DA/h)</span>
+          </div>
+          <div className="flex justify-between p-2 rounded-xl bg-white dark:bg-slate-950/60 border border-slate-200 dark:border-white/5">
+            <span>Frais d'approche réglementaires (Arrêté Wilaya 16) :</span>
+            <span className="font-mono font-bold text-amber-600 dark:text-amber-400">100.00 DA</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="w-full">
-      {/* VIEWPORT MODE 1: FULL SCREEN DESKTOP CANVAS (Integrated Map + Floating Booking Drawer) */}
+      {/* VIEWPORT MODE 1: FULL SCREEN DESKTOP CANVAS */}
       {isFullScreen ? (
         <div className="w-full rounded-3xl overflow-hidden glass-panel border border-slate-200 dark:border-white/10 shadow-2xl relative min-h-[760px] flex flex-col">
           {renderRiderHeader()}
 
           <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 relative">
             {/* Left Column: Interactive Booking / Trip Tracking Panel (4 cols) */}
-            <div className="lg:col-span-4 p-4 lg:p-6 border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-white/10 overflow-y-auto max-h-[760px] bg-white/60 dark:bg-slate-950/60 backdrop-blur-md">
-              {!currentRide || currentRide.status === 'idle' ? renderBookingPanel() : renderActiveTripPanel()}
+            <div className="lg:col-span-4 p-4 lg:p-6 border-b lg:border-b-0 lg:border-r border-slate-200 dark:border-white/10 overflow-y-auto max-h-[760px] bg-white/60 dark:bg-slate-950/60 backdrop-blur-md flex flex-col justify-between">
+              <div>
+                {/* FullScreen Segmented Control */}
+                <div className="grid grid-cols-4 p-1 rounded-2xl bg-slate-200/80 dark:bg-slate-900 border border-slate-300/60 dark:border-white/10 text-xs font-bold mb-4">
+                  <button
+                    type="button"
+                    onClick={() => { soundEngine.playSelection(); setRiderActiveTab('book'); }}
+                    className={`py-1.5 rounded-xl transition-all text-center cursor-pointer ${
+                      riderActiveTab === 'book' ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    Commander
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { soundEngine.playSelection(); setRiderActiveTab('history'); }}
+                    className={`py-1.5 rounded-xl transition-all text-center cursor-pointer ${
+                      riderActiveTab === 'history' ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    Courses
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { soundEngine.playSelection(); setRiderActiveTab('wallet'); }}
+                    className={`py-1.5 rounded-xl transition-all text-center cursor-pointer ${
+                      riderActiveTab === 'wallet' ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    Portefeuille
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { soundEngine.playSelection(); setRiderActiveTab('safety'); }}
+                    className={`py-1.5 rounded-xl transition-all text-center cursor-pointer ${
+                      riderActiveTab === 'safety' ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm' : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    Sécurité
+                  </button>
+                </div>
+
+                {/* Active Ride Banner if navigating other tabs while trip is active */}
+                {currentRide && currentRide.status !== 'idle' && riderActiveTab !== 'book' && (
+                  <div 
+                    onClick={() => { soundEngine.playClick(); setRiderActiveTab('book'); }}
+                    className="mb-3 p-2.5 rounded-2xl bg-amber-500/15 border border-amber-500/40 text-amber-600 dark:text-amber-400 flex items-center justify-between text-xs font-bold cursor-pointer hover:bg-amber-500/25 transition-all shadow-sm"
+                  >
+                    <div className="flex items-center space-x-2">
+                      <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />
+                      <span>Course active ({currentRide.rideCode})</span>
+                    </div>
+                    <span className="text-[10px] underline">Afficher le suivi →</span>
+                  </div>
+                )}
+
+                {riderActiveTab === 'book' && (!currentRide || currentRide.status === 'idle' ? renderBookingPanel() : renderActiveTripPanel())}
+                {riderActiveTab === 'history' && renderHistoryPanel()}
+                {riderActiveTab === 'wallet' && renderWalletPanel()}
+                {riderActiveTab === 'safety' && renderSafetyPanel()}
+              </div>
             </div>
 
             {/* Right Column: Expansive Interactive Algiers Map (8 cols) */}
@@ -1188,8 +1700,8 @@ export const RiderView: React.FC<RiderViewProps> = ({
 
             {renderRiderHeader()}
 
-            {/* Live Interactive Map Embedded at Top Half of Smartphone (h-[260px]) */}
-            <div className="h-[250px] w-full shrink-0 relative border-b border-slate-200 dark:border-white/10 shadow-inner">
+            {/* Live Interactive Map Embedded at Top Half of Smartphone (h-[240px]) */}
+            <div className="h-[230px] w-full shrink-0 relative border-b border-slate-200 dark:border-white/10 shadow-inner">
               <InteractiveMap
                 origin={origin}
                 destination={destination}
@@ -1206,9 +1718,73 @@ export const RiderView: React.FC<RiderViewProps> = ({
               </div>
             </div>
 
-            {/* Bottom Half: Scrollable Booking & Status Sheet */}
+            {/* Active Ride Banner if navigating other tabs while trip is active */}
+            {currentRide && currentRide.status !== 'idle' && riderActiveTab !== 'book' && (
+              <div 
+                onClick={() => { soundEngine.playClick(); setRiderActiveTab('book'); }}
+                className="m-2 p-2 rounded-xl bg-amber-500/15 border border-amber-500/40 text-amber-600 dark:text-amber-400 flex items-center justify-between text-xs font-bold cursor-pointer shrink-0"
+              >
+                <div className="flex items-center space-x-2">
+                  <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />
+                  <span>Course active ({currentRide.rideCode})</span>
+                </div>
+                <span className="text-[10px] underline">Afficher le suivi →</span>
+              </div>
+            )}
+
+            {/* Bottom Half: Scrollable Tab Content Sheet */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50/95 dark:bg-slate-900/95">
-              {!currentRide || currentRide.status === 'idle' ? renderBookingPanel() : renderActiveTripPanel()}
+              {riderActiveTab === 'book' && (!currentRide || currentRide.status === 'idle' ? renderBookingPanel() : renderActiveTripPanel())}
+              {riderActiveTab === 'history' && renderHistoryPanel()}
+              {riderActiveTab === 'wallet' && renderWalletPanel()}
+              {riderActiveTab === 'safety' && renderSafetyPanel()}
+            </div>
+
+            {/* Smartphone Bottom Navigation Bar */}
+            <div className="border-t border-slate-200 dark:border-white/10 bg-white/95 dark:bg-slate-950/95 px-3 py-2 flex items-center justify-around shrink-0 z-20 backdrop-blur-md">
+              <button
+                type="button"
+                onClick={() => { soundEngine.playClick(); setRiderActiveTab('book'); }}
+                className={`flex flex-col items-center gap-0.5 cursor-pointer transition-colors ${
+                  riderActiveTab === 'book' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+                }`}
+              >
+                <Car className="w-5 h-5" />
+                <span className="text-[10px]">Commander</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => { soundEngine.playClick(); setRiderActiveTab('history'); }}
+                className={`flex flex-col items-center gap-0.5 cursor-pointer transition-colors ${
+                  riderActiveTab === 'history' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+                }`}
+              >
+                <Clock className="w-5 h-5" />
+                <span className="text-[10px]">Courses</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => { soundEngine.playClick(); setRiderActiveTab('wallet'); }}
+                className={`flex flex-col items-center gap-0.5 cursor-pointer transition-colors ${
+                  riderActiveTab === 'wallet' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+                }`}
+              >
+                <Wallet className="w-5 h-5" />
+                <span className="text-[10px]">Portefeuille</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => { soundEngine.playClick(); setRiderActiveTab('safety'); }}
+                className={`flex flex-col items-center gap-0.5 cursor-pointer transition-colors ${
+                  riderActiveTab === 'safety' ? 'text-blue-600 dark:text-blue-400 font-bold' : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200'
+                }`}
+              >
+                <ShieldCheck className="w-5 h-5" />
+                <span className="text-[10px]">Sécurité</span>
+              </button>
             </div>
 
           </div>
@@ -1234,11 +1810,11 @@ export const RiderView: React.FC<RiderViewProps> = ({
       )}
 
       {/* Official Receipt & Taximeter Facture Modal */}
-      {currentRide && (
+      {(currentRide || historyRideForReceipt) && (
         <OfficialReceiptModal
           isOpen={isReceiptOpen}
-          onClose={() => setIsReceiptOpen(false)}
-          ride={currentRide}
+          onClose={() => { setIsReceiptOpen(false); setHistoryRideForReceipt(null); }}
+          ride={historyRideForReceipt || currentRide!}
           driver={driver}
           lang={lang}
         />
