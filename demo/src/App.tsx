@@ -573,8 +573,8 @@ export function App() {
               {/* Center Map (7 cols) */}
               <div className="md:col-span-7 flex flex-col h-[740px]">
                 <div className="flex items-center space-x-2 mb-3">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-                  <span className="text-xs font-mono font-bold tracking-wider text-emerald-600 dark:text-emerald-300 uppercase">
+                  <span className="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                  <span className="text-xs font-mono font-bold tracking-wider text-blue-600 dark:text-blue-300 uppercase">
                     Cartographie & Télématique Alger (H3 Res 8)
                   </span>
                 </div>

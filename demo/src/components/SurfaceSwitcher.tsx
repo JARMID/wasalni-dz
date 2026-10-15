@@ -107,7 +107,7 @@ export const SurfaceSwitcher: React.FC<SurfaceSwitcherProps> = ({
         {!isExpanded && (
           <button
             onClick={() => setIsExpanded(true)}
-            className="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-emerald-600 text-white font-bold text-xs shadow-md cursor-pointer"
+            className="flex items-center space-x-2 px-3 py-1.5 rounded-xl bg-blue-600 text-white font-bold text-xs shadow-md cursor-pointer"
           >
             <Sparkles className="w-3.5 h-3.5" />
             <span>Portail Actif: {surfaces.find(s => s.id === activeTab)?.labelShort}</span>
@@ -126,11 +126,11 @@ export const SurfaceSwitcher: React.FC<SurfaceSwitcherProps> = ({
                   title={surface.label}
                   className={`flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap ${
                     isActive
-                      ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-600/30 ring-1 ring-emerald-400/50'
+                      ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30 ring-1 ring-blue-400/50'
                       : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200/60 dark:hover:bg-white/10'
                   }`}
                 >
-                  <span className={isActive ? 'text-white' : 'text-emerald-500'}>
+                  <span className={isActive ? 'text-white' : 'text-blue-500'}>
                     {surface.icon}
                   </span>
                   <span>{surface.labelShort}</span>

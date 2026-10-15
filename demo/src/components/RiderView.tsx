@@ -242,15 +242,15 @@ export const RiderView: React.FC<RiderViewProps> = ({
       <div>
         <h2 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center space-x-1.5">
           <span>{t('riderPhoneHeader')}</span>
-          <ShieldCheck className="w-4 h-4 text-emerald-500" />
+          <ShieldCheck className="w-4 h-4 text-blue-500" />
         </h2>
         <p className="text-[10px] text-slate-500 dark:text-slate-400">{t('riderSubheader')}</p>
       </div>
 
       <div className="flex items-center space-x-2">
         {/* Stored-Value Wallet Pill */}
-        <div className="flex items-center space-x-1.5 px-2.5 py-1 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-300 text-xs font-mono font-bold shadow-sm">
-          <Wallet className="w-3.5 h-3.5 text-emerald-500" />
+        <div className="flex items-center space-x-1.5 px-2.5 py-1 rounded-xl bg-blue-500/10 border border-blue-500/30 text-blue-600 dark:text-blue-300 text-xs font-mono font-bold shadow-sm">
+          <Wallet className="w-3.5 h-3.5 text-blue-500" />
           <span>{riderWalletBalanceDzd.toFixed(2)} DA</span>
         </div>
 
@@ -293,7 +293,7 @@ export const RiderView: React.FC<RiderViewProps> = ({
       <div className="space-y-2">
         <label className="text-[11px] font-bold text-slate-600 dark:text-slate-300 uppercase tracking-wider flex items-center justify-between">
           <span className="flex items-center gap-1">
-            <Search className="w-3.5 h-3.5 text-emerald-500" />
+            <Search className="w-3.5 h-3.5 text-blue-500" />
             <span>{t('recentPlaces')}</span>
           </span>
           <span className="text-[10px] text-slate-400 font-normal">1-Clic</span>
@@ -309,13 +309,13 @@ export const RiderView: React.FC<RiderViewProps> = ({
                 onClick={() => handleSelectQuickDestination(chip.id)}
                 className={`p-2 rounded-xl text-left border transition-all cursor-pointer flex flex-col justify-between ${
                   isSelected
-                    ? 'bg-emerald-500/15 border-emerald-500 text-slate-900 dark:text-white shadow-sm'
-                    : 'bg-white/70 dark:bg-slate-900/60 border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:border-emerald-500/40'
+                    ? 'bg-blue-500/15 border-blue-500 text-slate-900 dark:text-white shadow-sm'
+                    : 'bg-white/70 dark:bg-slate-900/60 border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 hover:border-blue-500/40'
                 }`}
               >
                 <div className="flex items-center justify-between w-full mb-1">
                   <span className="text-base">{chip.icon}</span>
-                  {isSelected && <Check className="w-3.5 h-3.5 text-emerald-500" />}
+                  {isSelected && <Check className="w-3.5 h-3.5 text-blue-500" />}
                 </div>
                 <div className="font-extrabold text-[11px] leading-tight truncate">
                   {lang === 'ar' ? chip.nameAr : chip.name}
@@ -340,7 +340,7 @@ export const RiderView: React.FC<RiderViewProps> = ({
               : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
           }`}
         >
-          <Zap className="w-3.5 h-3.5 text-emerald-500" />
+          <Zap className="w-3.5 h-3.5 text-amber-500" />
           <span>{t('bookingInstant')}</span>
         </button>
         <button
@@ -348,7 +348,7 @@ export const RiderView: React.FC<RiderViewProps> = ({
           onClick={() => { soundEngine.playSelection(); setBookingType('recurring_chauffeur'); }}
           className={`py-2 px-3 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
             bookingType === 'recurring_chauffeur'
-              ? 'bg-emerald-500 text-white shadow-md shadow-emerald-500/20'
+              ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
               : 'text-slate-500 hover:text-slate-900 dark:hover:text-white'
           }`}
         >
@@ -359,10 +359,10 @@ export const RiderView: React.FC<RiderViewProps> = ({
 
       {/* 3. If Recurring Chauffeur: Detailed Configuration */}
       {bookingType === 'recurring_chauffeur' && (
-        <div className="p-3.5 rounded-2xl border-2 border-emerald-500/30 bg-emerald-500/5 space-y-3 animate-fadeIn">
+        <div className="p-3.5 rounded-2xl border-2 border-blue-500/30 bg-blue-500/5 space-y-3 animate-fadeIn">
           <div>
-            <h3 className="font-extrabold text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
-              <Repeat className="w-3.5 h-3.5 text-emerald-500" />
+            <h3 className="font-extrabold text-xs text-blue-600 dark:text-blue-400 flex items-center gap-1">
+              <Repeat className="w-3.5 h-3.5 text-blue-500" />
               <span>{t('recurringTitle')}</span>
             </h3>
             <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5">
@@ -378,7 +378,7 @@ export const RiderView: React.FC<RiderViewProps> = ({
                 <button
                   type="button"
                   onClick={() => { soundEngine.playSelection(); setSelectedDays(['dim', 'lun', 'mar', 'mer', 'jeu']); }}
-                  className="px-2 py-0.5 rounded-md bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-[9px] font-bold hover:bg-emerald-500/30 cursor-pointer"
+                  className="px-2 py-0.5 rounded-md bg-blue-500/20 text-blue-700 dark:text-blue-300 text-[9px] font-bold hover:bg-blue-500/30 cursor-pointer"
                 >
                   Dim-Jeu
                 </button>
@@ -402,7 +402,7 @@ export const RiderView: React.FC<RiderViewProps> = ({
                     onClick={() => toggleDay(day.id)}
                     className={`py-1.5 rounded-xl text-center text-[10px] font-bold transition-all cursor-pointer border ${
                       isSelected
-                        ? 'bg-emerald-500 text-white border-emerald-500 shadow-sm'
+                        ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
                         : 'bg-white/60 dark:bg-slate-950/60 text-slate-400 border-slate-200 dark:border-white/10 hover:border-slate-300'
                     }`}
                   >
@@ -417,14 +417,14 @@ export const RiderView: React.FC<RiderViewProps> = ({
           <div className="grid grid-cols-2 gap-2 text-xs">
             <div className="p-2.5 rounded-xl bg-white/70 dark:bg-slate-950/60 border border-slate-200 dark:border-white/10 space-y-1">
               <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center gap-1">
-                <Clock className="w-3 h-3 text-emerald-500" />
+                <Clock className="w-3 h-3 text-blue-500" />
                 <span>{t('recurringPickupTime')}</span>
               </label>
               <input 
                 type="time" 
                 value={pickupTime}
                 onChange={(e) => setPickupTime(e.target.value)}
-                className="w-full text-xs font-mono font-bold p-1 bg-transparent border-b border-emerald-400 text-slate-900 dark:text-white"
+                className="w-full text-xs font-mono font-bold p-1 bg-transparent border-b border-blue-400 text-slate-900 dark:text-white"
               />
             </div>
 
@@ -438,7 +438,7 @@ export const RiderView: React.FC<RiderViewProps> = ({
                   type="checkbox"
                   checked={hasReturnTrip}
                   onChange={(e) => setHasReturnTrip(e.target.checked)}
-                  className="rounded text-emerald-500 focus:ring-0 cursor-pointer"
+                  className="rounded text-blue-600 focus:ring-0 cursor-pointer"
                 />
               </div>
               <input 
@@ -490,18 +490,18 @@ export const RiderView: React.FC<RiderViewProps> = ({
           {/* Assigned Driver Profile Card */}
           <div className="p-2.5 rounded-xl bg-white/80 dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 flex items-center justify-between text-xs">
             <div className="flex items-center space-x-2.5">
-              <img src={driver.photoUrl} alt={driver.fullName} className="w-9 h-9 rounded-xl object-contain border border-emerald-500/30 bg-slate-950 p-0.5" />
+              <img src={driver.photoUrl} alt={driver.fullName} className="w-9 h-9 rounded-xl object-contain border border-blue-500/30 bg-slate-950 p-0.5" />
               <div>
                 <div className="font-extrabold text-slate-900 dark:text-white text-[11px] flex items-center gap-1">
                   <span>{driver.fullName}</span>
-                  <UserCheck className="w-3 h-3 text-emerald-500" />
+                  <UserCheck className="w-3 h-3 text-blue-500" />
                 </div>
                 <div className="text-[9px] text-slate-500 dark:text-slate-400">
                   Agrément DTW : {driver.agrementNumber} • {driver.vehicleMake} {driver.vehicleModel}
                 </div>
               </div>
             </div>
-            <span className="text-[9px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold">
+            <span className="text-[9px] px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-600 dark:text-blue-400 font-bold">
               Titulaire Garanti
             </span>
           </div>
@@ -520,14 +520,14 @@ export const RiderView: React.FC<RiderViewProps> = ({
               onClick={() => { soundEngine.playSelection(); setSelectedMode('taxi_individuel_metered'); }}
               className={`p-2.5 rounded-2xl border text-left transition-all flex flex-col justify-between cursor-pointer ${
                 selectedMode === 'taxi_individuel_metered'
-                  ? 'bg-emerald-500/15 border-emerald-500 shadow-md shadow-emerald-500/10'
+                  ? 'bg-amber-500/15 border-amber-500 shadow-md shadow-amber-500/10'
                   : 'border-slate-200 dark:border-white/10 text-slate-500 hover:border-slate-300 dark:hover:border-white/20'
               }`}
             >
-              <Car className={`w-5 h-5 mb-1 ${selectedMode === 'taxi_individuel_metered' ? 'text-emerald-500' : 'text-slate-400'}`} />
+              <Car className={`w-5 h-5 mb-1 ${selectedMode === 'taxi_individuel_metered' ? 'text-amber-500' : 'text-slate-400'}`} />
               <div>
                 <div className="font-bold text-xs text-slate-900 dark:text-white">Individuel</div>
-                <div className="text-[9px] text-emerald-600 dark:text-emerald-400 font-semibold">+100 DA Approche</div>
+                <div className="text-[9px] text-amber-600 dark:text-amber-400 font-semibold">+100 DA Approche</div>
               </div>
             </button>
 
@@ -568,7 +568,7 @@ export const RiderView: React.FC<RiderViewProps> = ({
       <div className="space-y-2.5 p-3 rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900/40">
         <div className="space-y-1">
           <label className="text-[10px] text-slate-500 font-bold uppercase tracking-wider flex items-center gap-1">
-            <MapPin className="w-3.5 h-3.5 text-emerald-500" />
+            <MapPin className="w-3.5 h-3.5 text-blue-500" />
             <span>{t('riderPickup')}</span>
           </label>
           <select 
@@ -586,7 +586,7 @@ export const RiderView: React.FC<RiderViewProps> = ({
             ))}
           </select>
           {pickupAddress && (
-            <div className="pt-1 text-[9px] font-mono text-emerald-600 dark:text-emerald-400 flex items-center space-x-1 truncate">
+            <div className="pt-1 text-[9px] font-mono text-blue-600 dark:text-blue-400 flex items-center space-x-1 truncate">
               <span className="font-bold">📍 OpenStreetMap :</span>
               <span className="truncate">{pickupAddress.formatted}</span>
             </div>
@@ -720,7 +720,7 @@ export const RiderView: React.FC<RiderViewProps> = ({
               onClick={() => setPaymentMethod('cash')}
               className={`p-2.5 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1 cursor-pointer ${
                 paymentMethod === 'cash' 
-                  ? 'bg-emerald-500/20 border-emerald-500 text-emerald-600 dark:text-emerald-300' 
+                  ? 'bg-amber-500/20 border-amber-500 text-amber-600 dark:text-amber-300' 
                   : 'border-slate-200 dark:border-white/10 text-slate-500'
               }`}
             >
@@ -744,7 +744,7 @@ export const RiderView: React.FC<RiderViewProps> = ({
               onClick={() => setPaymentMethod('trustdesk_wallet')}
               className={`p-2.5 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1 cursor-pointer ${
                 paymentMethod === 'trustdesk_wallet' 
-                  ? 'bg-emerald-500/20 border-emerald-500 text-emerald-600 dark:text-emerald-300' 
+                  ? 'bg-blue-500/20 border-blue-500 text-blue-600 dark:text-blue-300' 
                   : 'border-slate-200 dark:border-white/10 text-slate-500'
               }`}
             >
@@ -753,8 +753,8 @@ export const RiderView: React.FC<RiderViewProps> = ({
             </button>
           </div>
 
-          <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-[11px] text-emerald-700 dark:text-emerald-300 leading-snug">
-            💡 <strong>Spare Change Flywheel :</strong> Si le chauffeur manque de monnaie, le reliquat est viré sur votre solde digital.
+          <div className="p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-[11px] text-blue-700 dark:text-blue-300 leading-snug">
+            💡 <strong>Spare Change Flywheel :</strong> Si le chauffeur manque de monnaie, le reliquat est viré sur votre solde digital WASSLANI.
           </div>
         </div>
       )}
@@ -766,7 +766,7 @@ export const RiderView: React.FC<RiderViewProps> = ({
             {bookingType === 'recurring_chauffeur' ? t('recurringEstimatedTotal') : t('fareEstimated')}
           </span>
           <div className="flex items-center space-x-2">
-            <span className="text-base font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">
+            <span className="text-base font-extrabold text-blue-600 dark:text-blue-400 font-mono">
               ~{currency === 'DZD' 
                 ? (bookingType === 'recurring_chauffeur' ? totalPackageFareDzd.toFixed(2) : `${instantEstimatedFare}.00`) + ' DZD'
                 : forexRates 
@@ -795,7 +795,7 @@ export const RiderView: React.FC<RiderViewProps> = ({
                   onClick={() => { soundEngine.playClick(); setCurrency(c); }}
                   className={`px-1.5 py-0.5 rounded-md text-[9px] font-bold cursor-pointer transition-colors ${
                     currency === c 
-                      ? 'bg-emerald-500 text-white' 
+                      ? 'bg-blue-600 text-white' 
                       : 'text-slate-400 hover:text-white bg-white/5'
                   }`}
                 >
@@ -819,7 +819,7 @@ export const RiderView: React.FC<RiderViewProps> = ({
         )}
 
         {isSponsored && (
-          <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-[10px] text-emerald-600 dark:text-emerald-400 font-bold flex items-center justify-between">
+          <div className="p-2 rounded-xl bg-blue-500/10 border border-blue-500/20 text-[10px] text-blue-600 dark:text-blue-400 font-bold flex items-center justify-between">
             <span>{t('sponsorPaidBadge')}</span>
             <span>{sponsorName}</span>
           </div>
@@ -828,7 +828,7 @@ export const RiderView: React.FC<RiderViewProps> = ({
 
       <button
         onClick={handleOrder}
-        className="w-full py-3.5 rounded-2xl text-white font-extrabold text-sm shadow-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 shadow-emerald-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+        className="w-full py-3.5 rounded-2xl text-white font-extrabold text-sm shadow-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 shadow-blue-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
       >
         {bookingType === 'recurring_chauffeur' ? t('recurringOrderBtn') : t('riderOrderBtn')}
       </button>
@@ -843,8 +843,8 @@ export const RiderView: React.FC<RiderViewProps> = ({
     if (currentRide.status === 'requesting' || currentRide.status === 'matching') {
       return (
         <div className="p-6 text-center space-y-4 animate-fadeIn">
-          <div className="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-400 mx-auto flex items-center justify-center animate-pulse">
-            <Car className="w-8 h-8 text-emerald-500 animate-bounce" />
+          <div className="w-16 h-16 rounded-full bg-blue-500/20 border-2 border-blue-400 mx-auto flex items-center justify-center animate-pulse">
+            <Car className="w-8 h-8 text-blue-500 animate-bounce" />
           </div>
           <h3 className="text-base font-extrabold text-slate-900 dark:text-white">
             {currentRide.bookingType === 'recurring_chauffeur' 
@@ -868,7 +868,7 @@ export const RiderView: React.FC<RiderViewProps> = ({
     if (currentRide.status === 'driver_assigned' || currentRide.status === 'driver_arrived') {
       return (
         <div className="space-y-4 animate-fadeIn">
-          <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-between text-xs font-bold">
+          <div className="p-3 rounded-2xl bg-blue-500/10 border border-blue-500/30 text-blue-600 dark:text-blue-400 flex items-center justify-between text-xs font-bold">
             <span>
               {currentRide.bookingType === 'recurring_chauffeur'
                 ? t('recurringActiveBadge')
@@ -878,8 +878,8 @@ export const RiderView: React.FC<RiderViewProps> = ({
           </div>
 
           {/* 4-Digit Safety Boarding PIN with k-Anonymity verification */}
-          <div className="p-4 rounded-2xl border-2 border-emerald-500/40 bg-emerald-500/5 text-center space-y-2">
-            <span className="text-[11px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider block">
+          <div className="p-4 rounded-2xl border-2 border-amber-500/40 bg-amber-500/5 text-center space-y-2">
+            <span className="text-[11px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider block">
               {t('riderPinTitle')}
             </span>
             <div className="flex items-center justify-center space-x-3">
@@ -891,7 +891,7 @@ export const RiderView: React.FC<RiderViewProps> = ({
                 className="p-1.5 rounded-lg border border-slate-200 dark:border-white/10 hover:bg-white/10 transition-colors cursor-pointer"
                 title={t('riderCopyPin')}
               >
-                {copiedPin ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4 text-slate-400" />}
+                {copiedPin ? <Check className="w-4 h-4 text-blue-500" /> : <Copy className="w-4 h-4 text-slate-400" />}
               </button>
             </div>
 
@@ -899,12 +899,12 @@ export const RiderView: React.FC<RiderViewProps> = ({
               <div className={`p-2 rounded-xl text-[10px] font-mono flex items-center justify-center space-x-1.5 border ${
                 pinAudit.isCompromised 
                   ? 'bg-rose-500/10 border-rose-500/30 text-rose-600 dark:text-rose-400 font-bold'
-                  : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-600 dark:text-emerald-400 font-bold'
+                  : 'bg-blue-500/10 border-blue-500/30 text-blue-600 dark:text-blue-400 font-bold'
               }`}>
                 {pinAudit.isCompromised ? (
                   <ShieldAlert className="w-3.5 h-3.5 shrink-0 text-rose-500" />
                 ) : (
-                  <ShieldCheck className="w-3.5 h-3.5 shrink-0 text-emerald-500" />
+                  <ShieldCheck className="w-3.5 h-3.5 shrink-0 text-blue-500" />
                 )}
                 <span>{pinAudit.statusLabel} • {pinAudit.lawComplianceText}</span>
               </div>
@@ -917,7 +917,7 @@ export const RiderView: React.FC<RiderViewProps> = ({
           {/* Driver Credentials & Vehicle Medallion */}
           <div className="p-4 rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900/40 space-y-3">
             <div className="flex items-center space-x-3">
-              <img src={driver.photoUrl} alt={driver.fullName} className="w-12 h-12 rounded-xl object-contain border border-emerald-500/30 bg-slate-950 p-0.5" />
+              <img src={driver.photoUrl} alt={driver.fullName} className="w-12 h-12 rounded-xl object-contain border border-blue-500/30 bg-slate-950 p-0.5" />
               <div>
                 <h4 className="font-extrabold text-sm text-slate-900 dark:text-white">{driver.fullName}</h4>
                 <div className="flex items-center space-x-1 text-xs text-amber-500 font-bold">
@@ -951,7 +951,7 @@ export const RiderView: React.FC<RiderViewProps> = ({
             <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200 dark:border-white/10">
               <a
                 href={`tel:${driver.phone.replace(/\s+/g, '')}`}
-                className="py-2 px-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors border border-emerald-500/30"
+                className="py-2 px-3 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors border border-blue-500/30"
               >
                 <PhoneCall className="w-3.5 h-3.5" />
                 <span>Appeler</span>
@@ -987,8 +987,8 @@ export const RiderView: React.FC<RiderViewProps> = ({
           </div>
 
           <div className="p-6 rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900/40 text-center space-y-3">
-            <div className="w-12 h-12 rounded-full bg-emerald-500/20 border border-emerald-400 mx-auto flex items-center justify-center">
-              <Navigation2 className="w-6 h-6 text-emerald-500 animate-spin" />
+            <div className="w-12 h-12 rounded-full bg-blue-500/20 border border-blue-400 mx-auto flex items-center justify-center">
+              <Navigation2 className="w-6 h-6 text-blue-500 animate-spin" />
             </div>
             <h4 className="font-bold text-sm text-slate-900 dark:text-white">
               Vers : {destination.name}
@@ -1004,23 +1004,23 @@ export const RiderView: React.FC<RiderViewProps> = ({
     // D. COMPLETED
     if (currentRide.status === 'completed') {
       return (
-        <div className="p-6 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 text-center space-y-4 animate-fadeIn">
-          <div className="w-14 h-14 rounded-full bg-emerald-500/20 border-2 border-emerald-500 mx-auto flex items-center justify-center">
-            <Check className="w-8 h-8 text-emerald-500" />
+        <div className="p-6 rounded-2xl border border-blue-500/30 bg-blue-500/10 text-center space-y-4 animate-fadeIn">
+          <div className="w-14 h-14 rounded-full bg-blue-500/20 border-2 border-blue-500 mx-auto flex items-center justify-center">
+            <Check className="w-8 h-8 text-blue-500" />
           </div>
-          <h3 className="font-extrabold text-base text-emerald-600 dark:text-emerald-400">
+          <h3 className="font-extrabold text-base text-blue-600 dark:text-blue-400">
             {t('riderTripCompleted')}
           </h3>
           
           <div className="space-y-1 text-xs text-slate-600 dark:text-slate-300">
             <p>Total réglé : <strong>{currentRide.totalFareDzd.toFixed(2)} DZD</strong></p>
             {currentRide.sponsor?.isSponsored ? (
-              <p className="text-emerald-600 dark:text-emerald-400 font-bold">
+              <p className="text-blue-600 dark:text-blue-400 font-bold">
                 Paiement réglé par le sponsor ({currentRide.sponsor.sponsorName}) via CIB SATIM
               </p>
             ) : currentRide.spareChangeCreditedDzd ? (
-              <p className="text-emerald-600 dark:text-emerald-400 font-bold">
-                Reliquat crédité : +{currentRide.spareChangeCreditedDzd.toFixed(2)} DA sur TrustDesk
+              <p className="text-blue-600 dark:text-blue-400 font-bold">
+                Reliquat crédité : +{currentRide.spareChangeCreditedDzd.toFixed(2)} DA sur WASSLANI
               </p>
             ) : null}
           </div>
@@ -1075,10 +1075,10 @@ export const RiderView: React.FC<RiderViewProps> = ({
               <span className="font-bold text-slate-800 dark:text-white">16:42</span>
               <div className="smartphone-notch">
                 <span className="w-2.5 h-2.5 rounded-full bg-slate-900 dark:bg-slate-800 border border-slate-700"></span>
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                <span className="w-2 h-2 rounded-full bg-blue-400 animate-ping"></span>
               </div>
               <div className="flex items-center space-x-1.5 text-[10px]">
-                <span className="text-emerald-500 font-bold">4G Mobilis</span>
+                <span className="text-blue-400 font-bold">4G Mobilis</span>
                 <span>100%</span>
               </div>
             </div>
@@ -1097,7 +1097,7 @@ export const RiderView: React.FC<RiderViewProps> = ({
                 className="h-full w-full"
               />
               <div className="absolute top-2 left-2 z-[400] pointer-events-none">
-                <span className="px-2 py-0.5 rounded-md bg-slate-950/80 backdrop-blur-md text-[9px] font-mono font-bold text-emerald-400 border border-emerald-500/30 shadow-md">
+                <span className="px-2 py-0.5 rounded-md bg-slate-950/80 backdrop-blur-md text-[9px] font-mono font-bold text-sky-300 border border-sky-400/30 shadow-md">
                   GPS Alger • {origin.commune}
                 </span>
               </div>

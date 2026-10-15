@@ -47,7 +47,7 @@ export const SpareChangeModal: React.FC<SpareChangeModalProps> = ({
       particleCount: 90,
       spread: 75,
       origin: { y: 0.6 },
-      colors: ['#f59e0b', '#10b981', '#38bdf8'],
+      colors: ['#f59e0b', '#2563eb', '#38bdf8'],
     });
 
     setTimeout(() => {
@@ -62,7 +62,7 @@ export const SpareChangeModal: React.FC<SpareChangeModalProps> = ({
       <div className="glass-panel max-w-md w-full p-6 rounded-3xl shadow-2xl relative border border-slate-200 dark:border-white/10 animate-in fade-in zoom-in-95 duration-200 bg-white/95 dark:bg-slate-900/95 text-slate-900 dark:text-white">
         
         {/* Glow Header Accent */}
-        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-amber-400 via-emerald-400 to-amber-400 rounded-t-3xl"></div>
+        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-600 via-amber-400 to-blue-600 rounded-t-3xl"></div>
 
         {/* Close Button */}
         <button
@@ -92,7 +92,7 @@ export const SpareChangeModal: React.FC<SpareChangeModalProps> = ({
 
           <div className="flex justify-between items-center text-sm">
             <span className="text-slate-500 dark:text-slate-400 flex items-center space-x-1.5">
-              <Banknote className="w-4 h-4 text-emerald-500" />
+              <Banknote className="w-4 h-4 text-blue-500" />
               <span>{t('modalTenderedLabel')}</span>
             </span>
             <div className="flex items-center space-x-1.5">
@@ -114,23 +114,23 @@ export const SpareChangeModal: React.FC<SpareChangeModalProps> = ({
 
           <div className="pt-2 border-t border-slate-200 dark:border-white/10 flex justify-between items-center">
             <span className="text-amber-600 dark:text-amber-300 font-bold text-sm">{t('modalChangeDue')}</span>
-            <span className="font-mono font-black text-2xl text-emerald-600 dark:text-emerald-400">+{changeDue.toFixed(2)} DZD</span>
+            <span className="font-mono font-black text-2xl text-blue-600 dark:text-blue-400">+{changeDue.toFixed(2)} DZD</span>
           </div>
         </div>
 
-        {/* TrustDesk Conversion Impact */}
-        <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-2xl p-4 mb-5 text-xs text-slate-700 dark:text-slate-300 space-y-2">
-          <div className="flex items-center space-x-2 text-emerald-600 dark:text-emerald-300 font-bold">
-            <ShieldCheck className="w-4 h-4 text-emerald-500" />
-            <span>Crédit Instantané Portefeuille Stored-Value TrustDesk</span>
+        {/* WASSLANI Wallet Stored-Value Conversion */}
+        <div className="bg-blue-500/10 border border-blue-500/30 rounded-2xl p-4 mb-5 text-xs text-slate-700 dark:text-slate-300 space-y-2">
+          <div className="flex items-center space-x-2 text-blue-600 dark:text-blue-300 font-bold">
+            <ShieldCheck className="w-4 h-4 text-blue-500" />
+            <span>Crédit Instantané Portefeuille WASSLANI</span>
           </div>
           <p className="leading-relaxed">
             {t('modalExplanation')}
           </p>
-          <div className="pt-2 flex items-center justify-between font-mono text-[11px] text-slate-600 dark:text-slate-300 border-t border-emerald-500/20">
+          <div className="pt-2 flex items-center justify-between font-mono text-[11px] text-slate-600 dark:text-slate-300 border-t border-blue-500/20">
             <span>Solde Passager: {riderCurrentBalanceDzd.toFixed(2)} DA</span>
-            <ArrowRight className="w-3.5 h-3.5 text-emerald-500" />
-            <span className="text-emerald-600 dark:text-emerald-300 font-bold">{(riderCurrentBalanceDzd + changeDue).toFixed(2)} DA</span>
+            <ArrowRight className="w-3.5 h-3.5 text-blue-500" />
+            <span className="text-blue-600 dark:text-blue-300 font-bold">{(riderCurrentBalanceDzd + changeDue).toFixed(2)} DA</span>
           </div>
         </div>
 

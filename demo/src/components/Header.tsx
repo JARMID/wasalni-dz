@@ -32,10 +32,10 @@ export interface BrandOption {
 }
 
 export const BRAND_OPTIONS: BrandOption[] = [
-  { id: 'wasalni', name: 'WASALNI DZ', nameAr: 'وصلني', tag: 'Populaire & Convivial (Darija)' },
-  { id: 'aman', name: 'AMAN DZ', nameAr: 'أمان', tag: 'Sûreté & Boîte Noire Judiciaire' },
-  { id: 'masar', name: 'MASAR DZ', nameAr: 'مسار', tag: 'Télématique & Guidage H3' },
-  { id: 'naql', name: 'NAQL DZ', nameAr: 'نقل الجزائر', tag: 'Institutionnel & Réglementé' },
+  { id: 'wasslani', name: 'WASSLANI', nameAr: 'وصلني', tag: 'Plateforme Officielle des Taxis Agréés' },
+  { id: 'aman', name: 'AMAN', nameAr: 'أمان', tag: 'Sûreté & Boîte Noire Judiciaire' },
+  { id: 'masar', name: 'MASAR', nameAr: 'مسار', tag: 'Télématique & Guidage H3' },
+  { id: 'naql', name: 'NAQL', nameAr: 'نقل الجزائر', tag: 'Institutionnel & Réglementé' },
 ];
 
 interface HeaderProps {
@@ -106,7 +106,7 @@ export const Header: React.FC<HeaderProps> = ({
     home: {
       title: lang === 'ar' ? selectedBrand.nameAr : selectedBrand.name,
       subtitle: t('brandSubtitle'),
-      icon: <Car className="w-5 h-5 text-emerald-500" />,
+      icon: <Car className="w-5 h-5 text-blue-500" />,
       badge: t('dtwBadge'),
     },
     rider: {
@@ -124,7 +124,7 @@ export const Header: React.FC<HeaderProps> = ({
     dispatch: {
       title: 'Direction des Transports (DTW Alger)',
       subtitle: 'Salle des Opérations & Suivi Télématique de Flotte',
-      icon: <Monitor className="w-5 h-5 text-emerald-500" />,
+      icon: <Monitor className="w-5 h-5 text-blue-500" />,
       badge: 'POSTE DISPATCH',
     },
     ledger: {
@@ -136,7 +136,7 @@ export const Header: React.FC<HeaderProps> = ({
     inspector: {
       title: 'Contrôle Routier Checkpoint DTW',
       subtitle: 'Audit de conformité & Vérification d\'agrément sur le terrain',
-      icon: <ShieldCheck className="w-5 h-5 text-teal-500" />,
+      icon: <ShieldCheck className="w-5 h-5 text-amber-500" />,
       badge: 'POLICE / DTW',
     },
     sync: {
@@ -165,7 +165,7 @@ export const Header: React.FC<HeaderProps> = ({
                 onClick={() => handleTabChange('home')}
                 className="flex items-center space-x-3 cursor-pointer text-left focus:outline-none"
               >
-                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center shadow-lg shadow-emerald-500/25 text-white font-black group-hover:scale-105 transition-transform border border-emerald-400/40">
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-700 flex items-center justify-center shadow-lg shadow-blue-600/25 text-white font-black group-hover:scale-105 transition-transform border border-blue-400/40">
                   <Car className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2]" />
                 </div>
                 <div>
@@ -173,7 +173,7 @@ export const Header: React.FC<HeaderProps> = ({
                     <span className="font-extrabold text-base sm:text-xl tracking-tight text-slate-900 dark:text-white">
                       {lang === 'ar' ? selectedBrand.nameAr : selectedBrand.name}
                     </span>
-                    <span className="px-2 py-0.5 text-[10px] font-bold bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 rounded-full tracking-wider flex items-center space-x-1">
+                    <span className="px-2 py-0.5 text-[10px] font-bold bg-blue-600/15 text-blue-700 dark:text-blue-300 border border-blue-500/30 rounded-full tracking-wider flex items-center space-x-1">
                       <ShieldCheck className="w-2.5 h-2.5" />
                       <span>{t('dtwBadge')}</span>
                     </span>
@@ -188,7 +188,7 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 onClick={() => setIsBrandMenuOpen(!isBrandMenuOpen)}
                 title="Choisir le nom officiel de la marque"
-                className="p-1 rounded-lg text-slate-400 hover:text-emerald-500 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all cursor-pointer"
+                className="p-1 rounded-lg text-slate-400 hover:text-blue-500 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all cursor-pointer"
               >
                 <ChevronDown className="w-3.5 h-3.5" />
               </button>
@@ -209,7 +209,7 @@ export const Header: React.FC<HeaderProps> = ({
                       }}
                       className={`w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between transition-all cursor-pointer ${
                         selectedBrand.id === b.id
-                          ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 font-bold border border-emerald-500/30'
+                          ? 'bg-blue-600/15 text-blue-600 dark:text-blue-300 font-bold border border-blue-500/30'
                           : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5'
                       }`}
                     >
@@ -217,7 +217,7 @@ export const Header: React.FC<HeaderProps> = ({
                         <div className="font-extrabold">{b.name} <span className="text-[11px] font-normal text-slate-400">({b.nameAr})</span></div>
                         <div className="text-[10px] text-slate-500 dark:text-slate-400">{b.tag}</div>
                       </div>
-                      {selectedBrand.id === b.id && <Sparkles className="w-3.5 h-3.5 text-emerald-500" />}
+                      {selectedBrand.id === b.id && <Sparkles className="w-3.5 h-3.5 text-blue-500" />}
                     </button>
                   ))}
                 </div>
@@ -228,25 +228,25 @@ export const Header: React.FC<HeaderProps> = ({
             <nav className="hidden lg:flex items-center space-x-6 text-xs font-bold text-slate-600 dark:text-slate-300">
               <a 
                 href="#services" 
-                className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 {t('marketingNavServices')}
               </a>
               <a 
                 href="#drivers" 
-                className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 {t('marketingNavDrivers')}
               </a>
               <a 
                 href="#safety" 
-                className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 {t('marketingNavSafety')}
               </a>
               <a 
                 href="#enterprise" 
-                className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+                className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
               >
                 {t('marketingNavEnterprise')}
               </a>
@@ -258,7 +258,7 @@ export const Header: React.FC<HeaderProps> = ({
               {/* Primary Call to Action: Book Ride */}
               <button
                 onClick={() => handleTabChange('rider')}
-                className="hidden sm:flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-md shadow-emerald-500/20 transition-all cursor-pointer"
+                className="hidden sm:flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs shadow-md shadow-blue-500/20 transition-all cursor-pointer"
               >
                 <Smartphone className="w-3.5 h-3.5" />
                 <span>{t('marketingCtaOrder')}</span>
@@ -281,9 +281,9 @@ export const Header: React.FC<HeaderProps> = ({
                   onOpenCopilot();
                 }}
                 title="Copilote IA Réglementaire (Décret 12-230 & Loi 25-11)"
-                className="flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-700 dark:text-emerald-300 text-xs font-bold transition-all shadow-md cursor-pointer group"
+                className="flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-blue-600/15 hover:bg-blue-600/25 border border-blue-500/40 text-blue-700 dark:text-blue-300 text-xs font-bold transition-all shadow-md cursor-pointer group"
               >
-                <Bot className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 group-hover:rotate-12 transition-transform" />
+                <Bot className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 group-hover:rotate-12 transition-transform" />
                 <span className="hidden xl:inline">Copilote IA</span>
               </button>
 
@@ -293,7 +293,7 @@ export const Header: React.FC<HeaderProps> = ({
                 title={isDark ? t('themeLight') : t('themeDark')}
                 className="p-2 rounded-xl border border-slate-300 dark:border-white/10 text-slate-700 dark:text-slate-200 hover:bg-slate-200/50 dark:hover:bg-white/5 transition-all cursor-pointer"
               >
-                {isDark ? <Sun className="w-4 h-4 text-emerald-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
+                {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
               </button>
 
               {/* Audio Toggle */}
@@ -302,7 +302,7 @@ export const Header: React.FC<HeaderProps> = ({
                 title={soundOn ? t('soundMute') : t('soundUnmute')}
                 className={`p-2 rounded-xl border transition-all cursor-pointer ${
                   soundOn 
-                    ? 'border-emerald-500/40 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10' 
+                    ? 'border-blue-500/40 text-blue-600 dark:text-blue-400 bg-blue-600/10' 
                     : 'border-slate-300 dark:border-white/10 text-slate-400'
                 }`}
               >
@@ -315,7 +315,7 @@ export const Header: React.FC<HeaderProps> = ({
                   onClick={() => changeLanguage('fr')}
                   className={`px-2 py-1 rounded-lg transition-colors cursor-pointer ${
                     lang === 'fr' 
-                      ? 'bg-white dark:bg-white/15 text-emerald-600 dark:text-emerald-300 shadow-sm' 
+                      ? 'bg-white dark:bg-white/15 text-blue-600 dark:text-blue-300 shadow-sm font-bold' 
                       : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
@@ -325,7 +325,7 @@ export const Header: React.FC<HeaderProps> = ({
                   onClick={() => changeLanguage('ar')}
                   className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
                     lang === 'ar' 
-                      ? 'bg-white dark:bg-white/15 text-emerald-600 dark:text-emerald-300 shadow-sm' 
+                      ? 'bg-white dark:bg-white/15 text-blue-600 dark:text-blue-300 shadow-sm font-bold' 
                       : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
@@ -335,7 +335,7 @@ export const Header: React.FC<HeaderProps> = ({
                   onClick={() => changeLanguage('en')}
                   className={`px-2 py-1 rounded-lg transition-colors cursor-pointer ${
                     lang === 'en' 
-                      ? 'bg-white dark:bg-white/15 text-emerald-600 dark:text-emerald-300 shadow-sm' 
+                      ? 'bg-white dark:bg-white/15 text-blue-600 dark:text-blue-300 shadow-sm font-bold' 
                       : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                   }`}
                 >
@@ -356,7 +356,7 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="flex items-center space-x-3">
               <button
                 onClick={() => handleTabChange('home')}
-                className="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-slate-200/70 dark:bg-white/5 hover:bg-emerald-600 hover:text-white text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-white/10 text-xs font-bold transition-all cursor-pointer shadow-sm group"
+                className="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-slate-200/70 dark:bg-white/5 hover:bg-blue-600 hover:text-white text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-white/10 text-xs font-bold transition-all cursor-pointer shadow-sm group"
                 title="Retourner au portail et à la présentation"
               >
                 <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
@@ -374,7 +374,7 @@ export const Header: React.FC<HeaderProps> = ({
                     <h2 className="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white">
                       {currentSurface.title}
                     </h2>
-                    <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 uppercase tracking-wider hidden md:inline">
+                    <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-blue-600/15 text-blue-600 dark:text-blue-400 border border-blue-500/30 uppercase tracking-wider hidden md:inline">
                       {currentSurface.badge}
                     </span>
                   </div>
@@ -395,9 +395,9 @@ export const Header: React.FC<HeaderProps> = ({
                   onOpenCopilot();
                 }}
                 title="Copilote IA Réglementaire"
-                className="p-2 sm:px-2.5 sm:py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-700 dark:text-emerald-300 text-xs font-bold transition-all cursor-pointer flex items-center space-x-1"
+                className="p-2 sm:px-2.5 sm:py-1.5 rounded-xl bg-blue-600/15 hover:bg-blue-600/25 border border-blue-500/40 text-blue-700 dark:text-blue-300 text-xs font-bold transition-all cursor-pointer flex items-center space-x-1"
               >
-                <Bot className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                <Bot className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                 <span className="hidden md:inline text-[11px]">Copilote</span>
               </button>
 
@@ -407,7 +407,7 @@ export const Header: React.FC<HeaderProps> = ({
                 title={isDark ? t('themeLight') : t('themeDark')}
                 className="p-2 rounded-xl border border-slate-300 dark:border-white/10 text-slate-700 dark:text-slate-200 hover:bg-slate-200/50 dark:hover:bg-white/5 transition-all cursor-pointer"
               >
-                {isDark ? <Sun className="w-4 h-4 text-emerald-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
+                {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
               </button>
 
               {/* Audio Toggle */}
@@ -416,7 +416,7 @@ export const Header: React.FC<HeaderProps> = ({
                 title={soundOn ? t('soundMute') : t('soundUnmute')}
                 className={`p-2 rounded-xl border transition-all cursor-pointer ${
                   soundOn 
-                    ? 'border-emerald-500/40 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10' 
+                    ? 'border-blue-500/40 text-blue-600 dark:text-blue-400 bg-blue-600/10' 
                     : 'border-slate-300 dark:border-white/10 text-slate-400'
                 }`}
               >
@@ -428,7 +428,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   onClick={() => changeLanguage('fr')}
                   className={`px-2 py-1 rounded-lg transition-colors cursor-pointer ${
-                    lang === 'fr' ? 'bg-white dark:bg-white/15 text-emerald-600 dark:text-emerald-300 shadow-sm' : 'text-slate-500'
+                    lang === 'fr' ? 'bg-white dark:bg-white/15 text-blue-600 dark:text-blue-300 shadow-sm font-bold' : 'text-slate-500'
                   }`}
                 >
                   FR
@@ -436,7 +436,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   onClick={() => changeLanguage('ar')}
                   className={`px-2 py-1 rounded-lg transition-colors cursor-pointer ${
-                    lang === 'ar' ? 'bg-white dark:bg-white/15 text-emerald-600 dark:text-emerald-300 shadow-sm' : 'text-slate-500'
+                    lang === 'ar' ? 'bg-white dark:bg-white/15 text-blue-600 dark:text-blue-300 shadow-sm font-bold' : 'text-slate-500'
                   }`}
                 >
                   عربي
@@ -444,7 +444,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   onClick={() => changeLanguage('en')}
                   className={`px-2 py-1 rounded-lg transition-colors cursor-pointer ${
-                    lang === 'en' ? 'bg-white dark:bg-white/15 text-emerald-600 dark:text-emerald-300 shadow-sm' : 'text-slate-500'
+                    lang === 'en' ? 'bg-white dark:bg-white/15 text-blue-600 dark:text-blue-300 shadow-sm font-bold' : 'text-slate-500'
                   }`}
                 >
                   EN

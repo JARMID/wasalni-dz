@@ -18,7 +18,7 @@ Reçu de Virement Instantané
 Référence: TXN-BMOB-2026-98144
 Date: 14/10/2026 18:22:10
 Compte Émetteur: 00799999001234567825
-Compte Destinataire: 00799999002345678912 (NAQL DZ Escrow)
+Compte Destinataire: 00799999002345678912 (WASSLANI Escrow)
 Montant Débité: 2 500,00 DA
 Statut: Validé par Algérie Poste`,
     amount: 2500,
@@ -32,7 +32,7 @@ Reçu de Virement Instantané
 Référence: TXN-BMOB-2026-44019
 Date: 14/10/2026 18:35:45
 Compte Émetteur: 00799999003456789042
-Compte Destinataire: 00799999002345678912 (NAQL DZ Escrow)
+Compte Destinataire: 00799999002345678912 (WASSLANI Escrow)
 Montant Débité: 1 000,00 DA
 Statut: Validé par Algérie Poste`,
     amount: 1000,
@@ -220,7 +220,7 @@ export const BaridiMobModal: React.FC<BaridiMobModalProps> = ({
                   setVerificationResult(null);
                 }}
                 rows={5}
-                className="w-full bg-black/50 border border-white/15 rounded-xl p-3 text-xs font-mono text-emerald-300 focus:outline-none focus:border-amber-400 resize-none"
+                className="w-full bg-black/50 border border-white/15 rounded-xl p-3 text-xs font-mono text-blue-300 focus:outline-none focus:border-amber-400 resize-none"
               />
             </div>
 
@@ -228,20 +228,20 @@ export const BaridiMobModal: React.FC<BaridiMobModalProps> = ({
             {verificationResult && (
               <div className={`p-3 rounded-xl border text-xs ${
                 verificationResult.valid
-                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'
+                  ? 'bg-blue-600/10 border-blue-500/30 text-blue-300'
                   : 'bg-red-500/10 border-red-500/30 text-red-300'
               }`}>
                 {verificationResult.valid ? (
                   <div className="space-y-1">
-                    <div className="flex items-center gap-2 font-bold text-emerald-400">
+                    <div className="flex items-center gap-2 font-bold text-blue-400">
                       <CheckCircle2 className="w-4 h-4" />
                       Reçu Certifié Conforme (Algérie Poste)
                     </div>
-                    <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-emerald-500/20 text-[11px]">
+                    <div className="grid grid-cols-2 gap-2 mt-2 pt-2 border-t border-blue-500/20 text-[11px]">
                       <div>Montant: <span className="font-bold text-white">{verificationResult.amount.toLocaleString()} DZD</span></div>
                       <div>Réf: <span className="font-mono text-white">{verificationResult.txnRef}</span></div>
                       <div>Compte RIP: <span className="font-mono text-white">{verificationResult.rip}</span></div>
-                      <div>Clé Modulo 97: <span className="font-bold text-emerald-400">Valide (Algérie Poste)</span></div>
+                      <div>Clé Modulo 97: <span className="font-bold text-blue-400">Valide (Algérie Poste)</span></div>
                     </div>
                   </div>
                 ) : (
@@ -266,7 +266,7 @@ export const BaridiMobModal: React.FC<BaridiMobModalProps> = ({
               ) : (
                 <button
                   onClick={handleConfirmCredit}
-                  className="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-white font-bold rounded-xl transition-all shadow-lg flex items-center justify-center gap-2"
+                  className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition-all shadow-lg flex items-center justify-center gap-2"
                 >
                   <CheckCircle2 className="w-4 h-4" />
                   Créditer {verificationResult.amount.toLocaleString()} DZD sur TrustDesk
@@ -289,7 +289,7 @@ export const BaridiMobModal: React.FC<BaridiMobModalProps> = ({
                       className={`rounded-sm ${
                         (i % 2 === 0 || i === 0 || i === 3 || i === 12 || i === 15)
                           ? 'bg-amber-400'
-                          : 'bg-emerald-400/80'
+                          : 'bg-blue-400/80'
                       }`}
                     />
                   ))}
@@ -303,7 +303,7 @@ export const BaridiMobModal: React.FC<BaridiMobModalProps> = ({
                 Compte Récepteur RIP : <span className="font-mono text-amber-400">00799999002345678912</span>
               </div>
               <div className="text-[11px] text-white/40">
-                Compte Séquestre Officiel NAQL DZ agréé Algérie Poste
+                Compte Séquestre Officiel WASSLANI agréé Algérie Poste
               </div>
             </div>
 
@@ -313,7 +313,7 @@ export const BaridiMobModal: React.FC<BaridiMobModalProps> = ({
                 onSuccess(2000, `TXN-QR-${Date.now().toString().slice(-6)}`);
                 onClose();
               }}
-              className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl transition-all"
+              className="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-xl transition-all"
             >
               Simuler le Scan Réussi (2 000 DZD)
             </button>
@@ -322,7 +322,7 @@ export const BaridiMobModal: React.FC<BaridiMobModalProps> = ({
 
         {/* Security Footer */}
         <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-center gap-2 text-[10px] text-white/50">
-          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+          <ShieldCheck className="w-3.5 h-3.5 text-blue-400" />
           <span>Contrôle anti-rejeu SHA-256 et écriture immuable Grand Livre</span>
         </div>
 

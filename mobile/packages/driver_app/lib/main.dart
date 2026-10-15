@@ -11,14 +11,14 @@ class DriverCockpitApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'NAQL DZ - Cockpit Chauffeur',
+      title: 'WASSLANI - Cockpit Chauffeur',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
         scaffoldBackgroundColor: const Color(0xFF0B0F17),
         colorScheme: const ColorScheme.dark(
           primary: Color(0xFFF59E0B), // Municipal Taxi Yellow/Amber
-          secondary: Color(0xFF10B981), // Emerald
+          secondary: Color(0xFF2563EB), // Royal Sapphire Blue
           surface: Color(0xFF131B29),
         ),
         fontFamily: 'Roboto',
@@ -164,17 +164,17 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF10B981).withOpacity(0.1),
+                  color: const Color(0xFF2563EB).withOpacity(0.1),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFF10B981).withOpacity(0.3)),
+                  border: Border.all(color: const Color(0xFF2563EB).withOpacity(0.3)),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text('Crédit Portefeuille TrustDesk:', style: TextStyle(fontSize: 13)),
+                    const Text('Crédit Portefeuille WASSLANI:', style: TextStyle(fontSize: 13)),
                     Text(
                       '+${changeAmount.toStringAsFixed(0)} DA',
-                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF10B981)),
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF2563EB)),
                     ),
                   ],
                 ),
@@ -200,7 +200,7 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF10B981),
+                backgroundColor: const Color(0xFF2563EB),
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
@@ -221,7 +221,7 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
                   );
                 });
               },
-              child: const Text('Créditer sur TrustDesk'),
+              child: const Text('Créditer sur WASSLANI'),
             ),
           ],
         ),
@@ -243,7 +243,7 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
                 color: const Color(0xFFF59E0B),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Text('NAQL DZ', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14)),
+              child: const Text('WASSLANI', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 14)),
             ),
             const SizedBox(width: 12),
             Column(
@@ -275,7 +275,7 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
           ),
           Switch(
             value: driver.isOnline,
-            activeColor: const Color(0xFF10B981),
+            activeColor: const Color(0xFF2563EB),
             onChanged: (val) => setState(() => driver = driver.copyWith(isOnline: val)),
           ),
         ],
@@ -319,8 +319,8 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
                         const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(color: const Color(0xFF10B981).withOpacity(0.2), borderRadius: BorderRadius.circular(6)),
-                          child: const Text('CONFORME', style: TextStyle(fontSize: 10, color: const Color(0xFF10B981), fontWeight: FontWeight.bold)),
+                          decoration: BoxDecoration(color: const Color(0xFF2563EB).withOpacity(0.2), borderRadius: BorderRadius.circular(6)),
+                          child: const Text('CONFORME', style: TextStyle(fontSize: 10, color: Color(0xFF60A5FA), fontWeight: FontWeight.bold)),
                         ),
                       ],
                     ),
@@ -459,7 +459,7 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
               const SizedBox(width: 12),
               Expanded(
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF10B981)),
+                  style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF2563EB)),
                   onPressed: () {
                     final req = currentRide as RideRequested;
                     setState(() {
@@ -527,7 +527,7 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
           ),
           const SizedBox(height: 16),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF10B981)),
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF2563EB)),
             onPressed: () {
               if (_pinController.text.trim() == pickupPin || _pinController.text.isEmpty) {
                 final arrived = currentRide as RideDriverArrived;
@@ -549,7 +549,7 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
       RideInProgress(:final fraisApprocheDzd) => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.speed, size: 56, color: const Color(0xFF10B981)),
+          const Icon(Icons.speed, size: 56, color: const Color(0xFF2563EB)),
           const SizedBox(height: 12),
           const Text('Course en cours...', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
@@ -590,7 +590,7 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
           ),
           const SizedBox(height: 16),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF10B981)),
+            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF2563EB)),
             onPressed: () {
               final meterAmt = double.tryParse(_meterController.text) ?? 750.0;
               final entry = currentRide as RideFareEntry;
@@ -619,7 +619,7 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
       RideCompleted(:final totalFareDzd, :final spareChangeCreditedDzd) => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.check_circle, size: 56, color: const Color(0xFF10B981)),
+          const Icon(Icons.check_circle, size: 56, color: const Color(0xFF2563EB)),
           const SizedBox(height: 12),
           const Text('Course Clôturée avec Succès', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),

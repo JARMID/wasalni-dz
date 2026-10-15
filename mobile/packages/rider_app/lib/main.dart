@@ -11,14 +11,14 @@ class RiderApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'NAQL DZ - Passager',
+      title: 'WASSLANI - Passager',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
         scaffoldBackgroundColor: const Color(0xFF0A0F1D),
         colorScheme: const ColorScheme.dark(
-          primary: Color(0xFF0EA5E9), // Sky blue
-          secondary: Color(0xFF10B981), // Emerald
+          primary: Color(0xFF2563EB), // Royal Sapphire Blue
+          secondary: Color(0xFFF59E0B), // Taxi Amber / Gold
           surface: Color(0xFF131D31),
         ),
         fontFamily: 'Roboto',
@@ -119,7 +119,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                 ),
                 child: const Row(
                   children: [
-                    Icon(Icons.security, size: 20, color: Color(0xFF10B981)),
+                    Icon(Icons.security, size: 20, color: Color(0xFF2563EB)),
                     SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -139,7 +139,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF0EA5E9),
+                backgroundColor: const Color(0xFF2563EB),
                 foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               ),
@@ -150,7 +150,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                 });
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(
-                    backgroundColor: const Color(0xFF10B981),
+                    backgroundColor: const Color(0xFF2563EB),
                     content: Text('Recharge de ${selectedAmt.toInt()} DA validée par SATIM 3DS.'),
                   ),
                 );
@@ -175,10 +175,10 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
-                color: const Color(0xFF0EA5E9),
+                color: const Color(0xFF2563EB),
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Text('NAQL DZ', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13)),
+              child: const Text('WASSLANI', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13)),
             ),
             const SizedBox(width: 8),
             const Flexible(
@@ -187,24 +187,24 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
           ],
         ),
         actions: [
-          // TrustDesk Wallet Pill
+          // WASSLANI Wallet Pill
           InkWell(
             onTap: () => setState(() => _currentTabIndex = 1),
             child: Container(
               margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(
-                color: const Color(0xFF10B981).withOpacity(0.15),
+                color: const Color(0xFF2563EB).withOpacity(0.15),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: const Color(0xFF10B981).withOpacity(0.4)),
+                border: Border.all(color: const Color(0xFF2563EB).withOpacity(0.4)),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.account_balance_wallet, size: 16, color: Color(0xFF10B981)),
+                  const Icon(Icons.account_balance_wallet, size: 16, color: Color(0xFF2563EB)),
                   const SizedBox(width: 6),
                   Text(
                     '${_riderWalletBalanceDzd.toStringAsFixed(0)} DA',
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF10B981)),
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF2563EB)),
                   ),
                 ],
               ),
@@ -223,12 +223,12 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentTabIndex,
         backgroundColor: const Color(0xFF0F172A),
-        selectedItemColor: const Color(0xFF0EA5E9),
+        selectedItemColor: const Color(0xFF2563EB),
         unselectedItemColor: Colors.white54,
         onTap: (idx) => setState(() => _currentTabIndex = idx),
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.local_taxi), label: 'Commander'),
-          BottomNavigationBarItem(icon: Icon(Icons.wallet), label: 'Portefeuille TrustDesk'),
+          BottomNavigationBarItem(icon: Icon(Icons.wallet), label: 'Portefeuille WASSLANI'),
           BottomNavigationBarItem(icon: Icon(Icons.verified_user), label: 'Réglementation'),
         ],
       ),
@@ -248,7 +248,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
               decoration: BoxDecoration(
                 color: const Color(0xFF131D31),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: const Color(0xFF10B981).withOpacity(0.3)),
+                border: Border.all(color: const Color(0xFF2563EB).withOpacity(0.3)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -259,7 +259,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                       Expanded(
                         child: Text(
                           'Chauffeur en route (${assigned.etaMinutes} min)',
-                          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF10B981)),
+                          style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF60A5FA)),
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
@@ -481,14 +481,14 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Color(0xFF064E3B), Color(0xFF047857)],
+                colors: [Color(0xFF1E3A8A), Color(0xFF2563EB)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               borderRadius: BorderRadius.circular(24),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF10B981).withOpacity(0.3),
+                  color: const Color(0xFF2563EB).withOpacity(0.3),
                   blurRadius: 20,
                   offset: const Offset(0, 8),
                 ),
@@ -500,7 +500,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('PORTEFEUILLE TRUSTDESK DZ', style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1.5)),
+                    Text('PORTEFEUILLE WASSLANI DZ', style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1.5)),
                     Icon(Icons.shield, color: Colors.white70, size: 20),
                   ],
                 ),

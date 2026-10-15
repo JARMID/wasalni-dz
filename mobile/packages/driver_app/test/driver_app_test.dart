@@ -13,7 +13,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify regulatory badges and driver info
-    expect(find.text('NAQL DZ'), findsWidgets);
+    expect(find.text('WASSLANI'), findsWidgets);
     expect(find.text('Mohamed Brahimi'), findsOneWidget);
     expect(find.textContaining('16/AGR/2021/0894'), findsOneWidget);
     expect(find.textContaining('DÉCRET EXÉCUTIF 12-230'), findsOneWidget);

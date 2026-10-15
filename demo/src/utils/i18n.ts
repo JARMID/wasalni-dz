@@ -1,12 +1,12 @@
-// Complete Trilingual Internationalization (FR / AR / EN) for NAQL DZ
+// Complete Trilingual Internationalization (FR / AR / EN) for WASSLANI
 
 export type AppLang = 'fr' | 'ar' | 'en';
 
 export const translations = {
   fr: {
     // Brand & Header
-    brandTitle: 'NAQL DZ',
-    brandSubtitle: 'Plateforme Intelligente des Taxis & Dashcams',
+    brandTitle: 'WASSLANI',
+    brandSubtitle: 'Plateforme Intelligente des Taxis Agréés & Dashcams',
     dtwBadge: 'WILAYA D\'ALGER',
     modePortal: 'Portail & Présentation',
     modeApps: 'Applications en Direct',
@@ -241,8 +241,8 @@ export const translations = {
 
   ar: {
     // Brand & Header
-    brandTitle: 'نقل الجزائر • NAQL DZ',
-    brandSubtitle: 'المنصة الذكية لسيارات الأجرة وكاميرات المراقبة',
+    brandTitle: 'وصلني • WASSLANI',
+    brandSubtitle: 'المنصة الذكية لسيارات الأجرة المعتمدة وكاميرات المراقبة',
     dtwBadge: 'ولاية الجزائر',
     modePortal: 'الرؤية والتقديم',
     modeApps: 'التطبيقات المباشرة',
@@ -475,7 +475,7 @@ export const translations = {
 
   en: {
     // Brand & Header
-    brandTitle: 'NAQL DZ',
+    brandTitle: 'WASSLANI',
     brandSubtitle: 'Smart Certified Taxi & Connected Dashcam Platform',
     dtwBadge: 'ALGIERS WILAYA',
     modePortal: 'Portal & Vision',

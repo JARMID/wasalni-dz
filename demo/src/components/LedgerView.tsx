@@ -48,7 +48,7 @@ export const LedgerView: React.FC<LedgerViewProps> = ({
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement('a');
     link.setAttribute('href', encodedUri);
-    link.setAttribute('download', `journal_comptable_naql_dz_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.setAttribute('download', `journal_comptable_wasslani_${new Date().toISOString().slice(0, 10)}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -76,8 +76,8 @@ export const LedgerView: React.FC<LedgerViewProps> = ({
         </div>
 
         <div className="flex items-center space-x-2.5">
-          <div className="flex items-center space-x-1.5 text-xs font-mono px-3 py-1.5 rounded-xl border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 font-bold">
-            <ShieldCheck className="w-4 h-4 text-emerald-500" />
+          <div className="flex items-center space-x-1.5 text-xs font-mono px-3 py-1.5 rounded-xl border border-blue-500/30 bg-blue-600/10 text-blue-600 dark:text-blue-300 font-bold">
+            <ShieldCheck className="w-4 h-4 text-blue-500" />
             <span>{isBalanced ? t('ledgerBalanced') : t('ledgerUnbalanced')}</span>
           </div>
 
@@ -85,7 +85,7 @@ export const LedgerView: React.FC<LedgerViewProps> = ({
             onClick={exportCSV}
             className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-white/10 text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/10 transition-colors shadow-sm cursor-pointer"
           >
-            {downloaded ? <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" /> : <Download className="w-3.5 h-3.5 text-amber-500" />}
+            {downloaded ? <CheckCircle2 className="w-3.5 h-3.5 text-blue-500" /> : <Download className="w-3.5 h-3.5 text-amber-500" />}
             <span>{downloaded ? 'Exporté' : t('ledgerExportCsv')}</span>
           </button>
         </div>
@@ -117,14 +117,14 @@ export const LedgerView: React.FC<LedgerViewProps> = ({
         </div>
 
         {/* Account 2010 (TrustDesk Rider) */}
-        <div className="p-4 rounded-2xl border border-emerald-500/40 bg-emerald-500/10 space-y-1">
-          <span className="text-[10px] text-emerald-600 dark:text-emerald-300 font-bold uppercase tracking-wider block font-mono">
+        <div className="p-4 rounded-2xl border border-blue-500/40 bg-blue-600/10 space-y-1">
+          <span className="text-[10px] text-blue-600 dark:text-blue-300 font-bold uppercase tracking-wider block font-mono">
             Cpt 2010 : Passager TrustDesk
           </span>
-          <div className="text-base font-black font-mono text-emerald-600 dark:text-emerald-300">
+          <div className="text-base font-black font-mono text-blue-600 dark:text-blue-300">
             {wallets.riderTrustDesk_2010.toFixed(2)} DA
           </div>
-          <p className="text-[9px] text-emerald-600/80 dark:text-emerald-400/80 font-mono">Monnaie créditée & dépôts</p>
+          <p className="text-[9px] text-blue-600/80 dark:text-blue-400/80 font-mono">Monnaie créditée & dépôts</p>
         </div>
 
         {/* Account 2020 */}
@@ -184,7 +184,7 @@ export const LedgerView: React.FC<LedgerViewProps> = ({
                     <td className="py-2.5 px-3 whitespace-nowrap">
                       <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                         e.entryType === 'spare_change_credit'
-                          ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-300'
+                          ? 'bg-blue-600/20 text-blue-600 dark:text-blue-300'
                           : e.entryType === 'commission_debit'
                           ? 'bg-amber-500/20 text-amber-600 dark:text-amber-300'
                           : e.entryType === 'sponsored_cib_prepayment'
@@ -197,7 +197,7 @@ export const LedgerView: React.FC<LedgerViewProps> = ({
                       </span>
                     </td>
                     <td className="py-2.5 px-3 whitespace-nowrap text-rose-500 dark:text-rose-400 font-semibold">{e.debitAccount}</td>
-                    <td className="py-2.5 px-3 whitespace-nowrap text-emerald-600 dark:text-emerald-400 font-semibold">{e.creditAccount}</td>
+                    <td className="py-2.5 px-3 whitespace-nowrap text-blue-600 dark:text-blue-400 font-semibold">{e.creditAccount}</td>
                     <td className="py-2.5 px-3 whitespace-nowrap text-right font-black text-slate-900 dark:text-white">
                       {e.amountDzd.toFixed(2)} DA
                     </td>

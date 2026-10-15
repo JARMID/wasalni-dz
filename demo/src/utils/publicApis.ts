@@ -361,7 +361,7 @@ export async function queryAiCopilot(prompt: string, lang: 'fr' | 'ar' | 'en' = 
   const startTime = Date.now();
 
   try {
-    const systemPrompt = `Tu es l'Assistant Juridique et Opérationnel Réglementé de NAQL DZ (Wilaya d'Alger).
+    const systemPrompt = `Tu es l'Assistant Juridique et Opérationnel Réglementé de WASSLANI (Wilaya d'Alger).
 Tu réponds avec concision et précision aux questions sur le transport urbain réglementé :
 - Décret exécutif n° 12-230 du 18 mai 2012 (taxis individuels, collectifs, tarifs, livret de place, agrément DTW).
 - Loi n° 25-11 sur la preuve électronique et dashcams (72h rétention, AES-256-GCM, verrouillage choc 2.84G).
@@ -419,8 +419,8 @@ Réponds dans la langue demandée (${lang === 'ar' ? 'العربية' : lang ===
         : "La protection des données (Loi 18-07) est assurée par l'audit k-Anonymity HIBP des codes PIN à 4 chiffres : vérification instantanée sans transmission du secret sur le réseau.";
     } else {
       answer = lang === 'ar'
-        ? "منصة NAQL DZ الذكية تدمج سيارات الأجرة المعتمدة مع كاميرات المراقبة CameraX والدفع الإلكتروني عبر بطاقات CIB والذهبية وتطبيق بريدي موب لإنهاء مشكلة صرف النقود تماما."
-        : "NAQL DZ modernise le transport réglementé algérien : conformité Décret 12-230, boite noire dashcam CameraX, et paiement digital CIB/Edahabia/BaridiMob éliminant les litiges de monnaie physique.";
+        ? "منصة WASSLANI الذكية تدمج سيارات الأجرة المعتمدة مع كاميرات المراقبة CameraX والدفع الإلكتروني عبر بطاقات CIB والذهبية وتطبيق بريدي موب لإنهاء مشكلة صرف النقود تماما."
+        : "WASSLANI modernise le transport réglementé algérien : conformité Décret 12-230, boite noire dashcam CameraX, et paiement digital CIB/Edahabia/BaridiMob éliminant les litiges de monnaie physique.";
     }
 
     return {

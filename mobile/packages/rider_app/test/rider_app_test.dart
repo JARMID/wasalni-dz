@@ -12,7 +12,7 @@ void main() {
     await tester.pumpAndSettle();
 
     // Verify header and initial wallet balance
-    expect(find.text('NAQL DZ'), findsWidgets);
+    expect(find.text('WASSLANI'), findsWidgets);
     expect(find.text('1450 DA'), findsOneWidget);
 
     // Verify 3 Algerian transport modes

@@ -175,10 +175,10 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
       className: 'custom-pin',
       html: `
         <div class="relative flex items-center justify-center">
-          <div class="w-8 h-8 rounded-2xl bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center shadow-lg shadow-emerald-500/40 backdrop-blur-md">
-            <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></div>
+          <div class="w-8 h-8 rounded-2xl bg-blue-500/20 border-2 border-blue-400 flex items-center justify-center shadow-lg shadow-blue-500/40 backdrop-blur-md">
+            <div class="w-2.5 h-2.5 rounded-full bg-blue-400 animate-ping"></div>
           </div>
-          <div class="absolute -bottom-5 whitespace-nowrap bg-slate-950/95 text-emerald-300 px-2 py-0.5 rounded-md text-[9px] font-mono font-bold border border-emerald-500/40 shadow-xl">
+          <div class="absolute -bottom-5 whitespace-nowrap bg-slate-950/95 text-blue-300 px-2 py-0.5 rounded-md text-[9px] font-mono font-bold border border-blue-500/40 shadow-xl">
             PRISE EN CHARGE
           </div>
         </div>
@@ -270,7 +270,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
         className: 'surrounding-taxi',
         html: `
           <div class="relative flex items-center justify-center opacity-90 hover:opacity-100 transition-opacity">
-            <div class="w-7 h-7 rounded-xl ${isAvailable ? 'bg-slate-900 border-2 border-emerald-400 text-emerald-400' : 'bg-slate-900 border-2 border-slate-600 text-slate-400'} flex items-center justify-center text-xs shadow-lg shadow-black/50">
+            <div class="w-7 h-7 rounded-xl ${isAvailable ? 'bg-slate-900 border-2 border-blue-400 text-blue-400' : 'bg-slate-900 border-2 border-slate-600 text-slate-400'} flex items-center justify-center text-xs shadow-lg shadow-black/50">
               🚖
             </div>
           </div>
@@ -284,7 +284,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
         <div class="p-2 bg-slate-950 text-white rounded-xl border border-white/10 text-xs font-mono space-y-1">
           <div class="font-bold text-amber-300">Taxi ${st.id} • ${st.driver}</div>
           <div class="text-[10px] text-slate-400">Agrément: ${st.agrement}</div>
-          <div class="text-[10px] ${isAvailable ? 'text-emerald-400' : 'text-amber-400'} font-bold">${st.status}</div>
+          <div class="text-[10px] ${isAvailable ? 'text-blue-400' : 'text-amber-400'} font-bold">${st.status}</div>
         </div>
       `, { className: 'bg-transparent border-0' });
 
@@ -389,8 +389,8 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
       <div className="absolute top-3 inset-x-3 z-[1000] flex flex-wrap items-center justify-between gap-1.5 pointer-events-none">
         {/* Live 1Hz Telemetry OSD Pill */}
         <div className="bg-slate-950/95 backdrop-blur-md border border-white/10 pointer-events-auto px-2.5 py-1 rounded-xl text-[10px] text-slate-200 flex items-center space-x-1.5 shadow-xl">
-          <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-          <span className="font-mono font-bold text-emerald-400">1Hz PROTOBUF</span>
+          <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-ping"></span>
+          <span className="font-mono font-bold text-blue-400">1Hz PROTOBUF</span>
           <span className="text-white/20">|</span>
           <span className="font-mono text-slate-300">{latencyMs}ms</span>
           <span className="text-white/20">|</span>
@@ -405,7 +405,7 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
             <CloudSun className="w-3 h-3 text-sky-400" />
             <span className="font-bold text-sky-300">Alger {weather.temperatureC}°C</span>
             <span className="text-white/20">|</span>
-            <span className={`font-semibold ${weather.roadCondition === 'dry' ? 'text-emerald-400' : 'text-amber-400'}`}>
+            <span className={`font-semibold ${weather.roadCondition === 'dry' ? 'text-sky-300' : 'text-amber-400'}`}>
               {weather.roadCondition === 'dry' ? 'Sèche' : 'Humide'}
             </span>
           </div>

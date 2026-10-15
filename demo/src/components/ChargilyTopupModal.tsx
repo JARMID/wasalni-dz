@@ -69,7 +69,7 @@ export const ChargilyTopupModal: React.FC<ChargilyTopupModalProps> = ({
       <div className="glass-panel max-w-md w-full p-6 rounded-3xl shadow-2xl relative border border-white/10 animate-in fade-in zoom-in-95 duration-200">
         
         {/* Glow Accent */}
-        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-sky-400 via-emerald-400 to-amber-400"></div>
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-sky-400 via-blue-500 to-amber-400"></div>
 
         {/* Close Button */}
         <button
@@ -195,7 +195,7 @@ export const ChargilyTopupModal: React.FC<ChargilyTopupModalProps> = ({
             <button
               onClick={handleVerifyOtp}
               disabled={isProcessing || otpCode.length < 6}
-              className="w-full min-h-[52px] rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-black text-sm tracking-wider transition-all shadow-xl shadow-emerald-500/25 flex items-center justify-center space-x-2"
+              className="w-full min-h-[52px] rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-black text-sm tracking-wider transition-all shadow-xl shadow-blue-500/25 flex items-center justify-center space-x-2"
             >
               <ShieldCheck className="w-5 h-5 stroke-[2.5]" />
               <span>{isProcessing ? 'Validation SATIM...' : 'CONFIRMER LE RECHARGEMENT'}</span>
@@ -206,7 +206,7 @@ export const ChargilyTopupModal: React.FC<ChargilyTopupModalProps> = ({
         {/* STEP 3: SUCCESS */}
         {step === 'success' && (
           <div className="py-6 text-center space-y-3 animate-in fade-in">
-            <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto animate-bounce" />
+            <CheckCircle2 className="w-12 h-12 text-blue-400 mx-auto animate-bounce" />
             <h4 className="font-black text-white text-base">Rechargement Validé</h4>
             <p className="text-xs text-slate-300 font-mono">
               +{amount.toFixed(2)} DZD crédités instantanément sur le compte opérationnel.

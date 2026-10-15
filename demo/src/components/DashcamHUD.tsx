@@ -281,7 +281,7 @@ export const DashcamHUD: React.FC<DashcamHUDProps> = ({
 
         {/* Dashcam OSD Telemetry HUD */}
         <div className="absolute top-3 left-3 z-20 flex flex-col space-y-1">
-          <div className="flex items-center space-x-1.5 bg-black/85 backdrop-blur-md px-2.5 py-1 rounded-lg text-[10px] font-mono text-emerald-300 border border-emerald-500/30 shadow-lg">
+          <div className="flex items-center space-x-1.5 bg-black/85 backdrop-blur-md px-2.5 py-1 rounded-lg text-[10px] font-mono text-sky-300 border border-sky-500/30 shadow-lg">
             <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
             <span className="font-bold">REC 720p@15fps</span>
             <span className="text-white/20">|</span>
@@ -312,7 +312,7 @@ export const DashcamHUD: React.FC<DashcamHUDProps> = ({
           </div>
 
           <div className="bg-black/80 backdrop-blur-md px-2 py-0.5 rounded-md text-[9px] font-mono text-slate-200 border border-white/5 flex items-center space-x-1.5">
-            <Activity className="w-3 h-3 text-emerald-400" />
+            <Activity className="w-3 h-3 text-sky-400" />
             <span>VITESSE: <strong className="text-white">{speedKmh} km/h</strong></span>
             <span className="text-white/20">|</span>
             <span className={currentGForce >= 2.5 ? 'text-rose-400 font-bold' : 'text-slate-300'}>
@@ -341,7 +341,7 @@ export const DashcamHUD: React.FC<DashcamHUDProps> = ({
             title="Tester le load-shedder thermique sous le soleil algérien"
             className={`flex items-center space-x-1 px-2.5 py-1.5 rounded-xl text-xs font-bold border transition-all ${
               thermalState === 'NORMAL'
-                ? 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
+                ? 'bg-sky-500/10 text-sky-300 border-sky-500/30'
                 : thermalState === 'MODERATE'
                 ? 'bg-amber-500/10 text-amber-300 border-amber-500/30'
                 : 'bg-rose-500/10 text-rose-300 border-rose-500/30 animate-pulse'

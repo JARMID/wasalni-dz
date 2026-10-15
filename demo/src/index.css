@@ -19,9 +19,9 @@
     background-color: #080c14 !important;
     color: #f8fafc !important;
     background-image: 
-      radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.08) 0%, transparent 60%),
-      radial-gradient(circle at 100% 50%, rgba(37, 99, 235, 0.06) 0%, transparent 50%),
-      radial-gradient(circle at 0% 100%, rgba(16, 185, 129, 0.05) 0%, transparent 50%) !important;
+      radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.09) 0%, transparent 60%),
+      radial-gradient(circle at 100% 50%, rgba(245, 158, 11, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 0% 100%, rgba(37, 99, 235, 0.06) 0%, transparent 50%) !important;
     background-attachment: fixed !important;
   }
 
@@ -31,9 +31,9 @@
     background-color: #f8fafc !important;
     color: #0f172a !important;
     background-image: 
-      radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.05) 0%, transparent 60%),
-      radial-gradient(circle at 100% 50%, rgba(37, 99, 235, 0.04) 0%, transparent 50%),
-      radial-gradient(circle at 0% 100%, rgba(16, 185, 129, 0.04) 0%, transparent 50%) !important;
+      radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.06) 0%, transparent 60%),
+      radial-gradient(circle at 100% 50%, rgba(245, 158, 11, 0.04) 0%, transparent 50%),
+      radial-gradient(circle at 0% 100%, rgba(37, 99, 235, 0.04) 0%, transparent 50%) !important;
     background-attachment: fixed !important;
   }
 }
@@ -90,9 +90,9 @@
 }
 .dark .glass-panel-interactive:hover {
   background: rgba(20, 28, 48, 0.92);
-  border-color: rgba(16, 185, 129, 0.45);
+  border-color: rgba(37, 99, 235, 0.55);
   transform: translateY(-2px);
-  box-shadow: 0 16px 36px -10px rgba(16, 185, 129, 0.18);
+  box-shadow: 0 16px 36px -10px rgba(37, 99, 235, 0.25);
 }
 
 .light .glass-panel-interactive {
@@ -104,9 +104,9 @@
 }
 .light .glass-panel-interactive:hover {
   background: #ffffff;
-  border-color: rgba(16, 185, 129, 0.5);
+  border-color: rgba(37, 99, 235, 0.5);
   transform: translateY(-2px);
-  box-shadow: 0 16px 36px -10px rgba(16, 185, 129, 0.14);
+  box-shadow: 0 16px 36px -10px rgba(37, 99, 235, 0.18);
 }
 
 /* Smartphone Mockup Frame */
@@ -192,8 +192,8 @@
 }
 
 /* Glow effects */
-.glow-emerald {
-  box-shadow: 0 0 30px -5px rgba(16, 185, 129, 0.3);
+.glow-azure {
+  box-shadow: 0 0 30px -5px rgba(56, 189, 248, 0.3);
 }
 .glow-sapphire {
   box-shadow: 0 0 30px -5px rgba(37, 99, 235, 0.3);

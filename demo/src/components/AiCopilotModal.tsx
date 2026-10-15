@@ -31,8 +31,8 @@ export const AiCopilotModal: React.FC<AiCopilotModalProps> = ({
     {
       role: 'assistant',
       content: lang === 'ar'
-        ? 'مرحباً بك. أنا المساعد القانوني والتقني لمنصة NAQL DZ. يمكنك سؤالي عن المراسيم التنفيذية، تسعيرة سيارات الأجرة، كاميرات المراقبة، أو تدقيق أمان البيانات.'
-        : 'Bienvenue. Je suis le Copilote Réglementaire et Sécurité de NAQL DZ. Posez-moi vos questions sur le Décret 12-230, les tarifs réglementés, la preuve vidéo Loi 25-11, ou la météo routière.',
+        ? 'مرحباً بك. أنا المساعد القانوني والتقني لمنصة WASSLANI. يمكنك سؤالي عن المراسيم التنفيذية، تسعيرة سيارات الأجرة، كاميرات المراقبة، أو تدقيق أمان البيانات.'
+        : 'Bienvenue. Je suis le Copilote Réglementaire et Sécurité de WASSLANI. Posez-moi vos questions sur le Décret 12-230, les tarifs réglementés, la preuve vidéo Loi 25-11, ou la météo routière.',
       provider: 'Groq LPU • Qwen 2.5 Coder 27B',
       latencyMs: 120,
     },
@@ -119,7 +119,7 @@ export const AiCopilotModal: React.FC<AiCopilotModalProps> = ({
                 <h3 className="font-extrabold text-base text-white">
                   {lang === 'ar' ? 'المساعد الذكي للرقابة والمطابقة' : 'Copilote IA Réglementaire & Sécurité'}
                 </h3>
-                <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">
                   EN LIGNE
                 </span>
               </div>
@@ -147,8 +147,8 @@ export const AiCopilotModal: React.FC<AiCopilotModalProps> = ({
             <span>Moteur Principal : <strong className="text-amber-300">Qwen 2.5 Coder 27B (Groq LPU)</strong></span>
           </div>
           <div className="flex items-center space-x-2">
-            <Zap className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-            <span>Débit : <strong className="text-emerald-400">~800 t/s</strong> (&lt;250ms)</span>
+            <Zap className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+            <span>Débit : <strong className="text-blue-400">~800 t/s</strong> (&lt;250ms)</span>
           </div>
           <div className="text-slate-400 hidden sm:block">
             0 Clé Requise (Quota Libre)
@@ -178,7 +178,7 @@ export const AiCopilotModal: React.FC<AiCopilotModalProps> = ({
                   {m.latencyMs && (
                     <>
                       <span>•</span>
-                      <span className="text-emerald-400">{m.latencyMs}ms</span>
+                      <span className="text-blue-400">{m.latencyMs}ms</span>
                     </>
                   )}
                 </div>

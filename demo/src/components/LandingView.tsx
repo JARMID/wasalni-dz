@@ -41,13 +41,13 @@ export const LandingView: React.FC<LandingViewProps> = ({
       <section className="relative pt-6 sm:pt-12 pb-8 overflow-hidden text-center max-w-5xl mx-auto px-4">
         
         {/* Glow ambient background */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-gradient-to-r from-amber-500/10 via-emerald-500/10 to-sky-500/10 blur-3xl -z-10 pointer-events-none rounded-full" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-gradient-to-r from-amber-500/10 via-blue-500/15 to-indigo-500/10 blur-3xl -z-10 pointer-events-none rounded-full" />
 
         {/* Official Wilaya Badge with Dynamic Brand Name */}
         <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase mb-6 border transition-all glass-panel">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-emerald-600 dark:text-emerald-300">
-            {brand ? `${brand.name} • ${brand.nameAr}` : 'WASALNI DZ • وصلني'} • {t('heroBadge')}
+          <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+          <span className="text-blue-600 dark:text-blue-300">
+            {brand ? `${brand.name} • ${brand.nameAr}` : 'WASSLANI • وصلني'} • {t('heroBadge')}
           </span>
         </div>
 
@@ -67,7 +67,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
         <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-14">
           <button
             onClick={() => onNavigateTab('rider')}
-            className="flex items-center space-x-2.5 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm shadow-xl shadow-emerald-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+            className="flex items-center space-x-2.5 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-sm shadow-xl shadow-blue-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
           >
             <Smartphone className="w-4 h-4" />
             <span>{t('heroCtaRider')}</span>
@@ -76,7 +76,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
 
           <button
             onClick={() => onNavigateTab('driver')}
-            className="flex items-center space-x-2.5 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-sm shadow-xl shadow-blue-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+            className="flex items-center space-x-2.5 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-sm shadow-xl shadow-amber-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
           >
             <Video className="w-4 h-4" />
             <span>{t('heroCtaDriver')}</span>
@@ -86,7 +86,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
             onClick={() => onNavigateTab('sync')}
             className="flex items-center space-x-2.5 px-6 py-3.5 rounded-2xl glass-panel-interactive font-bold text-sm text-slate-700 dark:text-slate-200 cursor-pointer"
           >
-            <Layers className="w-4 h-4 text-emerald-500" />
+            <Layers className="w-4 h-4 text-blue-500" />
             <span>{t('navLiveDemo')}</span>
           </button>
         </div>
@@ -103,8 +103,8 @@ export const LandingView: React.FC<LandingViewProps> = ({
 
           <div className="glass-panel p-4 rounded-2xl border">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xl sm:text-2xl font-black text-emerald-500 dark:text-emerald-400">{t('statResponse')}</span>
-              <Activity className="w-4 h-4 text-emerald-500/70" />
+              <span className="text-xl sm:text-2xl font-black text-blue-600 dark:text-blue-400">{t('statResponse')}</span>
+              <Activity className="w-4 h-4 text-blue-500/70" />
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{t('statResponseDesc')}</p>
           </div>
@@ -142,12 +142,12 @@ export const LandingView: React.FC<LandingViewProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           
           {/* Pillar 1: Passager */}
-          <div className="glass-panel rounded-3xl p-6 sm:p-8 flex flex-col justify-between border relative group hover:border-emerald-500/40 transition-all">
+          <div className="glass-panel rounded-3xl p-6 sm:p-8 flex flex-col justify-between border relative group hover:border-blue-500/40 transition-all">
             <div>
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-500 mb-6 group-hover:scale-110 transition-transform">
+              <div className="w-12 h-12 rounded-2xl bg-blue-600/15 border border-blue-500/30 flex items-center justify-center text-blue-600 mb-6 group-hover:scale-110 transition-transform">
                 <Smartphone className="w-6 h-6" />
               </div>
-              <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 mb-3">
+              <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold bg-blue-600/10 text-blue-600 dark:text-blue-300 mb-3">
                 {t('pillar1Badge')}
               </span>
               <h3 className="text-xl font-bold mb-2">{t('pillar1Title')}</h3>
@@ -158,7 +158,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
             </div>
             <button
               onClick={() => onNavigateTab('rider')}
-              className="w-full flex items-center justify-between p-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 text-xs font-bold transition-all cursor-pointer"
+              className="w-full flex items-center justify-between p-3 rounded-xl bg-blue-600/10 hover:bg-blue-600/20 text-blue-600 dark:text-blue-300 text-xs font-bold transition-all cursor-pointer"
             >
               <span>{t('heroCtaRider')}</span>
               <ChevronRight className="w-4 h-4" />
@@ -166,12 +166,12 @@ export const LandingView: React.FC<LandingViewProps> = ({
           </div>
 
           {/* Pillar 2: Chauffeur & Dashcam */}
-          <div className="glass-panel rounded-3xl p-6 sm:p-8 flex flex-col justify-between border relative group hover:border-sapphire-500/40 transition-all">
+          <div className="glass-panel rounded-3xl p-6 sm:p-8 flex flex-col justify-between border relative group hover:border-amber-500/40 transition-all">
             <div>
-              <div className="w-12 h-12 rounded-2xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-500 mb-6 group-hover:scale-110 transition-transform">
+              <div className="w-12 h-12 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-500 mb-6 group-hover:scale-110 transition-transform">
                 <Video className="w-6 h-6" />
               </div>
-              <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold bg-blue-500/10 text-blue-600 dark:text-blue-300 mb-3">
+              <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold bg-amber-500/10 text-amber-600 dark:text-amber-300 mb-3">
                 {t('pillar2Badge')}
               </span>
               <h3 className="text-xl font-bold mb-2">{t('pillar2Title')}</h3>
@@ -182,7 +182,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
             </div>
             <button
               onClick={() => onNavigateTab('driver')}
-              className="w-full flex items-center justify-between p-3 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-300 text-xs font-bold transition-all cursor-pointer"
+              className="w-full flex items-center justify-between p-3 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-300 text-xs font-bold transition-all cursor-pointer"
             >
               <span>{t('heroCtaDriver')}</span>
               <ChevronRight className="w-4 h-4" />
@@ -190,12 +190,12 @@ export const LandingView: React.FC<LandingViewProps> = ({
           </div>
 
           {/* Pillar 3: Flotte & Wilaya */}
-          <div className="glass-panel rounded-3xl p-6 sm:p-8 flex flex-col justify-between border relative group hover:border-emerald-500/40 transition-all">
+          <div className="glass-panel rounded-3xl p-6 sm:p-8 flex flex-col justify-between border relative group hover:border-indigo-500/40 transition-all">
             <div>
-              <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-500 mb-6 group-hover:scale-110 transition-transform">
+              <div className="w-12 h-12 rounded-2xl bg-indigo-600/15 border border-indigo-500/30 flex items-center justify-center text-indigo-500 mb-6 group-hover:scale-110 transition-transform">
                 <Gauge className="w-6 h-6" />
               </div>
-              <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-300 mb-3">
+              <span className="inline-block px-3 py-1 rounded-full text-[11px] font-bold bg-indigo-600/10 text-indigo-600 dark:text-indigo-300 mb-3">
                 {t('pillar3Badge')}
               </span>
               <h3 className="text-xl font-bold mb-2">{t('pillar3Title')}</h3>
@@ -206,7 +206,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
             </div>
             <button
               onClick={() => onNavigateTab('dispatch')}
-              className="w-full flex items-center justify-between p-3 rounded-xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-300 text-xs font-bold transition-all cursor-pointer"
+              className="w-full flex items-center justify-between p-3 rounded-xl bg-indigo-600/10 hover:bg-indigo-600/20 text-indigo-600 dark:text-indigo-300 text-xs font-bold transition-all cursor-pointer"
             >
               <span>{t('heroCtaFleet')}</span>
               <ChevronRight className="w-4 h-4" />
@@ -219,10 +219,10 @@ export const LandingView: React.FC<LandingViewProps> = ({
 
       {/* How the Flywheel Solves Algeria's Cash Dilemma */}
       <section className="max-w-5xl mx-auto px-4">
-        <div className="glass-panel rounded-3xl p-6 sm:p-10 border border-emerald-500/20 bg-gradient-to-br from-emerald-500/5 via-transparent to-blue-500/5">
+        <div className="glass-panel rounded-3xl p-6 sm:p-10 border border-blue-500/20 bg-gradient-to-br from-blue-500/5 via-transparent to-amber-500/5">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div>
-              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 font-bold text-xs mb-4">
+              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-lg bg-blue-600/15 text-blue-600 dark:text-blue-300 font-bold text-xs mb-4">
                 <Coins className="w-3.5 h-3.5" />
                 <span>{t('flywheelBadge')}</span>
               </div>
@@ -234,15 +234,15 @@ export const LandingView: React.FC<LandingViewProps> = ({
               </p>
               <ul className="space-y-3 text-xs sm:text-sm text-slate-600 dark:text-slate-300">
                 <li className="flex items-start space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
                   <span>{t('flywheelStep1')}</span>
                 </li>
                 <li className="flex items-start space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
                   <span>{t('flywheelStep2')}</span>
                 </li>
                 <li className="flex items-start space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0 mt-0.5" />
                   <span>{t('flywheelStep3')}</span>
                 </li>
               </ul>
@@ -252,13 +252,13 @@ export const LandingView: React.FC<LandingViewProps> = ({
               <span className="text-xs uppercase tracking-wider text-slate-500 dark:text-slate-400 font-bold">{t('flywheelExampleBadge')}</span>
               <div className="flex items-center justify-between p-3 rounded-xl bg-slate-900/10 dark:bg-slate-900/60 border text-xs">
                 <span>{t('flywheelTripLabel')}</span>
-                <span className="font-bold text-emerald-600 dark:text-emerald-400">850 DA</span>
+                <span className="font-bold text-blue-600 dark:text-blue-400">850 DA</span>
               </div>
               <div className="flex items-center justify-between p-3 rounded-xl bg-slate-900/10 dark:bg-slate-900/60 border text-xs">
                 <span>{t('flywheelCashGiven')}</span>
                 <span className="font-bold">1 000 DA</span>
               </div>
-              <div className="p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400">
+              <div className="p-4 rounded-xl bg-blue-600/10 border border-blue-500/30 text-blue-600 dark:text-blue-400">
                 <span className="block text-xs font-semibold mb-1">{t('flywheelCreditReceived')}</span>
                 <span className="text-2xl font-black">+150.00 DA</span>
               </div>
@@ -275,7 +275,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
 
       {/* NEW: Dedicated Chauffeur & Third-Party Sponsored Payment Section */}
       <section id="enterprise" className="max-w-5xl mx-auto px-4">
-        <div className="glass-panel rounded-3xl p-6 sm:p-10 border border-blue-500/20 bg-gradient-to-br from-blue-500/5 via-transparent to-emerald-500/5">
+        <div className="glass-panel rounded-3xl p-6 sm:p-10 border border-blue-500/20 bg-gradient-to-br from-blue-500/5 via-transparent to-indigo-500/5">
           <div className="text-center max-w-2xl mx-auto mb-8">
             <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-lg bg-blue-500/15 text-blue-600 dark:text-blue-300 font-bold text-xs mb-3">
               <HeartHandshake className="w-3.5 h-3.5" />
@@ -292,8 +292,8 @@ export const LandingView: React.FC<LandingViewProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             
             {/* Card 1: Chauffeur Titulaire & Navette Programmée */}
-            <div className="p-6 rounded-2xl border border-emerald-500/30 bg-white/40 dark:bg-slate-900/40 space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-500 flex items-center justify-center font-bold">
+            <div className="p-6 rounded-2xl border border-blue-500/30 bg-white/40 dark:bg-slate-900/40 space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-blue-600/20 text-blue-600 flex items-center justify-center font-bold">
                 <Calendar className="w-5 h-5" />
               </div>
               <h4 className="font-extrabold text-base text-slate-900 dark:text-white">
@@ -302,15 +302,15 @@ export const LandingView: React.FC<LandingViewProps> = ({
               <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                 {t('landingCard1Desc')}
               </p>
-              <div className="pt-2 flex items-center justify-between text-xs font-bold text-emerald-600 dark:text-emerald-400">
+              <div className="pt-2 flex items-center justify-between text-xs font-bold text-blue-600 dark:text-blue-400">
                 <span>{t('landingCard1Tag1')}</span>
                 <span>{t('landingCard1Tag2')}</span>
               </div>
             </div>
 
             {/* Card 2: Payer pour un Proche / Billet Sponsorisé */}
-            <div className="p-6 rounded-2xl border border-blue-500/30 bg-white/40 dark:bg-slate-900/40 space-y-3">
-              <div className="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-500 flex items-center justify-center font-bold">
+            <div className="p-6 rounded-2xl border border-amber-500/30 bg-white/40 dark:bg-slate-900/40 space-y-3">
+              <div className="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-500 flex items-center justify-center font-bold">
                 <HeartHandshake className="w-5 h-5" />
               </div>
               <h4 className="font-extrabold text-base text-slate-900 dark:text-white">
@@ -319,7 +319,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
               <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
                 {t('landingCard2Desc')}
               </p>
-              <div className="pt-2 flex items-center justify-between text-xs font-bold text-blue-600 dark:text-blue-400">
+              <div className="pt-2 flex items-center justify-between text-xs font-bold text-amber-600 dark:text-amber-400">
                 <span>{t('landingCard2Tag1')}</span>
                 <span>{t('landingCard2Tag2')}</span>
               </div>
@@ -341,7 +341,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
 
       {/* Driver Recruitment Funnel Section */}
       <section id="drivers" className="max-w-5xl mx-auto px-4">
-        <div className="glass-panel rounded-3xl p-6 sm:p-10 border border-amber-500/30 bg-gradient-to-br from-amber-500/5 via-transparent to-emerald-500/5">
+        <div className="glass-panel rounded-3xl p-6 sm:p-10 border border-amber-500/30 bg-gradient-to-br from-amber-500/5 via-transparent to-blue-500/5">
           <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
             <div className="md:col-span-8 space-y-4">
               <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-lg bg-amber-500/15 text-amber-700 dark:text-amber-300 font-bold text-xs">
@@ -352,19 +352,19 @@ export const LandingView: React.FC<LandingViewProps> = ({
                 Vous possédez un Agrément & un Livret de Place ?
               </h3>
               <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                Rejoignez le réseau officiel WASALNI DZ. Bénéficiez d'une commission ultra-réduite (8% à 12%), de la protection juridique de votre boîte noire CameraX en cas d'accident, et de courses pré-payées par BaridiMob et cartes CIB.
+                Rejoignez le réseau officiel WASSLANI. Bénéficiez d'une commission ultra-réduite (8% à 12%), de la protection juridique de votre boîte noire CameraX en cas d'accident, et de courses pré-payées par BaridiMob et cartes CIB.
               </p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300 pt-2">
                 <div className="flex items-center space-x-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-500 shrink-0" />
                   <span>Zéro risque de fourrière</span>
                 </div>
                 <div className="flex items-center space-x-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-500 shrink-0" />
                   <span>Boîte Noire Offerte</span>
                 </div>
                 <div className="flex items-center space-x-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-500 shrink-0" />
                   <span>Revenus Garantis</span>
                 </div>
               </div>
@@ -390,7 +390,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
       {/* Official Regulatory Compliance Footer Section */}
       <section id="safety" className="max-w-5xl mx-auto px-4 pt-6 border-t border-slate-200 dark:border-white/10">
         <div className="text-center max-w-2xl mx-auto mb-8">
-          <div className="inline-flex items-center space-x-1.5 text-xs font-bold text-emerald-500 uppercase tracking-widest mb-2">
+          <div className="inline-flex items-center space-x-1.5 text-xs font-bold text-blue-500 uppercase tracking-widest mb-2">
             <ShieldCheck className="w-4 h-4" />
             <span>Cadre Légal & Souveraineté</span>
           </div>
@@ -426,18 +426,18 @@ export const LandingView: React.FC<LandingViewProps> = ({
               <li>
                 <button 
                   onClick={() => onNavigateTab('rider')} 
-                  className="hover:text-emerald-500 transition-colors text-left cursor-pointer"
+                  className="hover:text-blue-500 transition-colors text-left cursor-pointer"
                 >
                   Application Passager Web
                 </button>
               </li>
               <li>
-                <a href="#services" className="hover:text-emerald-500 transition-colors">
+                <a href="#services" className="hover:text-blue-500 transition-colors">
                   Tarifs Réglementés (Compteur)
                 </a>
               </li>
               <li>
-                <a href="#enterprise" className="hover:text-emerald-500 transition-colors">
+                <a href="#enterprise" className="hover:text-blue-500 transition-colors">
                   Navettes Programmées Familles
                 </a>
               </li>
@@ -452,20 +452,20 @@ export const LandingView: React.FC<LandingViewProps> = ({
               <li>
                 <button 
                   onClick={() => onNavigateTab('driver')} 
-                  className="hover:text-emerald-500 transition-colors text-left cursor-pointer"
+                  className="hover:text-blue-500 transition-colors text-left cursor-pointer"
                 >
                   Cockpit Dashcam Embarqué
                 </button>
               </li>
               <li>
-                <a href="#drivers" className="hover:text-emerald-500 transition-colors">
+                <a href="#drivers" className="hover:text-blue-500 transition-colors">
                   Conditions d'Adhésion DTW
                 </a>
               </li>
               <li>
                 <button 
                   onClick={() => onNavigateTab('ledger')} 
-                  className="hover:text-emerald-500 transition-colors text-left cursor-pointer"
+                  className="hover:text-blue-500 transition-colors text-left cursor-pointer"
                 >
                   Retrait Gains BaridiMob
                 </button>
@@ -481,7 +481,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
               <li>
                 <button 
                   onClick={() => onNavigateTab('dispatch')} 
-                  className="hover:text-emerald-500 transition-colors text-left cursor-pointer"
+                  className="hover:text-blue-500 transition-colors text-left cursor-pointer"
                 >
                   Poste de Contrôle Flotte DTW
                 </button>
@@ -489,13 +489,13 @@ export const LandingView: React.FC<LandingViewProps> = ({
               <li>
                 <button 
                   onClick={() => onNavigateTab('inspector')} 
-                  className="hover:text-emerald-500 transition-colors text-left cursor-pointer text-emerald-600 dark:text-emerald-400 font-bold"
+                  className="hover:text-blue-500 transition-colors text-left cursor-pointer text-blue-600 dark:text-blue-400 font-bold"
                 >
                   Scanner Contrôle Routier DTW
                 </button>
               </li>
               <li>
-                <a href="#safety" className="hover:text-emerald-500 transition-colors">
+                <a href="#safety" className="hover:text-blue-500 transition-colors">
                   Séquestre Judiciaire (Loi 25-11)
                 </a>
               </li>
@@ -510,7 +510,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
               <li>
                 <button 
                   onClick={() => onNavigateTab('ledger')} 
-                  className="hover:text-emerald-500 transition-colors text-left cursor-pointer"
+                  className="hover:text-blue-500 transition-colors text-left cursor-pointer"
                 >
                   Grand Livre TrustDesk
                 </button>
@@ -518,7 +518,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
               <li>
                 <button 
                   onClick={() => onNavigateTab('sync')} 
-                  className="hover:text-emerald-500 transition-colors text-left cursor-pointer"
+                  className="hover:text-blue-500 transition-colors text-left cursor-pointer"
                 >
                   Simulateur Multi-Surfaces
                 </button>
@@ -531,8 +531,8 @@ export const LandingView: React.FC<LandingViewProps> = ({
         </div>
 
         <div className="pt-6 border-t border-slate-200/60 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px]">
-          <span>© 2026 WASALNI DZ (NAQL DZ). Tous droits réservés. Décret Exécutif N° 12-230.</span>
-          <span className="font-mono text-emerald-600 dark:text-emerald-400 font-bold">
+          <span>© 2026 WASSLANI. Tous droits réservés. Décret Exécutif N° 12-230.</span>
+          <span className="font-mono text-blue-600 dark:text-blue-400 font-bold">
             Architecture Découplée 5 Surfaces
           </span>
         </div>

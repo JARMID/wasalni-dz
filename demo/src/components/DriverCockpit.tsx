@@ -105,7 +105,7 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
         <div className="flex items-center space-x-2.5">
           <div className="text-right">
             <span className="block text-[10px] text-slate-500 uppercase font-bold">Solde Opérationnel (2020)</span>
-            <span className="text-sm sm:text-base font-black font-mono text-emerald-500">
+            <span className="text-sm sm:text-base font-black font-mono text-amber-500">
               {driver.walletBalanceDzd.toFixed(2)} DZD
             </span>
           </div>
@@ -114,7 +114,7 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
             onClick={() => { soundEngine.playClick(); onToggleOnline(); }}
             className={`px-3 py-1.5 rounded-xl font-bold text-xs transition-all flex items-center gap-1.5 cursor-pointer ${
               driver.isOnline
-                ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 border border-emerald-500/30'
+                ? 'bg-blue-600/15 text-blue-600 dark:text-blue-300 border border-blue-500/30'
                 : 'bg-rose-500/15 text-rose-600 dark:text-rose-300 border border-rose-500/30'
             }`}
           >
@@ -291,7 +291,7 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
               </div>
 
               {currentRide.sponsor?.isSponsored && (
-                <div className="p-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs text-emerald-600 dark:text-emerald-400 font-bold">
+                <div className="p-2 rounded-xl bg-blue-600/10 border border-blue-500/20 text-xs text-blue-600 dark:text-blue-400 font-bold">
                   ℹ️ {t('driverNoCashToCollect')}
                 </div>
               )}
@@ -310,7 +310,7 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
                 <button
                   onClick={handleVerifyPin}
                   disabled={pinInput.length !== 4}
-                  className="px-5 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 disabled:opacity-40 text-slate-950 font-black text-xs cursor-pointer"
+                  className="px-5 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-40 text-white font-black text-xs cursor-pointer shadow-md"
                 >
                   {t('driverStartMeterBtn')}
                 </button>
@@ -320,8 +320,8 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
 
           {/* TRIP IN PROGRESS */}
           {currentRide && currentRide.status === 'in_progress' && (
-            <div className="p-4 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 space-y-3 animate-fadeIn">
-              <div className="flex items-center justify-between text-xs font-bold text-emerald-600 dark:text-emerald-400">
+            <div className="p-4 rounded-2xl border border-blue-500/30 bg-blue-600/10 space-y-3 animate-fadeIn">
+              <div className="flex items-center justify-between text-xs font-bold text-blue-600 dark:text-blue-400">
                 <span>{t('driverTripLive')}</span>
                 <span>{currentRide.rideCode}</span>
               </div>
@@ -331,7 +331,7 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
               </div>
               <button
                 onClick={() => { soundEngine.playClick(); onArrivedDestination(); }}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-black text-xs cursor-pointer shadow-lg"
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 text-white font-black text-xs cursor-pointer shadow-lg"
               >
                 {t('driverFinishBtn')}
               </button>
@@ -363,7 +363,7 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
 
                   <div className="flex items-center justify-between text-sm font-black pt-1">
                     <span>Montant Crédité sur Solde Chauffeur (2020) :</span>
-                    <span className="font-mono text-xl text-emerald-500 font-black">+850.00 DZD</span>
+                    <span className="font-mono text-xl text-blue-500 font-black">+850.00 DZD</span>
                   </div>
 
                   <button
@@ -371,7 +371,7 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
                       soundEngine.playSuccessChime();
                       onCompleteTrip(meterFareInput);
                     }}
-                    className="w-full py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 text-slate-950 font-black text-sm shadow-xl shadow-emerald-500/25 transition-all cursor-pointer"
+                    className="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 text-white font-black text-sm shadow-xl shadow-blue-500/25 transition-all cursor-pointer"
                   >
                     VALIDER & CLÔTURER LA COURSE PRÉPAYÉE
                   </button>
@@ -436,7 +436,7 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
 
             <div className="text-right">
               <span className="text-[10px] text-slate-500 uppercase font-bold block">Revenu Garanti / Semaine</span>
-              <span className="text-base font-black font-mono text-emerald-500">32 700.00 DZD</span>
+              <span className="text-base font-black font-mono text-amber-500">32 700.00 DZD</span>
             </div>
           </div>
 
@@ -460,14 +460,14 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
                     <span>Dimanche au Jeudi • Aller 07:45 & Retour 16:30</span>
                   </p>
                 </div>
-                <span className="font-mono font-black text-emerald-500 text-xs">
+                <span className="font-mono font-black text-amber-500 text-xs">
                   14 000.00 DA / sem.
                 </span>
               </div>
 
               <div className="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-white/10 text-[11px]">
                 <span className="text-slate-500">Bénéficiaires : Famille Benali (2 élèves)</span>
-                <span className="px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-bold text-[10px]">
+                <span className="px-2 py-0.5 rounded bg-blue-600/15 text-blue-600 dark:text-blue-400 font-bold text-[10px]">
                   Prépayé CIB (Karim Benali)
                 </span>
               </div>
@@ -490,7 +490,7 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
                     <span>Dimanche au Jeudi • Aller 08:15 & Retour 17:30</span>
                   </p>
                 </div>
-                <span className="font-mono font-black text-emerald-500 text-xs">
+                <span className="font-mono font-black text-amber-500 text-xs">
                   16 500.00 DA / sem.
                 </span>
               </div>
@@ -520,7 +520,7 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
                     <span>Lundi & Mercredi • Départ 09:30</span>
                   </p>
                 </div>
-                <span className="font-mono font-black text-emerald-500 text-xs">
+                <span className="font-mono font-black text-amber-500 text-xs">
                   2 200.00 DA / sem.
                 </span>
               </div>
