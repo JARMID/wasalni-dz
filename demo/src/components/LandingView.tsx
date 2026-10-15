@@ -15,8 +15,10 @@ import {
 } from 'lucide-react';
 import type { AppLang } from '../utils/i18n';
 import { getTranslation } from '../utils/i18n';
-import type { ActiveTab, BrandOption } from './Header';
-import { ThreeCanvas } from './ThreeCanvas';
+import type { ActiveTab, BrandOption, GraphicsPalette } from './Header';
+import { FluidShaderCanvas } from './FluidShaderCanvas';
+import { HeroScrollyStudio } from './HeroScrollyStudio';
+import { FooterReveal } from './FooterReveal';
 import { StickyStack } from './StickyStack';
 import { HorizontalShowcase } from './HorizontalShowcase';
 
@@ -25,6 +27,10 @@ interface LandingViewProps {
   onNavigateTab: (tab: ActiveTab) => void;
   isDark?: boolean;
   brand?: BrandOption;
+  onOpenLogoModal?: () => void;
+  selectedLogoId?: string;
+  selectedPalette?: GraphicsPalette;
+  onSelectPalette?: (palette: GraphicsPalette) => void;
 }
 
 export const LandingView: React.FC<LandingViewProps> = ({
@@ -32,6 +38,10 @@ export const LandingView: React.FC<LandingViewProps> = ({
   onNavigateTab,
   isDark: _isDark,
   brand,
+  onOpenLogoModal,
+  selectedLogoId,
+  selectedPalette,
+  onSelectPalette,
 }) => {
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(lang, key);
   const isAr = lang === 'ar';
@@ -39,29 +49,29 @@ export const LandingView: React.FC<LandingViewProps> = ({
   return (
     <div className="space-y-16 pb-20">
       
-      {/* Hero Section with Interactive Three.js WebGL Telematics Canvas */}
+      {/* Hero Section with Interactive WebGL GLSL Fluid Shader & Realtime Dispatch HUD */}
       <section className="relative pt-10 sm:pt-16 pb-12 overflow-hidden text-center max-w-5xl mx-auto px-4 min-h-[520px] flex flex-col justify-center items-center">
         
-        {/* Three.js 3D WebGL Background Canvas */}
-        <ThreeCanvas className="opacity-70 dark:opacity-85" />
+        {/* Three.js 3D WebGL GLSL Fluid Shader Background Canvas */}
+        <FluidShaderCanvas palette={selectedPalette} className="opacity-75 dark:opacity-90" />
 
         {/* Ambient Gradient Glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[340px] bg-gradient-to-r from-amber-500/10 via-blue-600/15 to-indigo-600/10 blur-3xl -z-10 pointer-events-none rounded-full" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[650px] h-[340px] bg-gradient-to-r from-[var(--brand-accent)]/10 via-[var(--brand-primary)]/15 to-[var(--brand-accent)]/10 blur-3xl -z-10 pointer-events-none rounded-full" />
 
         {/* Content Container (elevated above Three.js canvas) */}
         <div className="relative z-10 w-full max-w-4xl mx-auto">
           
           {/* Eyebrow badge */}
           <div className="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full text-xs font-bold tracking-wide uppercase mb-5 border transition-all glass-panel">
-            <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-            <span className="text-blue-600 dark:text-blue-300">
+            <span className="w-2 h-2 rounded-full bg-[var(--brand-primary)] animate-pulse" />
+            <span className="text-[var(--brand-primary)]">
               {brand ? `${brand.name} • ${brand.nameAr}` : 'WASSLANI • وصلني'} • {t('heroBadge')}
             </span>
           </div>
 
           {/* Main Headline (max 2 lines) */}
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight leading-[1.12] mb-5">
-            <span className="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-800 dark:from-white dark:via-blue-100 dark:to-slate-300 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-950 dark:from-white dark:via-slate-100 dark:to-slate-300 bg-clip-text text-transparent">
               {t('heroTitle')}
             </span>
           </h1>
@@ -75,7 +85,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 mb-10">
             <button
               onClick={() => onNavigateTab('rider')}
-              className="flex items-center space-x-2.5 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-sm shadow-xl shadow-blue-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+              className="flex items-center space-x-2.5 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-[var(--brand-primary)] to-[var(--brand-primary-hover)] hover:opacity-95 text-white font-bold text-sm shadow-xl shadow-[var(--brand-primary)]/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
             >
               <Smartphone className="w-4 h-4" />
               <span>{t('heroCtaRider')}</span>
@@ -84,7 +94,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
 
             <button
               onClick={() => onNavigateTab('driver')}
-              className="flex items-center space-x-2.5 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-black text-sm shadow-xl shadow-amber-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+              className="flex items-center space-x-2.5 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-[var(--brand-accent)] to-[var(--brand-accent-hover)] hover:opacity-95 text-white font-black text-sm shadow-xl shadow-[var(--brand-accent)]/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
             >
               <Video className="w-4 h-4" />
               <span>{t('heroCtaDriver')}</span>
@@ -94,7 +104,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
               onClick={() => onNavigateTab('sync')}
               className="flex items-center space-x-2.5 px-6 py-3.5 rounded-2xl glass-panel-interactive font-bold text-sm text-slate-700 dark:text-slate-200 cursor-pointer"
             >
-              <Layers className="w-4 h-4 text-blue-500" />
+              <Layers className="w-4 h-4 text-[var(--brand-primary)]" />
               <span>{t('navLiveDemo')}</span>
             </button>
           </div>
@@ -103,32 +113,32 @@ export const LandingView: React.FC<LandingViewProps> = ({
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-left">
             <div className="glass-panel p-4 rounded-2xl border">
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-xl sm:text-2xl font-black text-amber-500 dark:text-amber-400">{t('statFleet')}</span>
-                <Car className="w-4 h-4 text-amber-500/70" />
+                <span className="text-xl sm:text-2xl font-black text-[var(--brand-primary)]">{t('statFleet')}</span>
+                <Car className="w-4 h-4 text-[var(--brand-primary)]/70" />
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{t('statFleetDesc')}</p>
             </div>
 
             <div className="glass-panel p-4 rounded-2xl border">
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-xl sm:text-2xl font-black text-blue-600 dark:text-blue-400">{t('statResponse')}</span>
-                <Activity className="w-4 h-4 text-blue-500/70" />
+                <span className="text-xl sm:text-2xl font-black text-[var(--brand-accent)]">{t('statResponse')}</span>
+                <Activity className="w-4 h-4 text-[var(--brand-accent)]/70" />
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{t('statResponseDesc')}</p>
             </div>
 
             <div className="glass-panel p-4 rounded-2xl border">
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-xl sm:text-2xl font-black text-sky-500 dark:text-sky-400">{t('statSpareChange')}</span>
-                <Coins className="w-4 h-4 text-sky-500/70" />
+                <span className="text-xl sm:text-2xl font-black text-[var(--brand-primary-light)]">{t('statSpareChange')}</span>
+                <Coins className="w-4 h-4 text-[var(--brand-primary-light)]/70" />
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{t('statSpareChangeDesc')}</p>
             </div>
 
             <div className="glass-panel p-4 rounded-2xl border">
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-xl sm:text-2xl font-black text-indigo-500 dark:text-indigo-400">{t('statSecurity')}</span>
-                <Lock className="w-4 h-4 text-indigo-500/70" />
+                <span className="text-xl sm:text-2xl font-black text-[var(--brand-accent-light)]">{t('statSecurity')}</span>
+                <Lock className="w-4 h-4 text-[var(--brand-accent-light)]/70" />
               </div>
               <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">{t('statSecurityDesc')}</p>
             </div>
@@ -136,6 +146,9 @@ export const LandingView: React.FC<LandingViewProps> = ({
 
         </div>
       </section>
+
+      {/* Interactive Hero Scrollytelling Studio (3 Pillars: Dispatch H3, Boîte Noire 12-230, Split BaridiMob) */}
+      <HeroScrollyStudio lang={lang} onNavigateTab={onNavigateTab} />
 
       {/* GSAP Horizontal Showcase: The 5 Decoupled Portals */}
       <HorizontalShowcase lang={lang} onNavigateTab={onNavigateTab} />
@@ -287,128 +300,15 @@ export const LandingView: React.FC<LandingViewProps> = ({
         </div>
       </section>
 
-      {/* Portals Directory Navigation Footer */}
-      <footer className="max-w-5xl mx-auto px-4 pt-10 border-t border-slate-200 dark:border-white/10 text-xs text-slate-500 dark:text-slate-400">
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pb-8">
-          <div>
-            <h5 className="font-bold text-slate-900 dark:text-white uppercase tracking-wider text-[11px] mb-3">
-              Usagers & Passagers
-            </h5>
-            <ul className="space-y-2">
-              <li>
-                <button 
-                  onClick={() => onNavigateTab('rider')} 
-                  className="hover:text-blue-500 transition-colors text-left cursor-pointer"
-                >
-                  Application Passager Web
-                </button>
-              </li>
-              <li>
-                <a href="#services" className="hover:text-blue-500 transition-colors">
-                  Tarifs Réglementés (Compteur)
-                </a>
-              </li>
-              <li>
-                <a href="#enterprise" className="hover:text-blue-500 transition-colors">
-                  Navettes Programmées Familles
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h5 className="font-bold text-slate-900 dark:text-white uppercase tracking-wider text-[11px] mb-3">
-              Chauffeurs Agréés
-            </h5>
-            <ul className="space-y-2">
-              <li>
-                <button 
-                  onClick={() => onNavigateTab('driver')} 
-                  className="hover:text-blue-500 transition-colors text-left cursor-pointer"
-                >
-                  Cockpit Dashcam Embarqué
-                </button>
-              </li>
-              <li>
-                <a href="#drivers" className="hover:text-blue-500 transition-colors">
-                  Conditions d'Adhésion DTW
-                </a>
-              </li>
-              <li>
-                <button 
-                  onClick={() => onNavigateTab('ledger')} 
-                  className="hover:text-blue-500 transition-colors text-left cursor-pointer"
-                >
-                  Retrait Gains BaridiMob
-                </button>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h5 className="font-bold text-slate-900 dark:text-white uppercase tracking-wider text-[11px] mb-3">
-              Régulation & Sécurité
-            </h5>
-            <ul className="space-y-2">
-              <li>
-                <button 
-                  onClick={() => onNavigateTab('dispatch')} 
-                  className="hover:text-blue-500 transition-colors text-left cursor-pointer"
-                >
-                  Poste de Contrôle Flotte DTW
-                </button>
-              </li>
-              <li>
-                <button 
-                  onClick={() => onNavigateTab('inspector')} 
-                  className="hover:text-blue-500 transition-colors text-left cursor-pointer text-blue-600 dark:text-blue-400 font-bold"
-                >
-                  Scanner Contrôle Routier DTW
-                </button>
-              </li>
-              <li>
-                <a href="#safety" className="hover:text-blue-500 transition-colors">
-                  Séquestre Judiciaire (Loi 25-11)
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h5 className="font-bold text-slate-900 dark:text-white uppercase tracking-wider text-[11px] mb-3">
-              Fintech & Écosystème
-            </h5>
-            <ul className="space-y-2">
-              <li>
-                <button 
-                  onClick={() => onNavigateTab('ledger')} 
-                  className="hover:text-blue-500 transition-colors text-left cursor-pointer"
-                >
-                  Grand Livre TrustDesk
-                </button>
-              </li>
-              <li>
-                <button 
-                  onClick={() => onNavigateTab('sync')} 
-                  className="hover:text-blue-500 transition-colors text-left cursor-pointer"
-                >
-                  Simulateur Multi-Surfaces
-                </button>
-              </li>
-              <li className="pt-2 text-[10px] text-slate-400">
-                Souveraineté Numérique Algérienne • Wilaya 16
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="pt-6 border-t border-slate-200/60 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px]">
-          <span>© 2026 WASSLANI. Tous droits réservés. Décret Exécutif N° 12-230.</span>
-          <span className="font-mono text-blue-600 dark:text-blue-400 font-bold">
-            Architecture Découplée 5 Surfaces
-          </span>
-        </div>
-      </footer>
+      {/* Architectural Revealing Sticky Footer */}
+      <FooterReveal
+        lang={lang}
+        onNavigateTab={onNavigateTab}
+        onOpenLogoModal={onOpenLogoModal}
+        selectedLogoId={selectedLogoId}
+        selectedPalette={selectedPalette}
+        onSelectPalette={onSelectPalette}
+      />
 
     </div>
   );

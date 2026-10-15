@@ -576,6 +576,10 @@ export function App() {
             onNavigateTab={setActiveTab}
             isDark={isDark}
             brand={selectedBrand}
+            onOpenLogoModal={() => setIsLogoModalOpen(true)}
+            selectedLogoId={selectedLogoId}
+            selectedPalette={selectedPalette}
+            onSelectPalette={setSelectedPalette}
           />
         )}
 
