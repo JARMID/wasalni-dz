@@ -144,3 +144,31 @@ export interface WalletBalances {
   driverOperational_2020: number;// Driver operating balance (Account 2020)
   platformRevenue_4010: number;  // Platform booking fees (Account 4010)
 }
+
+export interface ChatMessage {
+  id: string;
+  sender: 'rider' | 'driver' | 'system';
+  textFr: string;
+  textAr: string;
+  timestamp: string;
+}
+
+export interface OfficialCitationPV {
+  pvNumber: string;
+  date: string;
+  time: string;
+  wilayaCode: string;
+  wilayaName: string;
+  location: string;
+  driverName: string;
+  agrementNumber: string;
+  licensePlate: string;
+  vehicleModel: string;
+  infractionType: string;
+  legalArticle: string;
+  fineAmountDzd: number;
+  officerBadge: string;
+  qrPayload: string;
+  ripCcpTresor: string;
+}
+

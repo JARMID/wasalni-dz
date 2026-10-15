@@ -4,8 +4,10 @@ import {
   Download, 
   CheckCircle2,
   ShieldCheck,
-  Receipt
+  Receipt,
+  FileCheck
 } from 'lucide-react';
+
 import type { WalletBalances, LedgerEntry } from '../types';
 import { soundEngine } from '../utils/audio';
 import type { AppLang } from '../utils/i18n';
@@ -149,6 +151,52 @@ export const LedgerView: React.FC<LedgerViewProps> = ({
           <p className="text-[9px] text-slate-400 font-mono">Frais d'approche réglementés</p>
         </div>
 
+      </div>
+
+      {/* Algerian Fiscal Tax Schedule & Algérie Poste Clearing Reconciliation */}
+      <div className="p-4 rounded-3xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 space-y-4 font-sans">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center space-x-2">
+            <FileCheck className="w-4 h-4 text-blue-500" />
+            <h3 className="font-extrabold text-xs uppercase tracking-wider text-slate-800 dark:text-slate-200">
+              Déclaration Fiscale & Compensation Algérie Poste (DGI / Loi 23-09)
+            </h3>
+          </div>
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/10 text-blue-600 dark:text-blue-300 font-bold border border-blue-500/20">
+            Bordereau CCP N° BDT-2026-16-993
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs font-mono">
+          <div className="p-3 rounded-2xl bg-white dark:bg-slate-950/80 border border-slate-200 dark:border-white/10 space-y-1">
+            <span className="text-[10px] text-slate-500 uppercase block">TVA Collectée (9%) :</span>
+            <div className="text-base font-black text-slate-900 dark:text-white">
+              {(wallets.platformRevenue_4010 * 0.09).toFixed(2)} DA
+            </div>
+            <p className="text-[9px] text-slate-400 font-sans">Provisionnée pour déclaration G50</p>
+          </div>
+
+          <div className="p-3 rounded-2xl bg-white dark:bg-slate-950/80 border border-slate-200 dark:border-white/10 space-y-1">
+            <span className="text-[10px] text-slate-500 uppercase block">IFU Chauffeurs (5%) :</span>
+            <div className="text-base font-black text-amber-500">
+              {(wallets.driverOperational_2020 * 0.05).toFixed(2)} DA
+            </div>
+            <p className="text-[9px] text-slate-400 font-sans">Prélèvement libératoire forfaitaire</p>
+          </div>
+
+          <div className="p-3 rounded-2xl bg-white dark:bg-slate-950/80 border border-slate-200 dark:border-white/10 space-y-1">
+            <span className="text-[10px] text-slate-500 uppercase block">Compte Compensation Algérie Poste :</span>
+            <div className="text-base font-black text-sky-500">
+              {wallets.digitalEscrow_1020.toFixed(2)} DA
+            </div>
+            <p className="text-[9px] text-slate-400 font-sans">Virements Edahabia & BaridiMob</p>
+          </div>
+        </div>
+
+        <div className="p-3 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-[11px] text-slate-700 dark:text-slate-300 flex items-center justify-between">
+          <span>📜 Conformité avec l'Article 43 du Code des Taxes sur le Chiffre d'Affaires et Décret Exécutif 12-230.</span>
+          <span className="font-bold text-blue-600 dark:text-blue-400 font-mono">Certification DGI Active</span>
+        </div>
       </div>
 
       {/* Immutable Ledger Journal */}

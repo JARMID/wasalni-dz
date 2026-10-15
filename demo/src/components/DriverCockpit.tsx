@@ -6,7 +6,9 @@ import {
   Calendar,
   Clock,
   HeartHandshake,
-  Car
+  Car,
+  MessageSquare,
+  Volume2
 } from 'lucide-react';
 import type { 
   DriverProfile, 
@@ -16,6 +18,7 @@ import type {
 import { DashcamHUD } from './DashcamHUD';
 import { ChargilyTopupModal } from './ChargilyTopupModal';
 import { BaridiMobModal } from './BaridiMobModal';
+import { RideChatModal } from './RideChatModal';
 import { soundEngine } from '../utils/audio';
 import type { AppLang } from '../utils/i18n';
 import { getTranslation } from '../utils/i18n';
@@ -59,6 +62,7 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
   const [pinError, setPinError] = useState(false);
   const [isTopupModalOpen, setIsTopupModalOpen] = useState(false);
   const [isBaridiMobModalOpen, setIsBaridiMobModalOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   // Live Algerian Taximeter Simulator State (Décret 12-230)
   const [simulatedKm, setSimulatedKm] = useState<number>(6.2);
@@ -278,12 +282,31 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
                 <span className="text-slate-400 block text-[10px]">Client en attente</span>
                 <strong className="text-slate-900 dark:text-white">{currentRide.origin.name}</strong>
               </div>
-              <button
-                onClick={() => { soundEngine.playClick(); onArrivedAtPickup(); }}
-                className="w-full py-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs cursor-pointer shadow-md"
-              >
-                {t('driverArrivedBtn')}
-              </button>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => { soundEngine.playClick(); onArrivedAtPickup(); }}
+                  className="flex-1 py-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-white font-bold text-xs cursor-pointer shadow-md"
+                >
+                  {t('driverArrivedBtn')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { soundEngine.playClick(); setIsChatOpen(true); }}
+                  className="px-3.5 py-3 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 text-amber-600 dark:text-amber-400 font-bold text-xs flex items-center gap-1.5 border border-amber-500/30 cursor-pointer"
+                  title="Contacter le client"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                  <span>Chat</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => soundEngine.speakDispatch(`Navigation vers ${currentRide.origin.name}. Distance un kilomètre six.`, lang === 'ar' ? 'ar' : 'fr')}
+                  className="p-3 rounded-xl bg-blue-500/15 hover:bg-blue-500/25 text-blue-600 dark:text-blue-400 font-bold text-xs border border-blue-500/30 cursor-pointer"
+                  title="Guidage Vocal"
+                >
+                  <Volume2 className="w-4 h-4" />
+                </button>
+              </div>
             </div>
           )}
 
@@ -300,6 +323,15 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
                   ℹ️ {t('driverNoCashToCollect')}
                 </div>
               )}
+
+              <button
+                type="button"
+                onClick={() => { soundEngine.playClick(); setIsChatOpen(true); }}
+                className="w-full py-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 font-bold text-xs flex items-center justify-center gap-1.5 border border-amber-500/30 cursor-pointer"
+              >
+                <MessageSquare className="w-3.5 h-3.5" />
+                <span>Envoyer un message au client sur place</span>
+              </button>
 
               <div className="flex items-center space-x-2">
                 <input
@@ -616,6 +648,17 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
         targetAccountName="Compte Opérationnel Chauffeur (2020)"
       />
 
+      {/* Driver-Rider Live In-Ride Chat Modal */}
+      <RideChatModal
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        driver={driver}
+        currentRide={currentRide}
+        userRole="driver"
+        lang={lang}
+      />
+
     </div>
   );
 };
+

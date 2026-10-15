@@ -12,7 +12,8 @@ import {
   Sparkles
 } from 'lucide-react';
 import type { AppLang } from '../utils/i18n';
-import type { DriverProfile } from '../types';
+import type { DriverProfile, OfficialCitationPV } from '../types';
+import { OfficialCitationModal } from './OfficialCitationModal';
 
 export const WILAYAS_58: Record<string, string> = {
   '01': 'Adrar', '02': 'Chlef', '03': 'Laghouat', '04': 'Oum El Bouaghi', '05': 'Batna',
@@ -40,6 +41,25 @@ export const InspectorView: React.FC<InspectorViewProps> = ({ driver }) => {
   const [scanResult, setScanResult] = useState<'verified' | 'unverified' | null>('verified');
   const [offlineMode, setOfflineMode] = useState(false);
   const [inspectionIssued, setInspectionIssued] = useState(false);
+  const [isCitationModalOpen, setIsCitationModalOpen] = useState(false);
+  const [citationData, setCitationData] = useState<OfficialCitationPV>({
+    pvNumber: 'PV-2026-16-0492',
+    date: new Date().toLocaleDateString('fr-FR'),
+    time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+    wilayaCode: '16',
+    wilayaName: 'Alger',
+    location: 'Barrage Fixe DTW - Chevalley / Rocade Sud, Alger',
+    driverName: driver.fullName,
+    agrementNumber: driver.agrementNumber,
+    licensePlate: scannedPlate,
+    vehicleModel: `${driver.vehicleMake} ${driver.vehicleModel}`,
+    infractionType: 'Défaut d\'étalonnage périodique du taximètre (Sceau ONML)',
+    legalArticle: 'Décret 12-230 Art. 45 & Loi 01-13',
+    fineAmountDzd: 5000.00,
+    officerBadge: '16-BR-402',
+    qrPayload: 'https://baridimob.poste.dz/pay?rip=00799999000123456789&amount=5000',
+    ripCcpTresor: '007 99999 0001234567 89 (Recette des Impôts Alger)',
+  });
 
   // Extract Wilaya Code from plate suffix
   const extractedWilayaCode = scannedPlate.trim().slice(-2);
@@ -59,6 +79,28 @@ export const InspectorView: React.FC<InspectorViewProps> = ({ driver }) => {
   const handleIssueClearance = () => {
     setInspectionIssued(true);
     setTimeout(() => setInspectionIssued(false), 3000);
+  };
+
+  const handleOpenCitation = (type: string, article: string, fine: number) => {
+    setCitationData({
+      pvNumber: `PV-2026-16-${Math.floor(1000 + Math.random() * 9000)}`,
+      date: new Date().toLocaleDateString('fr-FR'),
+      time: new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+      wilayaCode: extractedWilayaCode,
+      wilayaName: resolvedWilayaName,
+      location: 'Point de Contrôle DTW - Rocade Sud, Chevalley, Alger',
+      driverName: scanResult === 'verified' ? driver.fullName : 'Conducteur Clandestin Non Homologué',
+      agrementNumber: scanResult === 'verified' ? driver.agrementNumber : 'NÉANT / FRAUDE DTW',
+      licensePlate: scannedPlate,
+      vehicleModel: scanResult === 'verified' ? `${driver.vehicleMake} ${driver.vehicleModel}` : 'Véhicule Particulier',
+      infractionType: type,
+      legalArticle: article,
+      fineAmountDzd: fine,
+      officerBadge: '16-BR-402',
+      qrPayload: `https://baridimob.poste.dz/pay?rip=00799999000123456789&amount=${fine}`,
+      ripCcpTresor: '007 99999 0001234567 89 (Recette des Impôts Alger)',
+    });
+    setIsCitationModalOpen(true);
   };
 
   return (
@@ -368,7 +410,7 @@ export const InspectorView: React.FC<InspectorViewProps> = ({ driver }) => {
               </div>
 
               {/* Clearance Action Button */}
-              <div className="pt-2">
+              <div className="pt-2 space-y-2">
                 <button
                   type="button"
                   onClick={handleIssueClearance}
@@ -384,6 +426,15 @@ export const InspectorView: React.FC<InspectorViewProps> = ({ driver }) => {
                       ? 'Quittance Délivrée & Enregistrée au Fichier DTW'
                       : 'Délivrer Quittance de Contrôle Conforme'}
                   </span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleOpenCitation('Défaut d\'étalonnage périodique du taximètre (Sceau ONML)', 'Décret 12-230 Art. 45 & Loi 01-13', 5000)}
+                  className="w-full py-2.5 rounded-xl border border-amber-500/30 text-amber-600 dark:text-amber-400 hover:bg-amber-500/10 font-bold text-xs flex items-center justify-center space-x-2 transition-all cursor-pointer"
+                >
+                  <FileText className="w-4 h-4" />
+                  <span>Dresser PV d'Infraction Forfaitaire (5 000 DA)</span>
                 </button>
               </div>
 
@@ -423,19 +474,38 @@ export const InspectorView: React.FC<InspectorViewProps> = ({ driver }) => {
                 </div>
               </div>
 
-              <button
-                type="button"
-                onClick={() => handleIssueClearance()}
-                className="w-full py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-lg shadow-rose-600/30 transition-all cursor-pointer"
-              >
-                Transmettre Signalement au Poste Central
-              </button>
+              <div className="space-y-2">
+                <button
+                  type="button"
+                  onClick={() => handleOpenCitation('Activité de transport rémunéré sans agrément municipal préalable (Clandestin)', 'Loi 01-13 Art. 62 & Décret 12-230 Art. 62', 10000)}
+                  className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shadow-lg shadow-amber-500/25 transition-all cursor-pointer flex items-center justify-center space-x-2"
+                >
+                  <FileText className="w-4 h-4" />
+                  <span>Dresser Procès-Verbal & Mise en Fourrière (10 000 DA)</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => handleIssueClearance()}
+                  className="w-full py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-md shadow-rose-600/20 transition-all cursor-pointer"
+                >
+                  Transmettre Signalement au Poste Central
+                </button>
+              </div>
             </div>
           )}
         </div>
 
       </div>
 
+      {/* Printable Official DTW Citation PV Modal */}
+      <OfficialCitationModal
+        isOpen={isCitationModalOpen}
+        onClose={() => setIsCitationModalOpen(false)}
+        citation={citationData}
+      />
+
     </div>
   );
 };
+

@@ -16,7 +16,11 @@ import {
   Pause,
   X,
   RotateCcw,
-  Camera
+  Camera,
+  CloudRain,
+  TrendingUp,
+  Bell,
+  Volume2
 } from 'lucide-react';
 import type { DashcamIncident, DriverProfile, RideRequest } from '../types';
 import { ALGIERS_MUNICIPAL_FLEET } from '../data/mockData';
@@ -43,6 +47,10 @@ export const DispatchView: React.FC<DispatchViewProps> = ({
   const [requisitionSent, setRequisitionSent] = useState(false);
   const [isVideoPlaybackOpen, setIsVideoPlaybackOpen] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [broadcastSent, setBroadcastSent] = useState(false);
+  const [broadcastMessage, setBroadcastMessage] = useState(
+    "Alerte DTW Alger : Forte affluence signalée à l'Aéroport Houari Boumediene T4. Redéploiement prioritaire recommandé pour les taxis de la Wilaya 16."
+  );
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(lang, key);
 
   const handleSelectIncident = (inc: DashcamIncident) => {
@@ -56,6 +64,13 @@ export const DispatchView: React.FC<DispatchViewProps> = ({
     setRequisitionSent(true);
     soundEngine.playSuccessChime();
     setTimeout(() => setRequisitionSent(false), 4000);
+  };
+
+  const handleBroadcastAlert = () => {
+    soundEngine.playDispatchPing();
+    soundEngine.speakDispatch("Alerte de régulation transmise aux quarante-deux taxis de la Wilaya d'Alger.", lang === 'ar' ? 'ar' : 'fr');
+    setBroadcastSent(true);
+    setTimeout(() => setBroadcastSent(false), 5000);
   };
 
   return (
@@ -96,6 +111,84 @@ export const DispatchView: React.FC<DispatchViewProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Fleet Surge Intelligence & Road Weather Telemetry (Open-Meteo Integration) */}
+      <div className="p-4 rounded-3xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/10 space-y-3 font-sans">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex items-center space-x-2">
+            <TrendingUp className="w-4 h-4 text-amber-500" />
+            <h3 className="font-extrabold text-xs uppercase tracking-wider text-slate-800 dark:text-slate-200">
+              Régulation Trafic & Zones de Forte Demande (Wilaya 16)
+            </h3>
+          </div>
+          <div className="flex items-center space-x-2 text-[11px] font-mono text-slate-500 dark:text-slate-400">
+            <CloudRain className="w-3.5 h-3.5 text-blue-500" />
+            <span>Météo Alger (Open-Meteo): 21.6°C • Sol 820 W/m² • Chaussée Sèche</span>
+          </div>
+        </div>
+
+        {/* 4 Surge Hotspots */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-mono">
+          <div className="p-2.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 space-y-1">
+            <div className="flex items-center justify-between text-amber-600 dark:text-amber-400 font-bold text-[11px]">
+              <span>Aéroport Houari B.</span>
+              <span className="px-1.5 py-0.2 rounded bg-amber-500 text-slate-950 font-black">+35%</span>
+            </div>
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-sans">18 demandes en attente T4</p>
+          </div>
+
+          <div className="p-2.5 rounded-2xl bg-blue-500/10 border border-blue-500/30 space-y-1">
+            <div className="flex items-center justify-between text-blue-600 dark:text-blue-400 font-bold text-[11px]">
+              <span>Alger-Centre (Audin)</span>
+              <span className="px-1.5 py-0.2 rounded bg-blue-600 text-white font-black">+42%</span>
+            </div>
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-sans">Saturation heure de pointe</p>
+          </div>
+
+          <div className="p-2.5 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 space-y-1">
+            <div className="flex items-center justify-between text-slate-700 dark:text-slate-300 font-bold text-[11px]">
+              <span>Bab Ezzouar (USTHB)</span>
+              <span className="px-1.5 py-0.2 rounded bg-slate-300 dark:bg-slate-700 text-slate-800 dark:text-white font-bold">+28%</span>
+            </div>
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-sans">Flux sortie cours universitaire</p>
+          </div>
+
+          <div className="p-2.5 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 space-y-1">
+            <div className="flex items-center justify-between text-slate-700 dark:text-slate-300 font-bold text-[11px]">
+              <span>Hydra - Ambassades</span>
+              <span className="px-1.5 py-0.2 rounded bg-slate-300 dark:bg-slate-700 text-slate-800 dark:text-white font-bold">+15%</span>
+            </div>
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-sans">Demandes corporatives et missions</p>
+          </div>
+        </div>
+
+        {/* Fleet Broadcast Bar */}
+        <div className="pt-2 border-t border-slate-200 dark:border-white/10 flex flex-col sm:flex-row items-center gap-2">
+          <input
+            type="text"
+            value={broadcastMessage}
+            onChange={(e) => setBroadcastMessage(e.target.value)}
+            className="flex-1 p-2 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-950 text-xs text-slate-900 dark:text-white font-medium"
+            placeholder="Diffuser une consigne de régulation à la flotte..."
+          />
+          <button
+            type="button"
+            onClick={handleBroadcastAlert}
+            className="w-full sm:w-auto px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center justify-center space-x-2 shadow-md shadow-blue-600/20 transition-all cursor-pointer"
+          >
+            <Bell className="w-3.5 h-3.5" />
+            <span>Diffuser Alerte DTW (42 Taxis)</span>
+          </button>
+        </div>
+
+        {broadcastSent && (
+          <div className="p-2 rounded-xl bg-blue-500/15 border border-blue-500/30 text-blue-700 dark:text-blue-300 text-xs font-bold flex items-center space-x-2 animate-fadeIn">
+            <Volume2 className="w-4 h-4 text-blue-500 shrink-0" />
+            <span>Consigne télématique transmise aux 42 tablettes de bord avec synthèse vocale instantanée.</span>
+          </div>
+        )}
+      </div>
+
 
       {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

@@ -25,7 +25,8 @@ import {
   Search,
   PhoneCall,
   AlertTriangle,
-  FileText
+  FileText,
+  MessageSquare
 } from 'lucide-react';
 
 import type { 
@@ -44,6 +45,7 @@ import { ChargilyTopupModal } from './ChargilyTopupModal';
 import { BaridiMobModal } from './BaridiMobModal';
 import { InteractiveMap } from './InteractiveMap';
 import { OfficialReceiptModal } from './OfficialReceiptModal';
+import { RideChatModal } from './RideChatModal';
 import { soundEngine } from '../utils/audio';
 import type { AppLang } from '../utils/i18n';
 import { getTranslation } from '../utils/i18n';
@@ -138,6 +140,7 @@ export const RiderView: React.FC<RiderViewProps> = ({
   const [isBaridiMobOpen, setIsBaridiMobOpen] = useState(false);
   const [copiedPin, setCopiedPin] = useState(false);
   const [isReceiptOpen, setIsReceiptOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   // Live OpenStreetMap Nominatim Address Search
   const [searchQuery, setSearchQuery] = useState('');
@@ -1019,19 +1022,27 @@ export const RiderView: React.FC<RiderViewProps> = ({
               </div>
             </div>
 
-            {/* Direct Call & SOS Emergency Security Buttons */}
-            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200 dark:border-white/10">
+            {/* Direct Call, Chat & SOS Emergency Security Buttons */}
+            <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-200 dark:border-white/10">
               <a
                 href={`tel:${driver.phone.replace(/\s+/g, '')}`}
-                className="py-2 px-3 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors border border-blue-500/30"
+                className="py-2 px-1.5 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 font-bold text-xs flex items-center justify-center gap-1 transition-colors border border-blue-500/30"
               >
                 <PhoneCall className="w-3.5 h-3.5" />
                 <span>Appeler</span>
               </a>
               <button
                 type="button"
+                onClick={() => { soundEngine.playClick(); setIsChatOpen(true); }}
+                className="py-2 px-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 font-bold text-xs flex items-center justify-center gap-1 transition-colors border border-amber-500/30 cursor-pointer"
+              >
+                <MessageSquare className="w-3.5 h-3.5" />
+                <span>Message</span>
+              </button>
+              <button
+                type="button"
                 onClick={() => soundEngine.playCrashSonar()}
-                className="py-2 px-3 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors border border-rose-500/30 cursor-pointer"
+                className="py-2 px-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 font-bold text-xs flex items-center justify-center gap-1 transition-colors border border-rose-500/30 cursor-pointer"
               >
                 <AlertTriangle className="w-3.5 h-3.5" />
                 <span>SOS 1548</span>
@@ -1068,10 +1079,20 @@ export const RiderView: React.FC<RiderViewProps> = ({
             <p className="text-xs text-slate-500">
               Compteur fiscal et caméra de bord télématique en service
             </p>
+
+            <button
+              type="button"
+              onClick={() => { soundEngine.playClick(); setIsChatOpen(true); }}
+              className="py-2 px-4 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 font-bold text-xs inline-flex items-center gap-1.5 border border-amber-500/30 cursor-pointer transition-colors"
+            >
+              <MessageSquare className="w-3.5 h-3.5" />
+              <span>Contacter le chauffeur en course</span>
+            </button>
           </div>
         </div>
       );
     }
+
 
     // D. COMPLETED
     if (currentRide.status === 'completed') {
@@ -1222,6 +1243,17 @@ export const RiderView: React.FC<RiderViewProps> = ({
           lang={lang}
         />
       )}
+
+      {/* In-Ride Live Chat with Driver Modal */}
+      <RideChatModal
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        driver={driver}
+        currentRide={currentRide}
+        userRole="rider"
+        lang={lang}
+      />
     </div>
   );
 };
+
