@@ -222,7 +222,7 @@ export const StickyStack: React.FC<StickyStackProps> = ({ lang, onNavigateTab })
               </div>
               <div className="flex justify-between">
                 <span className="text-slate-400">Statut G-Sensor:</span>
-                <span className="font-bold text-emerald-500">Veille Active</span>
+                <span className="font-bold text-blue-500">Veille Active</span>
               </div>
             </div>
           </div>
