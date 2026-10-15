@@ -81,5 +81,5 @@
 
   <!-- Brand Typography -->
   <text x="256" y="415" font-family="'Inter', system-ui, -apple-system, sans-serif" font-weight="900" font-size="34" fill="#FFFFFF" text-anchor="middle" letter-spacing="8">WASSLANI</text>
-  <text x="256" y="445" font-family="'Inter', system-ui, sans-serif" font-weight="700" font-size="13" fill="#F59E0B" text-anchor="middle" letter-spacing="4">SÉCURITÉ & AGRÉMENT DTW</text>
+  <text x="256" y="445" font-family="'Inter', system-ui, sans-serif" font-weight="700" font-size="13" fill="#F59E0B" text-anchor="middle" letter-spacing="4">SÉCURITÉ &amp; AGRÉMENT DTW</text>
 </svg>
