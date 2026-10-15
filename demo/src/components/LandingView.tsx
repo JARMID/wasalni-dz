@@ -129,7 +129,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
 
 
       {/* Three Pillars Section */}
-      <section className="max-w-6xl mx-auto px-4">
+      <section id="services" className="max-w-6xl mx-auto px-4">
         <div className="text-center mb-10">
           <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight mb-2">
             {t('landingPillarsHeader')}
@@ -274,7 +274,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
       </section>
 
       {/* NEW: Dedicated Chauffeur & Third-Party Sponsored Payment Section */}
-      <section className="max-w-5xl mx-auto px-4">
+      <section id="enterprise" className="max-w-5xl mx-auto px-4">
         <div className="glass-panel rounded-3xl p-6 sm:p-10 border border-blue-500/20 bg-gradient-to-br from-blue-500/5 via-transparent to-emerald-500/5">
           <div className="text-center max-w-2xl mx-auto mb-8">
             <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-lg bg-blue-500/15 text-blue-600 dark:text-blue-300 font-bold text-xs mb-3">
@@ -339,9 +339,56 @@ export const LandingView: React.FC<LandingViewProps> = ({
         </div>
       </section>
 
+      {/* Driver Recruitment Funnel Section */}
+      <section id="drivers" className="max-w-5xl mx-auto px-4">
+        <div className="glass-panel rounded-3xl p-6 sm:p-10 border border-amber-500/30 bg-gradient-to-br from-amber-500/5 via-transparent to-emerald-500/5">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+            <div className="md:col-span-8 space-y-4">
+              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-lg bg-amber-500/15 text-amber-700 dark:text-amber-300 font-bold text-xs">
+                <Car className="w-3.5 h-3.5 text-amber-500" />
+                <span>Espace Artisans Taxieurs Agréés (Wilaya 16)</span>
+              </div>
+              <h3 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
+                Vous possédez un Agrément & un Livret de Place ?
+              </h3>
+              <p className="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                Rejoignez le réseau officiel WASALNI DZ. Bénéficiez d'une commission ultra-réduite (8% à 12%), de la protection juridique de votre boîte noire CameraX en cas d'accident, et de courses pré-payées par BaridiMob et cartes CIB.
+              </p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs font-semibold text-slate-700 dark:text-slate-300 pt-2">
+                <div className="flex items-center space-x-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  <span>Zéro risque de fourrière</span>
+                </div>
+                <div className="flex items-center space-x-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  <span>Boîte Noire Offerte</span>
+                </div>
+                <div className="flex items-center space-x-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+                  <span>Revenus Garantis</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="md:col-span-4 flex flex-col items-center justify-center text-center space-y-3 p-6 rounded-2xl bg-slate-900 text-white border border-slate-800 shadow-xl">
+              <span className="text-xs uppercase tracking-wider text-amber-400 font-mono font-bold">Décret 12-230 Conforme</span>
+              <span className="text-2xl font-black">100% Légal</span>
+              <p className="text-[11px] text-slate-400">
+                Accédez directement au cockpit chauffeur sur tablette ou smartphone
+              </p>
+              <button
+                onClick={() => onNavigateTab('driver')}
+                className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs transition-colors cursor-pointer shadow-lg shadow-amber-500/20"
+              >
+                Ouvrir le Cockpit Chauffeur
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Official Regulatory Compliance Footer Section */}
-      <section className="max-w-5xl mx-auto px-4 pt-6 border-t border-slate-200 dark:border-white/10">
+      <section id="safety" className="max-w-5xl mx-auto px-4 pt-6 border-t border-slate-200 dark:border-white/10">
         <div className="text-center max-w-2xl mx-auto mb-8">
           <div className="inline-flex items-center space-x-1.5 text-xs font-bold text-emerald-500 uppercase tracking-widest mb-2">
             <ShieldCheck className="w-4 h-4" />
@@ -367,6 +414,129 @@ export const LandingView: React.FC<LandingViewProps> = ({
           </div>
         </div>
       </section>
+
+      {/* Portals Directory Navigation Footer */}
+      <footer className="max-w-5xl mx-auto px-4 pt-10 border-t border-slate-200 dark:border-white/10 text-xs text-slate-500 dark:text-slate-400">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pb-8">
+          <div>
+            <h5 className="font-bold text-slate-900 dark:text-white uppercase tracking-wider text-[11px] mb-3">
+              Usagers & Passagers
+            </h5>
+            <ul className="space-y-2">
+              <li>
+                <button 
+                  onClick={() => onNavigateTab('rider')} 
+                  className="hover:text-emerald-500 transition-colors text-left cursor-pointer"
+                >
+                  Application Passager Web
+                </button>
+              </li>
+              <li>
+                <a href="#services" className="hover:text-emerald-500 transition-colors">
+                  Tarifs Réglementés (Compteur)
+                </a>
+              </li>
+              <li>
+                <a href="#enterprise" className="hover:text-emerald-500 transition-colors">
+                  Navettes Programmées Familles
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h5 className="font-bold text-slate-900 dark:text-white uppercase tracking-wider text-[11px] mb-3">
+              Chauffeurs Agréés
+            </h5>
+            <ul className="space-y-2">
+              <li>
+                <button 
+                  onClick={() => onNavigateTab('driver')} 
+                  className="hover:text-emerald-500 transition-colors text-left cursor-pointer"
+                >
+                  Cockpit Dashcam Embarqué
+                </button>
+              </li>
+              <li>
+                <a href="#drivers" className="hover:text-emerald-500 transition-colors">
+                  Conditions d'Adhésion DTW
+                </a>
+              </li>
+              <li>
+                <button 
+                  onClick={() => onNavigateTab('ledger')} 
+                  className="hover:text-emerald-500 transition-colors text-left cursor-pointer"
+                >
+                  Retrait Gains BaridiMob
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h5 className="font-bold text-slate-900 dark:text-white uppercase tracking-wider text-[11px] mb-3">
+              Régulation & Sécurité
+            </h5>
+            <ul className="space-y-2">
+              <li>
+                <button 
+                  onClick={() => onNavigateTab('dispatch')} 
+                  className="hover:text-emerald-500 transition-colors text-left cursor-pointer"
+                >
+                  Poste de Contrôle Flotte DTW
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => onNavigateTab('inspector')} 
+                  className="hover:text-emerald-500 transition-colors text-left cursor-pointer text-emerald-600 dark:text-emerald-400 font-bold"
+                >
+                  Scanner Contrôle Routier DTW
+                </button>
+              </li>
+              <li>
+                <a href="#safety" className="hover:text-emerald-500 transition-colors">
+                  Séquestre Judiciaire (Loi 25-11)
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h5 className="font-bold text-slate-900 dark:text-white uppercase tracking-wider text-[11px] mb-3">
+              Fintech & Écosystème
+            </h5>
+            <ul className="space-y-2">
+              <li>
+                <button 
+                  onClick={() => onNavigateTab('ledger')} 
+                  className="hover:text-emerald-500 transition-colors text-left cursor-pointer"
+                >
+                  Grand Livre TrustDesk
+                </button>
+              </li>
+              <li>
+                <button 
+                  onClick={() => onNavigateTab('sync')} 
+                  className="hover:text-emerald-500 transition-colors text-left cursor-pointer"
+                >
+                  Simulateur Multi-Surfaces
+                </button>
+              </li>
+              <li className="pt-2 text-[10px] text-slate-400">
+                Souveraineté Numérique Algérienne • Wilaya 16
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="pt-6 border-t border-slate-200/60 dark:border-white/5 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px]">
+          <span>© 2026 WASALNI DZ (NAQL DZ). Tous droits réservés. Décret Exécutif N° 12-230.</span>
+          <span className="font-mono text-emerald-600 dark:text-emerald-400 font-bold">
+            Architecture Découplée 5 Surfaces
+          </span>
+        </div>
+      </footer>
 
     </div>
   );

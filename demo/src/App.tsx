@@ -28,6 +28,8 @@ import {
   ALGIERS_LOCATIONS 
 } from './data/mockData';
 import { AiCopilotModal } from './components/AiCopilotModal';
+import { InspectorView } from './components/InspectorView';
+import { SurfaceSwitcher } from './components/SurfaceSwitcher';
 import { soundEngine } from './utils/audio';
 import { 
   syncLiveWallets, 
@@ -38,7 +40,16 @@ import {
 } from './utils/supabase';
 
 export function App() {
-  const [activeTab, setActiveTab] = useState<ActiveTab>('home');
+  const [activeTab, setActiveTab] = useState<ActiveTab>(() => {
+    if (typeof window !== 'undefined') {
+      const h = window.location.hash.replace('#', '').toLowerCase();
+      if (['rider', 'driver', 'dispatch', 'ledger', 'inspector', 'sync'].includes(h)) {
+        return h as ActiveTab;
+      }
+      if (h === 'admin') return 'dispatch';
+    }
+    return 'home';
+  });
   const [lang, setLang] = useState<AppLang>('fr');
   const [selectedBrand, setSelectedBrand] = useState<BrandOption>(BRAND_OPTIONS[0]);
   const [isDark, setIsDark] = useState<boolean>(() => {
@@ -48,6 +59,23 @@ export function App() {
     }
     return true;
   });
+
+  // Listen to hash changes for standalone direct-URL portal navigation
+  useEffect(() => {
+    const handleHash = () => {
+      const h = window.location.hash.replace('#', '').toLowerCase();
+      if (h === 'rider') setActiveTab('rider');
+      else if (h === 'driver') setActiveTab('driver');
+      else if (h === 'dispatch' || h === 'admin') setActiveTab('dispatch');
+      else if (h === 'ledger') setActiveTab('ledger');
+      else if (h === 'inspector') setActiveTab('inspector');
+      else if (h === 'sync') setActiveTab('sync');
+      else if (h === 'home' || h === 'marketing' || h === '') setActiveTab('home');
+    };
+
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, []);
 
   // Sync theme to root HTML
   useEffect(() => {
@@ -658,7 +686,24 @@ export function App() {
           </div>
         )}
 
+        {/* VIEW 6: FIELD INSPECTOR CHECKPOINT APP */}
+        {activeTab === 'inspector' && (
+          <div className="py-4">
+            <InspectorView
+              driver={driver}
+              lang={lang}
+            />
+          </div>
+        )}
+
       </main>
+
+      {/* Floating Decoupled Surface Switcher */}
+      <SurfaceSwitcher
+        activeTab={activeTab}
+        onSelectTab={setActiveTab}
+        lang={lang}
+      />
 
       {/* Spare Change Flywheel Modal */}
       <SpareChangeModal

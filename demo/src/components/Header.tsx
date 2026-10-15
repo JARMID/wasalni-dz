@@ -11,17 +11,18 @@ import {
   Sun,
   Moon,
   Bot,
-  Globe,
   ChevronDown,
   Sparkles,
-  ShieldCheck
+  ShieldCheck,
+  ArrowLeft,
+  ArrowRight
 } from 'lucide-react';
 import { soundEngine } from '../utils/audio';
 import type { AppLang } from '../utils/i18n';
 export type { AppLang };
 import { getTranslation } from '../utils/i18n';
 
-export type ActiveTab = 'home' | 'rider' | 'driver' | 'dispatch' | 'ledger' | 'sync';
+export type ActiveTab = 'home' | 'rider' | 'driver' | 'dispatch' | 'ledger' | 'sync' | 'inspector';
 
 export interface BrandOption {
   id: string;
@@ -66,7 +67,7 @@ export const Header: React.FC<HeaderProps> = ({
   const [isBrandMenuOpen, setIsBrandMenuOpen] = useState(false);
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(lang, key);
 
-  const isPortalMode = activeTab === 'home';
+  const isMarketingMode = activeTab === 'home';
 
   const toggleSound = () => {
     const next = !soundOn;
@@ -78,6 +79,9 @@ export const Header: React.FC<HeaderProps> = ({
   const handleTabChange = (tab: ActiveTab) => {
     soundEngine.playClick();
     setActiveTab(tab);
+    if (typeof window !== 'undefined') {
+      window.location.hash = tab === 'home' ? '' : tab;
+    }
   };
 
   const toggleTheme = () => {
@@ -97,283 +101,369 @@ export const Header: React.FC<HeaderProps> = ({
     }
   };
 
+  // Surface metadata for application view
+  const surfaceInfo: Record<ActiveTab, { title: string; subtitle: string; icon: React.ReactNode; badge: string }> = {
+    home: {
+      title: lang === 'ar' ? selectedBrand.nameAr : selectedBrand.name,
+      subtitle: t('brandSubtitle'),
+      icon: <Car className="w-5 h-5 text-emerald-500" />,
+      badge: t('dtwBadge'),
+    },
+    rider: {
+      title: lang === 'ar' ? `${selectedBrand.nameAr} - الراكب` : `${selectedBrand.name} Passager`,
+      subtitle: 'Réservation immédiate & VTC réglementé à Alger',
+      icon: <Smartphone className="w-5 h-5 text-sky-500" />,
+      badge: 'APP CLIENT',
+    },
+    driver: {
+      title: lang === 'ar' ? `${selectedBrand.nameAr} - السائق` : `${selectedBrand.name} Cockpit Chauffeur`,
+      subtitle: 'Tablette embarquée • Boîte noire CameraX & Télématique',
+      icon: <Car className="w-5 h-5 text-amber-500" />,
+      badge: 'CHAUFFEUR AGRÉÉ',
+    },
+    dispatch: {
+      title: 'Direction des Transports (DTW Alger)',
+      subtitle: 'Salle des Opérations & Suivi Télématique de Flotte',
+      icon: <Monitor className="w-5 h-5 text-emerald-500" />,
+      badge: 'POSTE DISPATCH',
+    },
+    ledger: {
+      title: 'TrustDesk • Grand Livre & Trésorerie',
+      subtitle: 'Comptabilité en partie double & Rendu de monnaie',
+      icon: <Wallet className="w-5 h-5 text-indigo-500" />,
+      badge: 'FINTECH REGULATED',
+    },
+    inspector: {
+      title: 'Contrôle Routier Checkpoint DTW',
+      subtitle: 'Audit de conformité & Vérification d\'agrément sur le terrain',
+      icon: <ShieldCheck className="w-5 h-5 text-teal-500" />,
+      badge: 'POLICE / DTW',
+    },
+    sync: {
+      title: 'Laboratoire Multi-Appareils',
+      subtitle: 'Simulation synchronisée en temps réel (Chauffeur + Passager + Carte)',
+      icon: <Layers className="w-5 h-5 text-purple-500" />,
+      badge: 'DÉMONSTRATEUR',
+    },
+  };
+
+  const currentSurface = surfaceInfo[activeTab];
+
   return (
-    <header className="glass-panel border-b sticky top-0 z-50 shadow-xl backdrop-blur-xl transition-colors">
+    <header className="glass-panel border-b sticky top-0 z-40 shadow-xl backdrop-blur-xl transition-colors font-sans">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Main Header Bar */}
-        <div className="flex items-center justify-between h-16 sm:h-20 gap-2">
-          
-          {/* Logo & Brand Identity with Quick Name Switcher */}
-          <div className="relative flex items-center space-x-3 group">
-            <button
-              onClick={() => handleTabChange('home')}
-              className="flex items-center space-x-3 cursor-pointer text-left focus:outline-none"
-            >
-              <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center shadow-lg shadow-emerald-500/25 text-white font-black group-hover:scale-105 transition-transform border border-emerald-400/40">
-                <Car className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2]" />
-              </div>
-              <div>
-                <div className="flex items-center space-x-2">
-                  <span className="font-extrabold text-base sm:text-xl tracking-tight text-slate-900 dark:text-white font-sans">
-                    {lang === 'ar' ? selectedBrand.nameAr : selectedBrand.name}
-                  </span>
-                  <span className="px-2 py-0.5 text-[10px] font-bold bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 rounded-full tracking-wider flex items-center space-x-1">
-                    <ShieldCheck className="w-2.5 h-2.5" />
-                    <span>{t('dtwBadge')}</span>
-                  </span>
-                </div>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block">
-                  {t('brandSubtitle')}
-                </p>
-              </div>
-            </button>
-
-            {/* Brand Name Picker Trigger */}
-            <button
-              onClick={() => setIsBrandMenuOpen(!isBrandMenuOpen)}
-              title="Choisir le nom officiel de la marque"
-              className="p-1 rounded-lg text-slate-400 hover:text-emerald-500 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all cursor-pointer"
-            >
-              <ChevronDown className="w-3.5 h-3.5" />
-            </button>
-
-            {/* Brand Dropdown Menu */}
-            {isBrandMenuOpen && (
-              <div className="absolute top-full left-0 mt-2 w-72 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-white/10 p-2 z-[100] animate-fadeIn">
-                <div className="px-3 py-1.5 text-[10px] font-mono text-slate-400 uppercase tracking-wider font-bold border-b border-slate-100 dark:border-white/5 mb-1">
-                  Sélection du Nom Officiel :
-                </div>
-                {BRAND_OPTIONS.map((b) => (
-                  <button
-                    key={b.id}
-                    onClick={() => {
-                      soundEngine.playSelection();
-                      if (onSelectBrand) onSelectBrand(b);
-                      setIsBrandMenuOpen(false);
-                    }}
-                    className={`w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between transition-all cursor-pointer ${
-                      selectedBrand.id === b.id
-                        ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 font-bold border border-emerald-500/30'
-                        : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5'
-                    }`}
-                  >
-                    <div>
-                      <div className="font-extrabold">{b.name} <span className="text-[11px] font-normal text-slate-400">({b.nameAr})</span></div>
-                      <div className="text-[10px] text-slate-500 dark:text-slate-400">{b.tag}</div>
-                    </div>
-                    {selectedBrand.id === b.id && <Sparkles className="w-3.5 h-3.5 text-emerald-500" />}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Center: Clean Two-Tier Mode Switcher (Portal vs Live Apps) */}
-          <div className="hidden md:flex items-center p-1 rounded-2xl bg-slate-200/70 dark:bg-slate-900/90 border border-slate-300/70 dark:border-white/10 shadow-inner">
-            <button
-              onClick={() => handleTabChange('home')}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                isPortalMode
-                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
-            >
-              <Globe className="w-3.5 h-3.5" />
-              <span>{t('modePortal')}</span>
-            </button>
-
-            <button
-              onClick={() => handleTabChange(isPortalMode ? 'rider' : activeTab)}
-              className={`flex items-center space-x-2 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                !isPortalMode
-                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
-            >
-              <Layers className="w-3.5 h-3.5" />
-              <span>{t('modeApps')}</span>
-            </button>
-          </div>
-
-          {/* Right Controls: AI Copilot, Theme, Audio & Languages */}
-          <div className="flex items-center space-x-2 sm:space-x-2.5">
+        {/* ======================================================== */}
+        {/* CASE A: PURE MARKETING & SHOWCASE WEBSITE HEADER */}
+        {/* ======================================================== */}
+        {isMarketingMode ? (
+          <div className="flex items-center justify-between h-16 sm:h-20 gap-3">
             
-            {/* AI Copilot Button */}
-            <button
-              onClick={() => {
-                soundEngine.playClick();
-                onOpenCopilot();
-              }}
-              title="Copilote IA Réglementaire (Décret 12-230 & Loi 25-11)"
-              className="flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-700 dark:text-emerald-300 text-xs font-bold transition-all shadow-md cursor-pointer group"
-            >
-              <Bot className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 group-hover:rotate-12 transition-transform" />
-              <span className="hidden lg:inline">Copilote IA</span>
-              <span className="px-1.5 py-0.2 rounded-md bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-[9px] font-mono">Qwen</span>
-            </button>
-
-            {/* Light / Dark Mode Switcher */}
-            <button
-              onClick={toggleTheme}
-              title={isDark ? t('themeLight') : t('themeDark')}
-              className="p-2 sm:p-2.5 rounded-xl border border-slate-300 dark:border-white/10 text-slate-700 dark:text-slate-200 hover:bg-slate-200/50 dark:hover:bg-white/5 transition-all cursor-pointer"
-            >
-              {isDark ? <Sun className="w-4 h-4 text-emerald-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
-            </button>
-
-            {/* Audio Toggle */}
-            <button
-              onClick={toggleSound}
-              title={soundOn ? t('soundMute') : t('soundUnmute')}
-              className={`p-2 sm:p-2.5 rounded-xl border transition-all cursor-pointer ${
-                soundOn 
-                  ? 'border-emerald-500/40 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10' 
-                  : 'border-slate-300 dark:border-white/10 text-slate-400'
-              }`}
-            >
-              {soundOn ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
-            </button>
-
-            {/* Working Trilingual Switcher (FR / AR / EN) */}
-            <div className="flex items-center bg-slate-200/70 dark:bg-slate-900/80 border border-slate-300 dark:border-white/10 rounded-xl p-0.5 text-xs font-bold">
+            {/* Logo & Brand Identity with Quick Name Switcher */}
+            <div className="relative flex items-center space-x-3 group">
               <button
-                onClick={() => changeLanguage('fr')}
-                className={`px-2 py-1 rounded-lg transition-colors cursor-pointer ${
-                  lang === 'fr' 
-                    ? 'bg-white dark:bg-white/15 text-emerald-600 dark:text-emerald-300 shadow-sm' 
-                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                }`}
+                onClick={() => handleTabChange('home')}
+                className="flex items-center space-x-3 cursor-pointer text-left focus:outline-none"
               >
-                FR
+                <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center shadow-lg shadow-emerald-500/25 text-white font-black group-hover:scale-105 transition-transform border border-emerald-400/40">
+                  <Car className="w-5 h-5 sm:w-6 sm:h-6 stroke-[2.2]" />
+                </div>
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <span className="font-extrabold text-base sm:text-xl tracking-tight text-slate-900 dark:text-white">
+                      {lang === 'ar' ? selectedBrand.nameAr : selectedBrand.name}
+                    </span>
+                    <span className="px-2 py-0.5 text-[10px] font-bold bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 rounded-full tracking-wider flex items-center space-x-1">
+                      <ShieldCheck className="w-2.5 h-2.5" />
+                      <span>{t('dtwBadge')}</span>
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block">
+                    {t('brandSubtitle')}
+                  </p>
+                </div>
               </button>
+
+              {/* Brand Name Picker Trigger */}
               <button
-                onClick={() => changeLanguage('ar')}
-                className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
-                  lang === 'ar' 
-                    ? 'bg-white dark:bg-white/15 text-emerald-600 dark:text-emerald-300 shadow-sm' 
-                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                }`}
+                onClick={() => setIsBrandMenuOpen(!isBrandMenuOpen)}
+                title="Choisir le nom officiel de la marque"
+                className="p-1 rounded-lg text-slate-400 hover:text-emerald-500 dark:hover:text-emerald-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all cursor-pointer"
               >
-                عربي
+                <ChevronDown className="w-3.5 h-3.5" />
               </button>
-              <button
-                onClick={() => changeLanguage('en')}
-                className={`px-2 py-1 rounded-lg transition-colors cursor-pointer ${
-                  lang === 'en' 
-                    ? 'bg-white dark:bg-white/15 text-emerald-600 dark:text-emerald-300 shadow-sm' 
-                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
-                }`}
-              >
-                EN
-              </button>
+
+              {/* Brand Dropdown Menu */}
+              {isBrandMenuOpen && (
+                <div className="absolute top-full left-0 mt-2 w-72 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-white/10 p-2 z-[100] animate-fadeIn">
+                  <div className="px-3 py-1.5 text-[10px] font-mono text-slate-400 uppercase tracking-wider font-bold border-b border-slate-100 dark:border-white/5 mb-1">
+                    Sélection du Nom Officiel :
+                  </div>
+                  {BRAND_OPTIONS.map((b) => (
+                    <button
+                      key={b.id}
+                      onClick={() => {
+                        soundEngine.playSelection();
+                        if (onSelectBrand) onSelectBrand(b);
+                        setIsBrandMenuOpen(false);
+                      }}
+                      className={`w-full text-left px-3 py-2 rounded-xl text-xs flex items-center justify-between transition-all cursor-pointer ${
+                        selectedBrand.id === b.id
+                          ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 font-bold border border-emerald-500/30'
+                          : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5'
+                      }`}
+                    >
+                      <div>
+                        <div className="font-extrabold">{b.name} <span className="text-[11px] font-normal text-slate-400">({b.nameAr})</span></div>
+                        <div className="text-[10px] text-slate-500 dark:text-slate-400">{b.tag}</div>
+                      </div>
+                      {selectedBrand.id === b.id && <Sparkles className="w-3.5 h-3.5 text-emerald-500" />}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* Reset Simulation State */}
-            <button
-              onClick={onReset}
-              title={t('resetDemo')}
-              className="p-2 sm:p-2.5 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-xl transition-colors border border-slate-300 dark:border-white/10 cursor-pointer"
-            >
-              <RotateCcw className="w-4 h-4" />
-            </button>
-          </div>
+            {/* Center Navigation Links (Consumer Marketing) */}
+            <nav className="hidden lg:flex items-center space-x-6 text-xs font-bold text-slate-600 dark:text-slate-300">
+              <a 
+                href="#services" 
+                className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+              >
+                {t('marketingNavServices')}
+              </a>
+              <a 
+                href="#drivers" 
+                className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+              >
+                {t('marketingNavDrivers')}
+              </a>
+              <a 
+                href="#safety" 
+                className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+              >
+                {t('marketingNavSafety')}
+              </a>
+              <a 
+                href="#enterprise" 
+                className="hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors"
+              >
+                {t('marketingNavEnterprise')}
+              </a>
+            </nav>
 
-        </div>
-
-        {/* Secondary Application Dock (Visible when in Live Apps mode) */}
-        {!isPortalMode && (
-          <div className="py-2.5 border-t border-slate-200/80 dark:border-white/10 flex items-center justify-between overflow-x-auto gap-2 animate-fadeIn">
-            <div className="flex items-center space-x-1 sm:space-x-1.5 text-xs font-bold">
-              <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider mr-2 hidden md:inline">
-                Applications :
-              </span>
+            {/* Right Action Gates & Controls */}
+            <div className="flex items-center space-x-2 sm:space-x-2.5">
               
+              {/* Primary Call to Action: Book Ride */}
               <button
                 onClick={() => handleTabChange('rider')}
-                className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
-                  activeTab === 'rider'
-                    ? 'bg-emerald-600 text-white shadow-sm'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5'
-                }`}
+                className="hidden sm:flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-xs shadow-md shadow-emerald-500/20 transition-all cursor-pointer"
               >
                 <Smartphone className="w-3.5 h-3.5" />
-                <span>{t('navRider')}</span>
+                <span>{t('marketingCtaOrder')}</span>
+                <ArrowRight className="w-3 h-3" />
               </button>
 
+              {/* Secondary CTA: Driver Space */}
               <button
                 onClick={() => handleTabChange('driver')}
-                className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
-                  activeTab === 'driver'
-                    ? 'bg-emerald-600 text-white shadow-sm'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5'
-                }`}
+                className="hidden md:flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-slate-200/60 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 font-bold text-xs border border-slate-300/70 dark:border-white/10 transition-all cursor-pointer"
               >
-                <Car className="w-3.5 h-3.5" />
-                <span>{t('navDriver')}</span>
+                <Car className="w-3.5 h-3.5 text-amber-500" />
+                <span>{t('marketingCtaDriver')}</span>
               </button>
 
+              {/* AI Copilot Button */}
               <button
-                onClick={() => handleTabChange('dispatch')}
-                className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
-                  activeTab === 'dispatch'
-                    ? 'bg-emerald-600 text-white shadow-sm'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5'
-                }`}
+                onClick={() => {
+                  soundEngine.playClick();
+                  onOpenCopilot();
+                }}
+                title="Copilote IA Réglementaire (Décret 12-230 & Loi 25-11)"
+                className="flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-700 dark:text-emerald-300 text-xs font-bold transition-all shadow-md cursor-pointer group"
               >
-                <Monitor className="w-3.5 h-3.5" />
-                <span>{t('navFleet')}</span>
+                <Bot className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 group-hover:rotate-12 transition-transform" />
+                <span className="hidden xl:inline">Copilote IA</span>
               </button>
 
+              {/* Light / Dark Mode Switcher */}
               <button
-                onClick={() => handleTabChange('ledger')}
-                className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
-                  activeTab === 'ledger'
-                    ? 'bg-emerald-600 text-white shadow-sm'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5'
-                }`}
+                onClick={toggleTheme}
+                title={isDark ? t('themeLight') : t('themeDark')}
+                className="p-2 rounded-xl border border-slate-300 dark:border-white/10 text-slate-700 dark:text-slate-200 hover:bg-slate-200/50 dark:hover:bg-white/5 transition-all cursor-pointer"
               >
-                <Wallet className="w-3.5 h-3.5" />
-                <span>{t('navLedger')}</span>
+                {isDark ? <Sun className="w-4 h-4 text-emerald-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
               </button>
 
+              {/* Audio Toggle */}
               <button
-                onClick={() => handleTabChange('sync')}
-                className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl transition-all cursor-pointer whitespace-nowrap ${
-                  activeTab === 'sync'
-                    ? 'bg-emerald-600 text-white shadow-sm'
-                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5'
+                onClick={toggleSound}
+                title={soundOn ? t('soundMute') : t('soundUnmute')}
+                className={`p-2 rounded-xl border transition-all cursor-pointer ${
+                  soundOn 
+                    ? 'border-emerald-500/40 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10' 
+                    : 'border-slate-300 dark:border-white/10 text-slate-400'
                 }`}
               >
-                <Layers className="w-3.5 h-3.5" />
-                <span>{t('navLiveDemo')}</span>
+                {soundOn ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
               </button>
+
+              {/* Language Switcher (FR / AR / EN) */}
+              <div className="flex items-center bg-slate-200/70 dark:bg-slate-900/80 border border-slate-300 dark:border-white/10 rounded-xl p-0.5 text-xs font-bold">
+                <button
+                  onClick={() => changeLanguage('fr')}
+                  className={`px-2 py-1 rounded-lg transition-colors cursor-pointer ${
+                    lang === 'fr' 
+                      ? 'bg-white dark:bg-white/15 text-emerald-600 dark:text-emerald-300 shadow-sm' 
+                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  FR
+                </button>
+                <button
+                  onClick={() => changeLanguage('ar')}
+                  className={`px-2.5 py-1 rounded-lg transition-colors cursor-pointer ${
+                    lang === 'ar' 
+                      ? 'bg-white dark:bg-white/15 text-emerald-600 dark:text-emerald-300 shadow-sm' 
+                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  عربي
+                </button>
+                <button
+                  onClick={() => changeLanguage('en')}
+                  className={`px-2 py-1 rounded-lg transition-colors cursor-pointer ${
+                    lang === 'en' 
+                      ? 'bg-white dark:bg-white/15 text-emerald-600 dark:text-emerald-300 shadow-sm' 
+                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  EN
+                </button>
+              </div>
+
             </div>
 
-            <button
-              onClick={() => handleTabChange('home')}
-              className="text-xs text-slate-500 hover:text-emerald-500 flex items-center space-x-1 font-semibold whitespace-nowrap cursor-pointer"
-            >
-              <span>← {t('modePortal')}</span>
-            </button>
+          </div>
+        ) : (
+          /* ======================================================== */
+          /* CASE B: DEDICATED INDEPENDENT APPLICATION SURFACE HEADER */
+          /* ======================================================== */
+          <div className="flex items-center justify-between h-16 sm:h-20 gap-3">
+            
+            {/* Left: Back to Marketing Website Button & Active Surface Persona */}
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={() => handleTabChange('home')}
+                className="flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-slate-200/70 dark:bg-white/5 hover:bg-emerald-600 hover:text-white text-slate-700 dark:text-slate-300 border border-slate-300 dark:border-white/10 text-xs font-bold transition-all cursor-pointer shadow-sm group"
+                title="Retourner au portail et à la présentation"
+              >
+                <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
+                <span className="hidden sm:inline">{t('backToMarketing')}</span>
+              </button>
+
+              <div className="h-6 w-px bg-slate-300 dark:bg-white/10 hidden sm:block" />
+
+              <div className="flex items-center space-x-2.5">
+                <div className="p-2 rounded-xl bg-slate-200 dark:bg-white/10 border border-slate-300 dark:border-white/10">
+                  {currentSurface.icon}
+                </div>
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <h2 className="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white">
+                      {currentSurface.title}
+                    </h2>
+                    <span className="px-2 py-0.5 rounded-full text-[9px] font-mono font-bold bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 uppercase tracking-wider hidden md:inline">
+                      {currentSurface.badge}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 hidden sm:block">
+                    {currentSurface.subtitle}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Quick Application Utility Controls */}
+            <div className="flex items-center space-x-2 sm:space-x-2.5">
+              
+              {/* AI Copilot */}
+              <button
+                onClick={() => {
+                  soundEngine.playClick();
+                  onOpenCopilot();
+                }}
+                title="Copilote IA Réglementaire"
+                className="p-2 sm:px-2.5 sm:py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/40 text-emerald-700 dark:text-emerald-300 text-xs font-bold transition-all cursor-pointer flex items-center space-x-1"
+              >
+                <Bot className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                <span className="hidden md:inline text-[11px]">Copilote</span>
+              </button>
+
+              {/* Light / Dark Mode Switcher */}
+              <button
+                onClick={toggleTheme}
+                title={isDark ? t('themeLight') : t('themeDark')}
+                className="p-2 rounded-xl border border-slate-300 dark:border-white/10 text-slate-700 dark:text-slate-200 hover:bg-slate-200/50 dark:hover:bg-white/5 transition-all cursor-pointer"
+              >
+                {isDark ? <Sun className="w-4 h-4 text-emerald-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
+              </button>
+
+              {/* Audio Toggle */}
+              <button
+                onClick={toggleSound}
+                title={soundOn ? t('soundMute') : t('soundUnmute')}
+                className={`p-2 rounded-xl border transition-all cursor-pointer ${
+                  soundOn 
+                    ? 'border-emerald-500/40 text-emerald-600 dark:text-emerald-400 bg-emerald-500/10' 
+                    : 'border-slate-300 dark:border-white/10 text-slate-400'
+                }`}
+              >
+                {soundOn ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+              </button>
+
+              {/* Language Switcher */}
+              <div className="flex items-center bg-slate-200/70 dark:bg-slate-900/80 border border-slate-300 dark:border-white/10 rounded-xl p-0.5 text-xs font-bold">
+                <button
+                  onClick={() => changeLanguage('fr')}
+                  className={`px-2 py-1 rounded-lg transition-colors cursor-pointer ${
+                    lang === 'fr' ? 'bg-white dark:bg-white/15 text-emerald-600 dark:text-emerald-300 shadow-sm' : 'text-slate-500'
+                  }`}
+                >
+                  FR
+                </button>
+                <button
+                  onClick={() => changeLanguage('ar')}
+                  className={`px-2 py-1 rounded-lg transition-colors cursor-pointer ${
+                    lang === 'ar' ? 'bg-white dark:bg-white/15 text-emerald-600 dark:text-emerald-300 shadow-sm' : 'text-slate-500'
+                  }`}
+                >
+                  عربي
+                </button>
+                <button
+                  onClick={() => changeLanguage('en')}
+                  className={`px-2 py-1 rounded-lg transition-colors cursor-pointer ${
+                    lang === 'en' ? 'bg-white dark:bg-white/15 text-emerald-600 dark:text-emerald-300 shadow-sm' : 'text-slate-500'
+                  }`}
+                >
+                  EN
+                </button>
+              </div>
+
+              {/* Reset State */}
+              <button
+                onClick={onReset}
+                title={t('resetDemo')}
+                className="p-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white rounded-xl transition-colors border border-slate-300 dark:border-white/10 cursor-pointer"
+              >
+                <RotateCcw className="w-4 h-4" />
+              </button>
+
+            </div>
+
           </div>
         )}
-
-        {/* Mobile Fast Mode Switcher (Visible on small screens) */}
-        <div className="md:hidden flex items-center justify-between py-2 border-t border-slate-200 dark:border-white/10 text-xs font-bold">
-          <button
-            onClick={() => handleTabChange('home')}
-            className={`px-3 py-1 rounded-xl cursor-pointer ${isPortalMode ? 'bg-emerald-600 text-white' : 'text-slate-500'}`}
-          >
-            {t('modePortal')}
-          </button>
-          <button
-            onClick={() => handleTabChange(isPortalMode ? 'rider' : activeTab)}
-            className={`px-3 py-1 rounded-xl cursor-pointer ${!isPortalMode ? 'bg-emerald-600 text-white' : 'text-slate-500'}`}
-          >
-            {t('modeApps')}
-          </button>
-        </div>
 
       </div>
     </header>
