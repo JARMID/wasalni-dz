@@ -1,13 +1,18 @@
-# Graph Report - dash  (2026-10-14)
+# Graph Report - dash  (2026-10-15)
 
 ## Corpus Check
-- 46 files · ~41,503 words
+- 84 files · ~88,308 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 433 nodes · 556 edges · 27 communities (23 shown, 4 thin omitted)
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 5 edges (avg confidence: 0.8)
+- 789 nodes · 1153 edges · 52 communities (45 shown, 7 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 7 edges (avg confidence: 0.71)
 - Token cost: 0 input · 0 output
+
+## Graph Freshness
+- Built from commit: `7085f5d6`
+- Run `git rev-parse HEAD` and compare to check if the graph is stale.
+- Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - Algeria Smart Taxi & Mobility Platform
@@ -33,18 +38,40 @@
 - client.go
 - build-valhalla-tiles.sh script
 - dz-smart-taxi/telemetry
+- driver_profile.dart
+- ride_state.dart
+- Header.tsx
+- parse_baridimob_text
+- envelope_encryption.dart
+- RiderView.tsx
+- rider_app/lib/main.dart
+- driver_app/lib/main.dart
+- AppLang
+- index.ts
+- react
+- InteractiveMap.tsx
+- thermal_state_machine.dart
+- SoundEngine
+- driver_app_test.dart
+- service_mode.dart
+- naql_core.dart
+- CockpitHomeScreen
+- vercel.json
+- ThreeCanvas.tsx
+- DriverCockpitApp
+- verify-entire-platform.sh script
 
 ## God Nodes (most connected - your core abstractions)
-1. `SoundEngine` - 20 edges
-2. `compilerOptions` - 18 edges
-3. `compilerOptions` - 15 edges
-4. `TrajectoryFlusher` - 13 edges
-5. `Algeria Smart Taxi & Mobility Platform` - 13 edges
-6. `react` - 12 edges
-7. `SpatialIndexer` - 11 edges
-8. `DriverProfile` - 9 edges
-9. `DashcamIncident` - 9 edges
-10. `Technical Requirements Document (TRD)` - 9 edges
+1. `AppLang` - 32 edges
+2. `SoundEngine` - 29 edges
+3. `react` - 27 edges
+4. `compilerOptions` - 18 edges
+5. `DriverProfile` - 15 edges
+6. `getTranslation()` - 15 edges
+7. `compilerOptions` - 15 edges
+8. `ActiveTab` - 14 edges
+9. `TrajectoryFlusher` - 13 edges
+10. `RideState` - 13 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `main()` --calls--> `NewClient()`  [INFERRED]
@@ -61,7 +88,7 @@
 ## Import Cycles
 - None detected.
 
-## Communities (27 total, 4 thin omitted)
+## Communities (52 total, 7 thin omitted)
 
 ### Community 0 - "Algeria Smart Taxi & Mobility Platform"
 Cohesion: 0.06
@@ -104,8 +131,8 @@ Cohesion: 0.33
 Nodes (5): 1. Relational Entity Relationship Diagram, 2. PostgreSQL DDL Schema and Core Extensions, 4. Geospatial Proximity Matching RPC Function, Backend Schema and Database Architecture, Next-Generation Smart Taxi and Mobility Platform for Algeria
 
 ### Community 10 - "App.tsx"
-Cohesion: 0.08
-Nodes (42): App(), ChargilyTopupModal(), ChargilyTopupModalProps, DashcamHUD(), DashcamHUDProps, DispatchView(), DispatchViewProps, DriverCockpit() (+34 more)
+Cohesion: 0.18
+Nodes (17): App(), LedgerView(), LedgerViewProps, ALGIERS_MUNICIPAL_FLEET, INITIAL_DRIVER, INITIAL_LEDGER, INITIAL_WALLETS, MunicipalTaxiVehicle (+9 more)
 
 ### Community 11 - "devDependencies"
 Cohesion: 0.08
@@ -120,12 +147,12 @@ Cohesion: 0.10
 Nodes (19): compilerOptions, allowImportingTsExtensions, erasableSyntaxOnly, lib, module, moduleDetection, noEmit, noFallthroughCasesInSwitch (+11 more)
 
 ### Community 16 - "dependencies"
-Cohesion: 0.10
-Nodes (21): canvas-confetti, dependencies, canvas-confetti, leaflet, lucide-react, react, react-dom, @supabase/supabase-js (+13 more)
+Cohesion: 0.07
+Nodes (27): canvas-confetti, dependencies, canvas-confetti, gsap, leaflet, lucide-react, react, react-dom (+19 more)
 
 ### Community 17 - "3. Parcours de Démonstration Guidé (Scénario en 6 Étapes)"
 Cohesion: 0.12
-Nodes (15): 1. Résumé Exécutif & Positionnement Stratégique, 2. Comment Lancer la Démonstration (En 1 Clic), 3. Parcours de Démonstration Guidé (Scénario en 6 Étapes), 4. Outils et Modules Backend Implémentés, Guide de Démonstration Exécutive pour Présentation Client & Entreprise, Les Innovations Majeures Présentées dans ce Démonstrateur :, NAQL DZ • Plateforme Intelligente des Taxis Réglementés en Algérie, Option A (Double-Clic Windows) : (+7 more)
+Nodes (16): 1. Résumé Exécutif & Positionnement Stratégique, 2. Comment Lancer la Démonstration (En 1 Clic), 3. Parcours de Démonstration Guidé (Scénario en 6 Étapes), 4. Outils et Modules Backend Implémentés, 5. Ce que Vous Devez Préparer pour la Suite (Checklist Projet), Guide de Démonstration Exécutive pour Présentation Client & Entreprise, Les Innovations Majeures Présentées dans ce Démonstrateur :, NAQL DZ • Plateforme Intelligente des Taxis Réglementés en Algérie (+8 more)
 
 ### Community 18 - "plugins"
 Cohesion: 0.22
@@ -139,25 +166,101 @@ Nodes (3): Expanding the Oxlint configuration, React Compiler, React + TypeScrip
 Cohesion: 0.33
 Nodes (7): haversineDistance(), NewClient(), Client, Location, MatrixElement, MatrixRequest, MatrixResponse
 
+### Community 27 - "driver_profile.dart"
+Cohesion: 0.04
+Nodes (46): @immutable, DateTime, DashcamIncident, driverId, encryptionKeyId, id, peakGForce, rideId (+38 more)
+
+### Community 28 - "ride_state.dart"
+Cohesion: 0.05
+Nodes (46): agrementNumber, arrivedAt, cancelledAt, completedAt, createdAt, currentSpeedKmh, destinationLat, destinationLng (+38 more)
+
+### Community 29 - "Header.tsx"
+Cohesion: 0.11
+Nodes (29): FluidShaderCanvas(), FluidShaderCanvasProps, PALETTE_COLORS, parseCssColor(), FooterReveal(), FooterRevealProps, ActiveTab, BRAND_OPTIONS (+21 more)
+
+### Community 30 - "parse_baridimob_text"
+Cohesion: 0.16
+Nodes (15): Any, BaridiMobReceipt, calculate_algerian_rip_key(), parse_baridimob_text(), BaridiMob and Algérie Poste receipt parser. Extracts transaction references,…, Calculates the 2-digit control key for an Algerian CCP account according to…, Verifies an Algerian 20-digit Relevé d'Identité Postale (RIP). Format: 007…, Parses OCR-extracted text from a BaridiMob transaction voucher. Supports French… (+7 more)
+
+### Community 31 - "envelope_encryption.dart"
+Cohesion: 0.09
+Nodes (21): dart:convert, dart:math, _bytesToHex, calculateFingerprint, combineShamir2of3, EnvelopeEncryption, generateDek, _gfDivide (+13 more)
+
+### Community 32 - "RiderView.tsx"
+Cohesion: 0.16
+Nodes (18): AiCopilotModal(), MOCK_RIDER_HISTORY, POPULAR_CHIPS, RECURRING_DAYS_LIST, RiderView(), ALGIERS_LOCATIONS, AiCopilotMessage, checkPwnedPinOrPassword() (+10 more)
+
+### Community 33 - "rider_app/lib/main.dart"
+Cohesion: 0.09
+Nodes (21): _accumulatedSpareChangeDzd, build, _buildBookingTab, _buildLawItem, _buildModeCard, _buildRegulatoryTab, _buildWalletTab, _cancelRide (+13 more)
+
+### Community 34 - "driver_app/lib/main.dart"
+Cohesion: 0.10
+Nodes (20): DriverProfile, List, build, _buildRideStateView, _computedMeterDzd, createState, currentRide, driver (+12 more)
+
+### Community 35 - "AppLang"
+Cohesion: 0.18
+Nodes (16): AiCopilotModalProps, DashcamHUDProps, DispatchView(), DispatchViewProps, DriverCockpit(), DriverCockpitProps, LandingView(), OfficialReceiptModal() (+8 more)
+
+### Community 36 - "index.ts"
+Cohesion: 0.18
+Nodes (16): InspectorView(), InspectorViewProps, WILAYAS_58, OfficialCitationModal(), OfficialCitationModalProps, RiderViewProps, BookingType, DriverProfile (+8 more)
+
+### Community 37 - "react"
+Cohesion: 0.22
+Nodes (10): BaridiMobModal(), BaridiMobModalProps, SAMPLE_RECEIPTS, ChargilyTopupModal(), ChargilyTopupModalProps, CANNED_MESSAGES, RideChatModal(), RideChatModalProps (+2 more)
+
+### Community 38 - "InteractiveMap.tsx"
+Cohesion: 0.21
+Nodes (12): DashcamHUD(), InteractiveMap(), InteractiveMapProps, MAP_STYLES, MapStyleConfig, MapStyleKey, SURROUNDING_TAXIS, LocationPoint (+4 more)
+
+### Community 39 - "thermal_state_machine.dart"
+Cohesion: 0.15
+Nodes (12): double get, _currentLevel, _currentTempCelsius, description, fromTemperature, maxTempCelsius, name, targetFps (+4 more)
+
+### Community 41 - "driver_app_test.dart"
+Cohesion: 0.20
+Nodes (8): main, main, main, package:driver_app/main.dart, package:flutter/material.dart, package:flutter_test/flutter_test.dart, package:naql_core/naql_core.dart, package:rider_app/main.dart
+
+### Community 42 - "service_mode.dart"
+Cohesion: 0.20
+Nodes (9): double?, approachFeeDzd, baseSeatCount, displayNameAr, displayNameFr, fixedSeatPriceDzd, fromId, id (+1 more)
+
+### Community 43 - "naql_core.dart"
+Cohesion: 0.20
+Nodes (9): library, naql_core, models/dashcam_incident.dart, models/driver_profile.dart, models/ledger_entry.dart, models/ride_state.dart, models/service_mode.dart, security/envelope_encryption.dart (+1 more)
+
+### Community 44 - "CockpitHomeScreen"
+Cohesion: 0.40
+Nodes (6): CockpitHomeScreen, _CockpitHomeScreenState, RiderHomeScreen, _RiderHomeScreenState, State, StatefulWidget
+
+### Community 45 - "vercel.json"
+Cohesion: 0.40
+Nodes (4): buildCommand, framework, outputDirectory, rewrites
+
+### Community 47 - "DriverCockpitApp"
+Cohesion: 0.67
+Nodes (3): DriverCockpitApp, RiderApp, StatelessWidget
+
 ## Knowledge Gaps
-- **213 isolated node(s):** `$schema`, `typescript`, `oxc`, `react/rules-of-hooks`, `warn` (+208 more)
+- **392 isolated node(s):** `$schema`, `typescript`, `oxc`, `react/rules-of-hooks`, `warn` (+387 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **4 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **7 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `dependencies` connect `dependencies` to `devDependencies`?**
-  _High betweenness centrality (0.007) - this node is a cross-community bridge._
-- **Why does `react` connect `App.tsx` to `plugins`?**
+- **Why does `RideState` connect `ride_state.dart` to `rider_app/lib/main.dart`, `driver_app/lib/main.dart`, `driver_profile.dart`?**
+  _High betweenness centrality (0.021) - this node is a cross-community bridge._
+- **Why does `react` connect `react` to `RiderView.tsx`, `AppLang`, `index.ts`, `InteractiveMap.tsx`, `App.tsx`, `ThreeCanvas.tsx`, `plugins`, `Header.tsx`?**
+  _High betweenness centrality (0.010) - this node is a cross-community bridge._
+- **Why does `SoundEngine` connect `SoundEngine` to `RiderView.tsx`, `AppLang`, `index.ts`, `react`, `InteractiveMap.tsx`, `App.tsx`, `Header.tsx`?**
   _High betweenness centrality (0.007) - this node is a cross-community bridge._
 - **What connects `$schema`, `typescript`, `oxc` to the rest of the system?**
-  _213 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _392 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Algeria Smart Taxi & Mobility Platform` be split into smaller, more focused modules?**
   _Cohesion score 0.05714285714285714 - nodes in this community are weakly interconnected._
 - **Should `Technical Requirements Document (TRD)` be split into smaller, more focused modules?**
   _Cohesion score 0.08333333333333333 - nodes in this community are weakly interconnected._
 - **Should `Product Requirements Document (PRD)` be split into smaller, more focused modules?**
   _Cohesion score 0.07692307692307693 - nodes in this community are weakly interconnected._
-- **Should `Phase 1 Execution & Master Tooling Playbook` be split into smaller, more focused modules?**
-  _Cohesion score 0.0625 - nodes in this community are weakly interconnected._

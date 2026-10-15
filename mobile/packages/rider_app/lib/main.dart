@@ -36,17 +36,25 @@ class RiderHomeScreen extends StatefulWidget {
 }
 
 class _RiderHomeScreenState extends State<RiderHomeScreen> {
-  int _currentTabIndex = 0; // 0 = Booking, 1 = Wallet, 2 = About
+  int _currentTabIndex = 0; // 0 = Booking, 1 = Wallet, 2 = Regulatory
+  bool _isArabic = false;
   ServiceMode _selectedMode = ServiceMode.taxiIndividuel;
   double _riderWalletBalanceDzd = 1450.0;
-  double _accumulatedSpareChangeDzd = 350.0;
-
+  final double _accumulatedSpareChangeDzd = 350.0;
 
   RideState _currentRide = const RideIdle();
 
-  // Locations
-  String _origin = 'Kouba (Centre)';
-  String _destination = 'Grande Poste d\'Alger';
+  // Dynamic Algiers Hubs
+  GeoHub _origin = GeoRoutingService.findHubById('kouba');
+  GeoHub _destination = GeoRoutingService.findHubById('grande-poste');
+
+  double get _currentDistanceKm => GeoRoutingService.distanceBetweenHubs(_origin, _destination);
+  int get _currentDurationMin => GeoRoutingService.estimateDurationMinutes(_currentDistanceKm);
+  double get _currentEstimatedFareDzd => GeoRoutingService.estimateFareForRoute(
+        origin: _origin,
+        destination: _destination,
+        mode: _selectedMode,
+      );
 
   void _requestRide() {
     final now = DateTime.now();
@@ -74,90 +82,175 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
     });
   }
 
+  void _showLocationPicker({required bool isOrigin}) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: const Color(0xFF131D31),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => Directionality(
+        textDirection: _isArabic ? TextDirection.rtl : TextDirection.ltr,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                isOrigin
+                    ? (_isArabic ? 'مكان الانطلاق' : 'Lieu de prise en charge')
+                    : (_isArabic ? 'وجهة الوصول' : 'Destination d\'arrivée'),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+              const SizedBox(height: 16),
+              Flexible(
+                child: ListView.separated(
+                  shrinkWrap: true,
+                  itemCount: GeoRoutingService.algiersHubs.length,
+                  separatorBuilder: (_, __) => const Divider(color: Colors.white10),
+                  itemBuilder: (ctx, i) {
+                    final hub = GeoRoutingService.algiersHubs[i];
+                    return ListTile(
+                      dense: true,
+                      leading: Icon(
+                        isOrigin ? Icons.my_location : Icons.location_on,
+                        color: isOrigin ? const Color(0xFF0EA5E9) : const Color(0xFFF59E0B),
+                        size: 20,
+                      ),
+                      title: Text(
+                        hub.localizedName(_isArabic),
+                        style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600),
+                      ),
+                      subtitle: Text(
+                        hub.commune,
+                        style: const TextStyle(color: Colors.white54, fontSize: 11),
+                      ),
+                      trailing: Text(
+                        '${hub.lat.toStringAsFixed(2)}, ${hub.lng.toStringAsFixed(2)}',
+                        style: const TextStyle(color: Colors.white38, fontSize: 10, fontFamily: 'monospace'),
+                      ),
+                      onTap: () {
+                        setState(() {
+                          if (isOrigin) {
+                            _origin = hub;
+                          } else {
+                            _destination = hub;
+                          }
+                        });
+                        Navigator.pop(ctx);
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   void _showTopupDialog() {
     double selectedAmt = 1000.0;
     showDialog(
       context: context,
       builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setDlgState) => AlertDialog(
-          backgroundColor: const Color(0xFF131D31),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: const Row(
-            children: [
-              Icon(Icons.credit_card, color: Color(0xFF0EA5E9)),
-              SizedBox(width: 10),
-              Text('Recharge Chargily Pay V2', style: TextStyle(fontSize: 18)),
-            ],
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('Sélectionnez le montant (Carte CIB / Edahabia):'),
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                children: [500.0, 1000.0, 2000.0, 5000.0].map((amt) {
-                  final isSel = selectedAmt == amt;
-                  return ChoiceChip(
-                    label: Text('${amt.toInt()} DA'),
-                    selected: isSel,
-                    selectedColor: const Color(0xFF0EA5E9),
-                    onSelected: (val) {
-                      if (val) setDlgState(() => selectedAmt = amt);
-                    },
-                  );
-                }).toList(),
-              ),
-              const SizedBox(height: 16),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.05),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: Colors.white10),
+        builder: (ctx, setDlgState) => Directionality(
+          textDirection: _isArabic ? TextDirection.rtl : TextDirection.ltr,
+          child: AlertDialog(
+            backgroundColor: const Color(0xFF131D31),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            title: Row(
+              children: [
+                const Icon(Icons.credit_card, color: Color(0xFF0EA5E9)),
+                const SizedBox(width: 10),
+                Text(
+                  _isArabic ? 'شحن المحفظة (Chargily Pay V2)' : 'Recharge Chargily Pay V2',
+                  style: const TextStyle(fontSize: 18),
                 ),
-                child: const Row(
-                  children: [
-                    Icon(Icons.security, size: 20, color: Color(0xFF2563EB)),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        'Passerelle sécurisée SATIM 3D-Secure avec OTP SMS.',
-                        style: TextStyle(fontSize: 12, color: Colors.white70),
+              ],
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  _isArabic
+                      ? 'حدد المبلغ (بطاقة CIB أو الذهبية):'
+                      : 'Sélectionnez le montant (Carte CIB / Edahabia):',
+                ),
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  children: [500.0, 1000.0, 2000.0, 5000.0].map((amt) {
+                    final isSel = selectedAmt == amt;
+                    return ChoiceChip(
+                      label: Text('${amt.toInt()} DA'),
+                      selected: isSel,
+                      selectedColor: const Color(0xFF0EA5E9),
+                      onSelected: (val) {
+                        if (val) setDlgState(() => selectedAmt = amt);
+                      },
+                    );
+                  }).toList(),
+                ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.05),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: Colors.white10),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.security, size: 20, color: Color(0xFF2563EB)),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          _isArabic
+                              ? 'بوابة الدفع الآمن SATIM مع رمز التحقق OTP عبر الرسائل النصية.'
+                              : 'Passerelle sécurisée SATIM 3D-Secure avec OTP SMS.',
+                          style: const TextStyle(fontSize: 12, color: Colors.white70),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text(_isArabic ? 'إلغاء' : 'Annuler'),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF2563EB),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                onPressed: () {
+                  Navigator.pop(ctx);
+                  setState(() {
+                    _riderWalletBalanceDzd += selectedAmt;
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      backgroundColor: const Color(0xFF2563EB),
+                      content: Text(
+                        _isArabic
+                            ? 'تم شحن ${selectedAmt.toInt()} دج بنجاح عبر SATIM 3DS.'
+                            : 'Recharge de ${selectedAmt.toInt()} DA validée par SATIM 3DS.',
                       ),
                     ),
-                  ],
-                ),
+                  );
+                },
+                child: Text(_isArabic ? 'تأكيد الدفع' : 'Confirmer le Paiement'),
               ),
             ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('Annuler'),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2563EB),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              ),
-              onPressed: () {
-                Navigator.pop(ctx);
-                setState(() {
-                  _riderWalletBalanceDzd += selectedAmt;
-                });
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    backgroundColor: const Color(0xFF2563EB),
-                    content: Text('Recharge de ${selectedAmt.toInt()} DA validée par SATIM 3DS.'),
-                  ),
-                );
-              },
-              child: const Text('Confirmer le Paiement'),
-            ),
-          ],
         ),
       ),
     );
@@ -168,7 +261,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
     final List<Map<String, String>> chatMessages = [
       {
         'sender': 'driver',
-        'text': 'Salam Alikoum ! Je suis en route avec ma Peugeot 301.',
+        'text': _isArabic ? 'السلام عليكم! أنا في الطريق بسيارة بيجو 301.' : 'Salam Alikoum ! Je suis en route avec ma Peugeot 301.',
         'time': '16:42'
       }
     ];
@@ -176,124 +269,127 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
     showDialog(
       context: context,
       builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setDlgState) => AlertDialog(
-          backgroundColor: const Color(0xFF131D31),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-          titlePadding: const EdgeInsets.fromLTRB(20, 16, 16, 12),
-          title: Row(
-            children: [
-              const CircleAvatar(
-                backgroundColor: Color(0xFF2563EB),
-                radius: 18,
-                child: Icon(Icons.person, color: Colors.white, size: 20),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(driverName, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-                    Text(plate, style: const TextStyle(fontSize: 11, color: Colors.white54)),
-                  ],
-                ),
-              ),
-              IconButton(
-                icon: const Icon(Icons.close, size: 20),
-                onPressed: () => Navigator.pop(ctx),
-              ),
-            ],
-          ),
-          content: SizedBox(
-            width: double.maxFinite,
-            height: 360,
-            child: Column(
+        builder: (ctx, setDlgState) => Directionality(
+          textDirection: _isArabic ? TextDirection.rtl : TextDirection.ltr,
+          child: AlertDialog(
+            backgroundColor: const Color(0xFF131D31),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+            titlePadding: const EdgeInsets.fromLTRB(20, 16, 16, 12),
+            title: Row(
               children: [
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      'راني نستنى قدام الباب',
-                      'Je suis devant l\'entrée',
-                      'راني في إشارة المرور',
-                      'Climatisation svp',
-                    ].map((chip) => Padding(
-                      padding: const EdgeInsets.only(right: 6),
-                      child: ActionChip(
-                        backgroundColor: const Color(0xFF2563EB).withValues(alpha: 0.15),
-                        side: BorderSide(color: const Color(0xFF2563EB).withValues(alpha: 0.3)),
-                        label: Text(chip, style: const TextStyle(fontSize: 10, color: Color(0xFF60A5FA))),
-                        onPressed: () {
-                          setDlgState(() {
-                            chatMessages.add({
-                              'sender': 'rider',
-                              'text': chip,
-                              'time': '16:43',
-                            });
-                          });
-                        },
-                      ),
-                    )).toList(),
-                  ),
+                const CircleAvatar(
+                  backgroundColor: Color(0xFF2563EB),
+                  radius: 18,
+                  child: Icon(Icons.person, color: Colors.white, size: 20),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(width: 12),
                 Expanded(
-                  child: ListView.builder(
-                    itemCount: chatMessages.length,
-                    itemBuilder: (ctx, idx) {
-                      final msg = chatMessages[idx];
-                      final isRider = msg['sender'] == 'rider';
-                      return Align(
-                        alignment: isRider ? Alignment.centerRight : Alignment.centerLeft,
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(vertical: 4),
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: isRider ? const Color(0xFF2563EB) : const Color(0xFF1E293B),
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Text(
-                            msg['text'] ?? '',
-                            style: const TextStyle(fontSize: 13, color: Colors.white),
-                          ),
-                        ),
-                      );
-                    },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(driverName, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                      Text(plate, style: const TextStyle(fontSize: 11, color: Colors.white54)),
+                    ],
                   ),
                 ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: chatController,
-                        decoration: InputDecoration(
-                          hintText: 'Écrire un message...',
-                          hintStyle: const TextStyle(fontSize: 12, color: Colors.white38),
-                          filled: true,
-                          fillColor: const Color(0xFF0F172A),
-                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    IconButton(
-                      icon: const Icon(Icons.send, color: Color(0xFF2563EB)),
-                      onPressed: () {
-                        if (chatController.text.trim().isNotEmpty) {
-                          setDlgState(() {
-                            chatMessages.add({
-                              'sender': 'rider',
-                              'text': chatController.text.trim(),
-                              'time': '16:44',
-                            });
-                            chatController.clear();
-                          });
-                        }
-                      },
-                    ),
-                  ],
+                IconButton(
+                  icon: const Icon(Icons.close, size: 20),
+                  onPressed: () => Navigator.pop(ctx),
                 ),
               ],
+            ),
+            content: SizedBox(
+              width: double.maxFinite,
+              height: 360,
+              child: Column(
+                children: [
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        'راني نستنى قدام الباب',
+                        'Je suis devant l\'entrée',
+                        'راني في إشارة المرور',
+                        'Climatisation svp',
+                      ].map((chip) => Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 4),
+                        child: ActionChip(
+                          backgroundColor: const Color(0xFF2563EB).withValues(alpha: 0.15),
+                          side: BorderSide(color: const Color(0xFF2563EB).withValues(alpha: 0.3)),
+                          label: Text(chip, style: const TextStyle(fontSize: 10, color: Color(0xFF60A5FA))),
+                          onPressed: () {
+                            setDlgState(() {
+                              chatMessages.add({
+                                'sender': 'rider',
+                                'text': chip,
+                                'time': '16:43',
+                              });
+                            });
+                          },
+                        ),
+                      )).toList(),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: chatMessages.length,
+                      itemBuilder: (ctx, idx) {
+                        final msg = chatMessages[idx];
+                        final isRider = msg['sender'] == 'rider';
+                        return Align(
+                          alignment: isRider ? Alignment.centerRight : Alignment.centerLeft,
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(vertical: 4),
+                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: isRider ? const Color(0xFF2563EB) : const Color(0xFF1E293B),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Text(
+                              msg['text'] ?? '',
+                              style: const TextStyle(fontSize: 13, color: Colors.white),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          controller: chatController,
+                          decoration: InputDecoration(
+                            hintText: _isArabic ? 'اكتب رسالة...' : 'Écrire un message...',
+                            hintStyle: const TextStyle(fontSize: 12, color: Colors.white38),
+                            filled: true,
+                            fillColor: const Color(0xFF0F172A),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      IconButton(
+                        icon: const Icon(Icons.send, color: Color(0xFF2563EB)),
+                        onPressed: () {
+                          if (chatController.text.trim().isNotEmpty) {
+                            setDlgState(() {
+                              chatMessages.add({
+                                'sender': 'rider',
+                                'text': chatController.text.trim(),
+                                'time': '16:44',
+                              });
+                              chatController.clear();
+                            });
+                          }
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -302,163 +398,209 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
   }
 
   void _showOfficialReceiptDialog(RideDriverAssigned assigned) {
+    final fareDzd = _currentEstimatedFareDzd;
+    final tripFare = (fareDzd - 125.0).clamp(50.0, 5000.0);
+
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        backgroundColor: Colors.white,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Column(
-          children: [
-            const Text(
-              'RÉPUBLIQUE ALGÉRIENNE DÉMOCRATIQUE ET POPULAIRE',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.black87),
-            ),
-            const SizedBox(height: 2),
-            const Text(
-              'Direction des Transports de la Wilaya d\'Alger (DTW)',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Colors.black54),
-            ),
-            const SizedBox(height: 6),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              decoration: BoxDecoration(color: const Color(0xFF2563EB).withValues(alpha: 0.1), borderRadius: BorderRadius.circular(4)),
-              child: const Text('QUITTANCE TAXIMÈTRE DÉCRET 12-230', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Color(0xFF2563EB))),
-            ),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Chauffeur: ${assigned.driverName}', style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 13)),
-            Text('Agrément DTW: ${assigned.agrementNumber}', style: const TextStyle(color: Colors.black54, fontSize: 11)),
-            Text('Immatriculation: ${assigned.vehiclePlate}', style: const TextStyle(color: Colors.black87, fontSize: 11)),
-            const Divider(height: 20),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Prise en charge (Tarif 1 Jour):', style: TextStyle(color: Colors.black54, fontSize: 12)),
-                Text('25.00 DA', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 12)),
-              ],
-            ),
-            const SizedBox(height: 4),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Frais d\'approche (CNRC 604103):', style: TextStyle(color: Colors.black54, fontSize: 12)),
-                Text('100.00 DA', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 12)),
-              ],
-            ),
-            const SizedBox(height: 4),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('Trajet horokilométrique:', style: TextStyle(color: Colors.black54, fontSize: 12)),
-                Text('725.00 DA', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 12)),
-              ],
-            ),
-            const Divider(height: 20),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('TOTAL RÉGLÉ:', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 14)),
-                Text('850.00 DA', style: TextStyle(color: Color(0xFF2563EB), fontWeight: FontWeight.bold, fontSize: 16)),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Center(
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.blue.shade900),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: const Text('★ CONFORME CONTRÔLE ROUTIER DTW ★', style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Color(0xFF1E3A8A))),
+      builder: (ctx) => Directionality(
+        textDirection: _isArabic ? TextDirection.rtl : TextDirection.ltr,
+        child: AlertDialog(
+          backgroundColor: Colors.white,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Column(
+            children: [
+              Text(
+                _isArabic ? 'الجمهورية الجزائرية الديمقراطية الشعبية' : 'RÉPUBLIQUE ALGÉRIENNE DÉMOCRATIQUE ET POPULAIRE',
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.black87),
               ),
+              const SizedBox(height: 2),
+              Text(
+                _isArabic ? 'مديرية النقل لولاية الجزائر (DTW)' : 'Direction des Transports de la Wilaya d\'Alger (DTW)',
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Colors.black54),
+              ),
+              const SizedBox(height: 6),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                decoration: BoxDecoration(color: const Color(0xFF2563EB).withValues(alpha: 0.1), borderRadius: BorderRadius.circular(4)),
+                child: Text(
+                  _isArabic ? 'وصل العداد الرسمي مرسوم 12-230' : 'QUITTANCE TAXIMÈTRE DÉCRET 12-230',
+                  style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Color(0xFF2563EB)),
+                ),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                _isArabic ? 'السائق: ${assigned.driverName}' : 'Chauffeur: ${assigned.driverName}',
+                style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 13),
+              ),
+              Text(
+                _isArabic ? 'رخصة الاستغلال: ${assigned.agrementNumber}' : 'Agrément DTW: ${assigned.agrementNumber}',
+                style: const TextStyle(color: Colors.black54, fontSize: 11),
+              ),
+              Text(
+                _isArabic ? 'رقم اللوحة: ${assigned.vehiclePlate}' : 'Immatriculation: ${assigned.vehiclePlate}',
+                style: const TextStyle(color: Colors.black87, fontSize: 11),
+              ),
+              const Divider(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(_isArabic ? 'رسم الانطلاق (نهار):' : 'Prise en charge (Tarif 1 Jour):', style: const TextStyle(color: Colors.black54, fontSize: 12)),
+                  const Text('25.00 DA', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 12)),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(_isArabic ? 'رسم الاقتراب (سجل تجاري 604103):' : 'Frais d\'approche (CNRC 604103):', style: const TextStyle(color: Colors.black54, fontSize: 12)),
+                  const Text('100.00 DA', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 12)),
+                ],
+              ),
+              const SizedBox(height: 4),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(_isArabic ? 'مسافة الطريق (${_currentDistanceKm.toStringAsFixed(1)} كم):' : 'Trajet horokilométrique (${_currentDistanceKm.toStringAsFixed(1)} km):', style: const TextStyle(color: Colors.black54, fontSize: 12)),
+                  Text('${tripFare.toStringAsFixed(2)} DA', style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 12)),
+                ],
+              ),
+              const Divider(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(_isArabic ? 'المجموع المدفوع:' : 'TOTAL RÉGLÉ:', style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 14)),
+                  Text('${fareDzd.toStringAsFixed(0)} DA', style: const TextStyle(color: Color(0xFF2563EB), fontWeight: FontWeight.bold, fontSize: 16)),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.blue.shade900),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    _isArabic ? '★ مطابق لمراقبة شرطة المرور DTW ★' : '★ CONFORME CONTRÔLE ROUTIER DTW ★',
+                    style: const TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Color(0xFF1E3A8A)),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(_isArabic ? 'إغلاق' : 'Fermer'),
             ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Fermer'),
-          ),
-        ],
       ),
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF0F172A),
-        elevation: 0,
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: const Color(0xFF2563EB),
-                borderRadius: BorderRadius.circular(8),
+    return Directionality(
+      textDirection: _isArabic ? TextDirection.rtl : TextDirection.ltr,
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: const Color(0xFF0F172A),
+          elevation: 0,
+          title: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF2563EB),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Text('WASSLANI', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13)),
               ),
-              child: const Text('WASSLANI', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13)),
+              const SizedBox(width: 8),
+              Flexible(
+                child: Text(
+                  _isArabic ? 'الراكب' : 'Passager',
+                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            // Language Toggle (FR / عربي)
+            TextButton.icon(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.white70,
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+              ),
+              icon: const Icon(Icons.language, size: 16, color: Color(0xFFF59E0B)),
+              label: Text(_isArabic ? 'FR' : 'عربي', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+              onPressed: () => setState(() => _isArabic = !_isArabic),
             ),
-            const SizedBox(width: 8),
-            const Flexible(
-              child: Text('Passager', style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold), overflow: TextOverflow.ellipsis),
+            // WASSLANI Wallet Pill
+            InkWell(
+              onTap: () => setState(() => _currentTabIndex = 1),
+              child: Container(
+                margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF2563EB).withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: const Color(0xFF2563EB).withValues(alpha: 0.4)),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.account_balance_wallet, size: 15, color: Color(0xFF2563EB)),
+                    const SizedBox(width: 6),
+                    Text(
+                      '${_riderWalletBalanceDzd.toStringAsFixed(0)} DA',
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF2563EB)),
+                    ),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
-        actions: [
-          // WASSLANI Wallet Pill
-          InkWell(
-            onTap: () => setState(() => _currentTabIndex = 1),
-            child: Container(
-              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-              decoration: BoxDecoration(
-                color: const Color(0xFF2563EB).withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: const Color(0xFF2563EB).withValues(alpha: 0.4)),
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.account_balance_wallet, size: 16, color: Color(0xFF2563EB)),
-                  const SizedBox(width: 6),
-                  Text(
-                    '${_riderWalletBalanceDzd.toStringAsFixed(0)} DA',
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF2563EB)),
-                  ),
-                ],
-              ),
+        body: IndexedStack(
+          index: _currentTabIndex,
+          children: [
+            _buildBookingTab(),
+            _buildWalletTab(),
+            _buildRegulatoryTab(),
+          ],
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: _currentTabIndex,
+          backgroundColor: const Color(0xFF0F172A),
+          selectedItemColor: const Color(0xFF2563EB),
+          unselectedItemColor: Colors.white54,
+          onTap: (idx) => setState(() => _currentTabIndex = idx),
+          items: [
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.local_taxi),
+              label: _isArabic ? 'طلب سيارة' : 'Commander',
             ),
-          ),
-        ],
-      ),
-      body: IndexedStack(
-        index: _currentTabIndex,
-        children: [
-          _buildBookingTab(),
-          _buildWalletTab(),
-          _buildRegulatoryTab(),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentTabIndex,
-        backgroundColor: const Color(0xFF0F172A),
-        selectedItemColor: const Color(0xFF2563EB),
-        unselectedItemColor: Colors.white54,
-        onTap: (idx) => setState(() => _currentTabIndex = idx),
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.local_taxi), label: 'Commander'),
-          BottomNavigationBarItem(icon: Icon(Icons.wallet), label: 'Portefeuille WASSLANI'),
-          BottomNavigationBarItem(icon: Icon(Icons.verified_user), label: 'Réglementation'),
-        ],
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.wallet),
+              label: _isArabic ? 'المحفظة' : 'Portefeuille WASSLANI',
+            ),
+            BottomNavigationBarItem(
+              icon: const Icon(Icons.verified_user),
+              label: _isArabic ? 'التشريعات' : 'Réglementation',
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -486,7 +628,9 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                     children: [
                       Expanded(
                         child: Text(
-                          'Chauffeur en route (${assigned.etaMinutes} min)',
+                          _isArabic
+                              ? 'السائق في الطريق (${assigned.etaMinutes} دقيقة)'
+                              : 'Chauffeur en route (${assigned.etaMinutes} min)',
                           style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF60A5FA)),
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -495,19 +639,30 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                         decoration: BoxDecoration(color: Colors.amber.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(6)),
-                        child: const Text('DÉCRET 12-230', style: TextStyle(fontSize: 10, color: Colors.amber, fontWeight: FontWeight.bold)),
+                        child: Text(
+                          _isArabic ? 'مرسوم 12-230' : 'DÉCRET 12-230',
+                          style: const TextStyle(fontSize: 10, color: Colors.amber, fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 12),
                   Text(assigned.driverName, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  Text('${assigned.vehiclePlate} • Agrément ${assigned.agrementNumber}', style: const TextStyle(color: Colors.white70, fontSize: 13)),
+                  Text(
+                    _isArabic
+                        ? '${assigned.vehiclePlate} • رخصة ${assigned.agrementNumber}'
+                        : '${assigned.vehiclePlate} • Agrément ${assigned.agrementNumber}',
+                    style: const TextStyle(color: Colors.white70, fontSize: 13),
+                  ),
                   const Divider(height: 24, color: Colors.white10),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Flexible(
-                        child: Text('Code PIN d\'embarquement:'),
+                      Flexible(
+                        child: Text(
+                          _isArabic ? 'رمز التحقق عند الركوب:' : 'Code PIN d\'embarquement:',
+                          style: const TextStyle(fontSize: 14),
+                        ),
                       ),
                       const SizedBox(width: 8),
                       Container(
@@ -536,7 +691,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                           ),
                           icon: const Icon(Icons.chat, size: 16),
-                          label: const Text('Chat Chauffeur', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                          label: Text(_isArabic ? 'محادثة السائق' : 'Chat Chauffeur', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                           onPressed: () => _showChatDialog(assigned.driverName, assigned.vehiclePlate),
                         ),
                       ),
@@ -550,7 +705,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                           ),
                           icon: const Icon(Icons.receipt_long, size: 16),
-                          label: const Text('Quittance DTW', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                          label: Text(_isArabic ? 'وصل DTW' : 'Quittance DTW', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                           onPressed: () => _showOfficialReceiptDialog(assigned),
                         ),
                       ),
@@ -565,12 +720,19 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 6),
                       ),
                       icon: const Icon(Icons.shield_outlined, size: 16, color: Colors.redAccent),
-                      label: const Text('SOS 1548 Sûreté Nationale (Urgence)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
+                      label: Text(
+                        _isArabic ? 'طوارئ 1548 الأمن الوطني' : 'SOS 1548 Sûreté Nationale (Urgence)',
+                        style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+                      ),
                       onPressed: () {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
+                          SnackBar(
                             backgroundColor: Colors.redAccent,
-                            content: Text('Alerte SOS 1548 transmise à la Sûreté Nationale avec géolocalisation active.'),
+                            content: Text(
+                              _isArabic
+                                  ? 'تم إرسال إنذار الطوارئ 1548 للأمن الوطني مع تحديد الموقع بدقة.'
+                                  : 'Alerte SOS 1548 transmise à la Sûreté Nationale avec géolocalisation active.',
+                            ),
                           ),
                         );
                       },
@@ -589,7 +751,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
                 onPressed: _cancelRide,
-                child: const Text('Annuler la Course'),
+                child: Text(_isArabic ? 'إلغاء الرحلة' : 'Annuler la Course'),
               ),
             ),
           ],
@@ -602,40 +764,49 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Sélectionnez votre mode de transport réglementé:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(
+            _isArabic ? 'اختر نمط النقل المعتمد:' : 'Sélectionnez votre mode de transport réglementé:',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 16),
 
           // Mode 1: Taxi Individuel
           _buildModeCard(
             mode: ServiceMode.taxiIndividuel,
-            title: 'Taxi Individuel (Compteur)',
-            subtitle: 'Compteur fiscal horokilométrique + 100 DA approche obligatoire',
+            title: _isArabic ? 'تاكسي فردي (عداد رسمي)' : 'Taxi Individuel (Compteur)',
+            subtitle: _isArabic
+                ? 'عداد كيلومتري قانوني + 100 دج رسم اقتراب الزامي'
+                : 'Compteur fiscal horokilométrique + 100 DA approche obligatoire',
             icon: Icons.local_taxi,
-            badge: '+100 DA Approche',
+            badge: _isArabic ? '+100 دج اقتراب' : '+100 DA Approche',
           ),
           const SizedBox(height: 12),
 
           // Mode 2: Taxi Collectif Urbain
           _buildModeCard(
             mode: ServiceMode.taxiCollectifUrbain,
-            title: 'Taxi Collectif Urbain (Ligne)',
-            subtitle: 'Tarif fixe 50 DA la place. Ligne urbaine partagée (4 places max)',
+            title: _isArabic ? 'تاكسي جماعي حضري (خط منتظم)' : 'Taxi Collectif Urbain (Ligne)',
+            subtitle: _isArabic
+                ? 'تسعيرة محددة 50 دج للمقعد (4 مقاعد كحد أقصى)'
+                : 'Tarif fixe 50 DA la place. Ligne urbaine partagée (4 places max)',
             icon: Icons.groups,
-            badge: '50 DA / Place',
+            badge: _isArabic ? '50 دج / مقعد' : '50 DA / Place',
           ),
           const SizedBox(height: 12),
 
           // Mode 3: Inter-Wilaya
           _buildModeCard(
             mode: ServiceMode.taxiInterWilaya,
-            title: 'Taxi Inter-Wilaya (Gare Caroubier)',
-            subtitle: 'Liaisons régionales depuis la gare routière du Caroubier',
+            title: _isArabic ? 'تاكسي ما بين الولايات (محطة الخروبة)' : 'Taxi Inter-Wilaya (Gare Caroubier)',
+            subtitle: _isArabic
+                ? 'رحلات جهوية مباشرة من المحطة المركزية بالخروبة'
+                : 'Liaisons régionales depuis la gare routière du Caroubier',
             icon: Icons.alt_route,
-            badge: 'Gare Routière',
+            badge: _isArabic ? 'محطة الخروبة' : 'Gare Routière',
           ),
           const SizedBox(height: 24),
 
-          // Origin and Destination Card
+          // Origin and Destination Card with Dynamic Routing
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -645,23 +816,111 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
             ),
             child: Column(
               children: [
-                Row(
-                  children: [
-                    const Icon(Icons.my_location, size: 20, color: Color(0xFF0EA5E9)),
-                    const SizedBox(width: 12),
-                    Expanded(child: Text(_origin, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600))),
-                  ],
+                InkWell(
+                  onTap: () => _showLocationPicker(isOrigin: true),
+                  borderRadius: BorderRadius.circular(8),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.my_location, size: 20, color: Color(0xFF0EA5E9)),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                _origin.localizedName(_isArabic),
+                                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                _origin.commune,
+                                style: const TextStyle(fontSize: 11, color: Colors.white54),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Icon(Icons.keyboard_arrow_down, size: 18, color: Colors.white54),
+                      ],
+                    ),
+                  ),
                 ),
                 const Padding(
                   padding: EdgeInsets.symmetric(vertical: 8),
                   child: Divider(color: Colors.white10),
                 ),
+                InkWell(
+                  onTap: () => _showLocationPicker(isOrigin: false),
+                  borderRadius: BorderRadius.circular(8),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.location_on, size: 20, color: Color(0xFFF59E0B)),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                _destination.localizedName(_isArabic),
+                                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                              ),
+                              Text(
+                                _destination.commune,
+                                style: const TextStyle(fontSize: 11, color: Colors.white54),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const Icon(Icons.keyboard_arrow_down, size: 18, color: Colors.white54),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+
+          // Dynamic Route Estimation Bar
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.black26,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFF2563EB).withValues(alpha: 0.2)),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
                 Row(
                   children: [
-                    const Icon(Icons.location_on, size: 20, color: Colors.redAccent),
+                    const Icon(Icons.route, size: 16, color: Color(0xFF0EA5E9)),
+                    const SizedBox(width: 6),
+                    Text(
+                      '${_currentDistanceKm.toStringAsFixed(1)} km',
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                    ),
                     const SizedBox(width: 12),
-                    Expanded(child: Text(_destination, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600))),
+                    const Icon(Icons.schedule, size: 16, color: Color(0xFFF59E0B)),
+                    const SizedBox(width: 6),
+                    Text(
+                      '$_currentDurationMin min',
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                    ),
                   ],
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF2563EB).withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    '${_currentEstimatedFareDzd.toStringAsFixed(0)} DA',
+                    style: const TextStyle(color: Color(0xFF60A5FA), fontWeight: FontWeight.bold, fontSize: 13),
+                  ),
                 ),
               ],
             ),
@@ -678,7 +937,12 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               ),
               onPressed: _requestRide,
-              child: const Text('Commander un Taxi Certifié', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+              child: Text(
+                _isArabic
+                    ? 'طلب سيارة أجرة معتمدة (${_currentEstimatedFareDzd.toStringAsFixed(0)} دج)'
+                    : 'Commander un Taxi Certifié',
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
             ),
           ),
         ],
@@ -777,11 +1041,14 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Row(
+                Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('PORTEFEUILLE WASSLANI', style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1.5)),
-                    Icon(Icons.shield, color: Colors.white70, size: 20),
+                    Text(
+                      _isArabic ? 'محفظة وصلني الرقمية' : 'PORTEFEUILLE WASSLANI',
+                      style: const TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1.5),
+                    ),
+                    const Icon(Icons.shield, color: Colors.white70, size: 20),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -796,7 +1063,9 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(8)),
                       child: Text(
-                        'Flywheel Monnaie: +${_accumulatedSpareChangeDzd.toStringAsFixed(0)} DA',
+                        _isArabic
+                            ? 'باقي الصرف المجمع: +${_accumulatedSpareChangeDzd.toStringAsFixed(0)} دج'
+                            : 'Flywheel Monnaie: +${_accumulatedSpareChangeDzd.toStringAsFixed(0)} DA',
                         style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w600),
                       ),
                     ),
@@ -817,13 +1086,19 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
               ),
               icon: const Icon(Icons.add_card),
-              label: const Text('Recharger via CIB / Edahabia (Chargily)', style: TextStyle(fontWeight: FontWeight.bold)),
+              label: Text(
+                _isArabic ? 'شحن عبر الذهبية / CIB (شارجيلي)' : 'Recharger via CIB / Edahabia (Chargily)',
+                style: const TextStyle(fontWeight: FontWeight.bold),
+              ),
               onPressed: _showTopupDialog,
             ),
           ),
           const SizedBox(height: 28),
 
-          const Text('Principe du Spare Change Flywheel:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          Text(
+            _isArabic ? 'مبدأ تحويل باقي الصرف الرقمي (Flywheel):' : 'Principe du Spare Change Flywheel:',
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 12),
           Container(
             padding: const EdgeInsets.all(16),
@@ -832,17 +1107,21 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
               borderRadius: BorderRadius.circular(16),
               border: Border.all(color: Colors.white10),
             ),
-            child: const Column(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Lorsque vous réglez une course en espèces (ex. billet de 1000 DA pour 850 DA de course), le chauffeur crédite vos 150 DA de reliquat directement sur votre compte TrustDesk via son application en un clic.',
-                  style: TextStyle(fontSize: 13, height: 1.5, color: Colors.white70),
+                  _isArabic
+                      ? 'عند دفع ثمن الرحلة نقدًا (مثال ورقة 1000 دج لأجرة قدرها 850 دج)، يقوم السائق بتحويل الباقي (150 دج) مباشرة إلى محفظتك بنقرة واحدة.'
+                      : 'Lorsque vous réglez une course en espèces (ex. billet de 1000 DA pour 850 DA de course), le chauffeur crédite vos 150 DA de reliquat directement sur votre compte TrustDesk via son application en un clic.',
+                  style: const TextStyle(fontSize: 13, height: 1.5, color: Colors.white70),
                 ),
-                SizedBox(height: 12),
+                const SizedBox(height: 12),
                 Text(
-                  'Ce solde s\'accumule sans friction et peut être utilisé pour de futures courses ou transféré.',
-                  style: TextStyle(fontSize: 13, height: 1.5, color: Colors.white70),
+                  _isArabic
+                      ? 'يتراكم رصيدك تلقائيًا دون عناء الصرف ويمكنك استعماله في رحلاتك القادمة بكل سهولة.'
+                      : 'Ce solde s\'accumule sans friction et peut être utilisé pour de futures courses ou transféré.',
+                  style: const TextStyle(fontSize: 13, height: 1.5, color: Colors.white70),
                 ),
               ],
             ),
@@ -858,24 +1137,33 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Cadre Réglementaire Algérien', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          Text(
+            _isArabic ? 'الإطار القانوني والتنظيمي الجزائري' : 'Cadre Réglementaire Algérien',
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
           const SizedBox(height: 16),
           _buildLawItem(
-            code: 'DÉCRET EXÉCUTIF 12-230',
-            title: 'Exploitation des Taxis Municipaux',
-            description: 'Seuls les chauffeurs détenteurs d\'un Agrément communal et d\'un Livret de Place valide sont autorisés sur la plateforme, éliminant tout risque de mise en fourrière.',
+            code: _isArabic ? 'المرسوم التنفيذي 12-230' : 'DÉCRET EXÉCUTIF 12-230',
+            title: _isArabic ? 'استغلال سيارات الأجرة البلدية' : 'Exploitation des Taxis Municipaux',
+            description: _isArabic
+                ? 'يسمح فقط للسائقين الحائزين على رخصة استغلال بلدية ودفتر مقاعد صالح بالعمل على المنصة.'
+                : 'Seuls les chauffeurs détenteurs d\'un Agrément communal et d\'un Livret de Place valide sont autorisés sur la plateforme, éliminant tout risque de mise en fourrière.',
           ),
           const SizedBox(height: 12),
           _buildLawItem(
-            code: 'CODE CNRC 604103',
-            title: 'Centrale de Réservation & Frais d\'Approche',
-            description: 'Régule la mise en relation et fixe les frais d\'approche légaux de 100 DA ajoutés au montant du taximètre horokilométrique.',
+            code: _isArabic ? 'رمز السجل التجاري 604103' : 'CODE CNRC 604103',
+            title: _isArabic ? 'مركز الحجز ورسم الاقتراب' : 'Centrale de Réservation & Frais d\'Approche',
+            description: _isArabic
+                ? 'ينظم الربط وتحديد رسم الاقتراب القانوني 100 دج المضاف إلى قيمة العداد الرسمي.'
+                : 'Régule la mise en relation et fixe les frais d\'approche légaux de 100 DA ajoutés au montant du taximètre horokilométrique.',
           ),
           const SizedBox(height: 12),
           _buildLawItem(
-            code: 'LOI 18-07 & LOI 25-11',
-            title: 'Souveraineté des Données & Vidéosurveillance',
-            description: 'Les données de géolocalisation et les enregistrements vidéo de sécurité sont chiffrés en boîte noire locale et stockés sur des serveurs hébergés en Algérie.',
+            code: _isArabic ? 'القانون 18-07 والقانون 25-11' : 'LOI 18-07 & LOI 25-11',
+            title: _isArabic ? 'سيادة البيانات والمراقبة المرئية' : 'Souveraineté des Données & Vidéosurveillance',
+            description: _isArabic
+                ? 'تخزين بيانات تحديد المواقع وتسجيلات الكاميرا مشفرة محليًا على خوادم داخل التراب الوطني الجزائري.'
+                : 'Les données de géolocalisation et les enregistrements vidéo de sécurité sont chiffrés en boîte noire locale et stockés sur des serveurs hébergés en Algérie.',
           ),
         ],
       ),

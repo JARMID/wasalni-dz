@@ -70,4 +70,125 @@ void main() {
       expect(mode.baseSeatCount, equals(4));
     });
   });
+
+  group('TariffService Executive Decree 12-230 Tests', () {
+    test('calculates daytime fare correctly (100 DA flag drop + 35 DA/km)', () {
+      final dayTime = DateTime(2026, 10, 15, 14, 30); // 14:30 Day
+      expect(TariffService.isNightTariff(dayTime), isFalse);
+
+      // 10 km journey during the day: 100 + (10 * 35) = 450 DA
+      final fare = TariffService.calculateFare(
+        mode: ServiceMode.taxiIndividuel,
+        distanceKm: 10.0,
+        requestTime: dayTime,
+      );
+      expect(fare, equals(450.0));
+    });
+
+    test('calculates nighttime fare correctly (100 DA flag drop + 45 DA/km)', () {
+      final nightTime = DateTime(2026, 10, 15, 22, 15); // 22:15 Night
+      expect(TariffService.isNightTariff(nightTime), isTrue);
+
+      // 10 km journey during the night: 100 + (10 * 45) = 550 DA
+      final fare = TariffService.calculateFare(
+        mode: ServiceMode.taxiIndividuel,
+        distanceKm: 10.0,
+        requestTime: nightTime,
+      );
+      expect(fare, equals(550.0));
+    });
+
+    test('applies waiting time surcharge (5 DA/min)', () {
+      final dayTime = DateTime(2026, 10, 15, 10, 0);
+      // 10 km + 10 mins waiting: 100 + 350 + (10 * 5) = 500 DA
+      final fare = TariffService.calculateFare(
+        mode: ServiceMode.taxiIndividuel,
+        distanceKm: 10.0,
+        waitingMinutes: 10,
+        requestTime: dayTime,
+      );
+      expect(fare, equals(500.0));
+    });
+
+    test('returns fixed seat price for Taxi Collectif Urbain', () {
+      final fare = TariffService.calculateFare(
+        mode: ServiceMode.taxiCollectifUrbain,
+        distanceKm: 15.0,
+      );
+      expect(fare, equals(50.0));
+    });
+  });
+
+  group('SpareChangeEngine Double-Entry Tests', () {
+    test('settles transaction with exact double-entry balance (Debit 1020 == Credit 2010)', () {
+      final settlement = SpareChangeEngine.settle(
+        rideId: 'RIDE-TEST-100',
+        tenderedDzd: 1000.0,
+        fareDzd: 780.0,
+        cashReturnedDzd: 200.0, // Driver is short by 20 DA
+      );
+
+      expect(settlement.changeDueDzd, equals(220.0));
+      expect(settlement.digitalCreditDzd, equals(20.0));
+
+      // Accounting equation: Debit Account 1020 must equal Credit Account 2010
+      expect(settlement.ledgerEntry.debitAccount, equals('1020_DIGITAL_ESCROW'));
+      expect(settlement.ledgerEntry.creditAccount, equals('2010_RIDER_TRUSTDESK'));
+      expect(settlement.ledgerEntry.amountDzd, equals(20.0));
+      expect(settlement.ledgerEntry.rideId, equals('RIDE-TEST-100'));
+    });
+
+    test('yields zero digital credit when driver returns exact cash change', () {
+      final settlement = SpareChangeEngine.settle(
+        rideId: 'RIDE-TEST-101',
+        tenderedDzd: 1000.0,
+        fareDzd: 800.0,
+        cashReturnedDzd: 200.0, // Exact cash returned
+      );
+
+      expect(settlement.changeDueDzd, equals(200.0));
+      expect(settlement.digitalCreditDzd, equals(0.0));
+      expect(settlement.ledgerEntry.amountDzd, equals(0.0));
+    });
+  });
+
+  group('GeoRoutingService & Algiers Hubs Tests', () {
+    test('contains all 9 major Algiers transportation hubs with coordinates', () {
+      expect(GeoRoutingService.algiersHubs.length, equals(9));
+      final aeroport = GeoRoutingService.findHubById('aeroport');
+      expect(aeroport.nameFr, contains('Houari Boumediene'));
+      expect(aeroport.nameAr, contains('مطار هواري بومدين'));
+      expect(aeroport.commune, equals('Dar El Beïda'));
+    });
+
+    test('calculates distance and fare between Aeroport and Grande Poste accurately', () {
+      final aeroport = GeoRoutingService.findHubById('aeroport');
+      final grandePoste = GeoRoutingService.findHubById('grande-poste');
+      final distance = GeoRoutingService.distanceBetweenHubs(aeroport, grandePoste);
+
+      // Distance should be approximately 19-25 km including Algiers terrain factor
+      expect(distance, greaterThan(18.0));
+      expect(distance, lessThan(30.0));
+
+      final duration = GeoRoutingService.estimateDurationMinutes(distance);
+      expect(duration, greaterThan(30));
+
+      final fareDay = GeoRoutingService.estimateFareForRoute(
+        origin: aeroport,
+        destination: grandePoste,
+        mode: ServiceMode.taxiIndividuel,
+        requestTime: DateTime(2026, 10, 15, 12, 0),
+      );
+      // Day fare: 100 + (~21km * 35) = ~835 rounded to 10s = 840 DA
+      expect(fareDay, greaterThan(750.0));
+      expect(fareDay, lessThan(1200.0));
+    });
+
+    test('respects localized names for French and Arabic', () {
+      final kouba = GeoRoutingService.findHubById('kouba');
+      expect(kouba.localizedName(false), contains('Kouba'));
+      expect(kouba.localizedName(true), contains('القبة'));
+    });
+  });
 }
+

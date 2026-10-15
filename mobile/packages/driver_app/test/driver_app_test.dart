@@ -29,4 +29,24 @@ void main() {
     // Verify Shamir 2-of-3 lockbox trigger snackbar appears
     expect(find.textContaining('ALERTE 2.84G: Buffer 60s verrouillé sous AES-256-GCM'), findsOneWidget);
   });
+
+  testWidgets('DriverCockpitApp toggles Arabic and displays Arabic HUD and regulatory titles', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1280, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const DriverCockpitApp());
+    await tester.pumpAndSettle();
+
+    // Find and tap Arabic toggle
+    final langToggle = find.text('عربي');
+    expect(langToggle, findsOneWidget);
+    await tester.tap(langToggle);
+    await tester.pumpAndSettle();
+
+    // Verify Arabic regulatory badges
+    expect(find.textContaining('المرسوم التنفيذي 12-230'), findsOneWidget);
+    expect(find.text('مطابق'), findsOneWidget);
+    expect(find.text('في انتظار طلبات الركاب...'), findsOneWidget);
+  });
 }

@@ -4,7 +4,7 @@ dist
 .vercel
 *.log
 **/build/
-.dart_tool/
+**/.dart_tool/
 .env
 .env.local
 .env.*.local

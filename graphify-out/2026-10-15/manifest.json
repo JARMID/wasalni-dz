@@ -1,0 +1,272 @@
+{
+  "scripts/bootstrap-stack.ps1": {
+    "mtime": 1791996316.4602482,
+    "ast_hash": "b4922a2dd23c3d898b56d440f9a25644",
+    "semantic_hash": ""
+  },
+  "scripts/bootstrap-stack.sh": {
+    "mtime": 1791996323.2546518,
+    "ast_hash": "9675acf08a98a843870b24f02eb2d850",
+    "semantic_hash": ""
+  },
+  "supabase/migrations/20261014000001_core_schema.sql": {
+    "mtime": 1791996263.036428,
+    "ast_hash": "56cd05307e3fe9102ecad7a37f6e72cc",
+    "semantic_hash": ""
+  },
+  "supabase/seed.sql": {
+    "mtime": 1791996271.887069,
+    "ast_hash": "82e9c85aa7f44b96de635b785a99662e",
+    "semantic_hash": ""
+  },
+  "ALGERIA_SMART_TAXI_MASTER_SPECIFICATION_FOR_ARAGON.md": {
+    "mtime": 1791995768.9834402,
+    "ast_hash": "3afc5a699a9125e7f3e31d80af0ad796",
+    "semantic_hash": ""
+  },
+  "docker/docker-compose.yml": {
+    "mtime": 1791999926.147851,
+    "ast_hash": "9ee09da6d0ada2cbef45955943a8bf3a",
+    "semantic_hash": ""
+  },
+  "docker/volumes/api/kong.yml": {
+    "mtime": 1791996300.865729,
+    "ast_hash": "219872845741e1d523d2129ed554d28b",
+    "semantic_hash": ""
+  },
+  "docs/01_PRD_PRODUCT_REQUIREMENTS_DOCUMENT.md": {
+    "mtime": 1791993215.4895961,
+    "ast_hash": "0b6f700b8fa18bc0fb915931d0adde42",
+    "semantic_hash": ""
+  },
+  "docs/02_TRD_TECHNICAL_REQUIREMENTS_DOCUMENT.md": {
+    "mtime": 1791993276.521761,
+    "ast_hash": "1b5b107bdcec1c8cf00cb72468f19025",
+    "semantic_hash": ""
+  },
+  "docs/03_APP_FLOW_AND_USER_JOURNEYS.md": {
+    "mtime": 1791992746.4341393,
+    "ast_hash": "7cd0f5c83a4ffbd64fb873a3bbf89c19",
+    "semantic_hash": ""
+  },
+  "docs/04_UI_UX_DESIGN_BRIEF.md": {
+    "mtime": 1791992776.6377008,
+    "ast_hash": "24569f92bf9bdd7d2745b01931e474e4",
+    "semantic_hash": ""
+  },
+  "docs/05_BACKEND_SCHEMA_AND_DATABASE_ARCHITECTURE.md": {
+    "mtime": 1791995732.2540536,
+    "ast_hash": "9ceec8f112f65d06dc9fac391e7530ac",
+    "semantic_hash": ""
+  },
+  "docs/06_IMPLEMENTATION_PLAN_AND_ROADMAP.md": {
+    "mtime": 1791993410.3846395,
+    "ast_hash": "9d59062b822396c5c968dfcc5d379a0a",
+    "semantic_hash": ""
+  },
+  "docs/07_DASHCAM_AND_TELEMATICS_SUBSYSTEM.md": {
+    "mtime": 1791993362.4936476,
+    "ast_hash": "2f185dc52a62fbc541b44736349d07da",
+    "semantic_hash": ""
+  },
+  "docs/08_PHASE_1_EXECUTION_AND_TOOLING_PLAYBOOK.md": {
+    "mtime": 1791996114.5800638,
+    "ast_hash": "965c5432ae22121eeed4ce45fa00f5c1",
+    "semantic_hash": ""
+  },
+  "demo/.oxlintrc.json": {
+    "mtime": 1789960706.2383106,
+    "ast_hash": "029f4905006c1fffd96bc863e2d98d3e",
+    "semantic_hash": ""
+  },
+  "demo/package.json": {
+    "mtime": 1792001142.1937964,
+    "ast_hash": "4a4c05bfa17f2b401f9940f57693687c",
+    "semantic_hash": ""
+  },
+  "demo/src/App.tsx": {
+    "mtime": 1792001231.970059,
+    "ast_hash": "d67db27dc36aaaf448154dc5c973d838",
+    "semantic_hash": ""
+  },
+  "demo/src/components/DashcamHUD.tsx": {
+    "mtime": 1791999477.6533844,
+    "ast_hash": "80b4a3b79e7fdc2a97038f2c1358fee0",
+    "semantic_hash": ""
+  },
+  "demo/src/components/DispatchView.tsx": {
+    "mtime": 1791999654.4588437,
+    "ast_hash": "ea12fcdf89102c61863793acaaeb1d40",
+    "semantic_hash": ""
+  },
+  "demo/src/components/DriverCockpit.tsx": {
+    "mtime": 1791999539.4647515,
+    "ast_hash": "43c5b71a2c723ee6b1632bbaeed503a9",
+    "semantic_hash": ""
+  },
+  "demo/src/components/Header.tsx": {
+    "mtime": 1792001244.327094,
+    "ast_hash": "bcafb561ccd1dd3d9a0de6209f5a5120",
+    "semantic_hash": ""
+  },
+  "demo/src/components/InteractiveMap.tsx": {
+    "mtime": 1791999433.8657885,
+    "ast_hash": "54f28a57cf07c54fd4b47d72f0776543",
+    "semantic_hash": ""
+  },
+  "demo/src/components/LedgerView.tsx": {
+    "mtime": 1791999680.7659996,
+    "ast_hash": "54d62c064d95449999b8589c439d1cb0",
+    "semantic_hash": ""
+  },
+  "demo/src/components/RiderView.tsx": {
+    "mtime": 1791999615.803254,
+    "ast_hash": "981649e21d8adcd4892223ca4b4a1695",
+    "semantic_hash": ""
+  },
+  "demo/src/components/SpareChangeModal.tsx": {
+    "mtime": 1791999715.5516388,
+    "ast_hash": "d14505d2365b81307fedb234b34f4f86",
+    "semantic_hash": ""
+  },
+  "demo/src/data/mockData.ts": {
+    "mtime": 1791997209.2132988,
+    "ast_hash": "bf811889616274d4690dac3a36cbb6fc",
+    "semantic_hash": ""
+  },
+  "demo/src/main.tsx": {
+    "mtime": 1789960706.2503254,
+    "ast_hash": "787e5a07efeb2bf6209d5937195f2f68",
+    "semantic_hash": ""
+  },
+  "demo/src/types/index.ts": {
+    "mtime": 1791996918.4814382,
+    "ast_hash": "9cad96177671e96ff1fe2f05adaf155d",
+    "semantic_hash": ""
+  },
+  "demo/tsconfig.app.json": {
+    "mtime": 1789960706.2503254,
+    "ast_hash": "5f2dafd737dea8a4ddcbb10f5113ac5a",
+    "semantic_hash": ""
+  },
+  "demo/tsconfig.json": {
+    "mtime": 1789960706.2503254,
+    "ast_hash": "a3d39fa780ebff65444de257f291ce6c",
+    "semantic_hash": ""
+  },
+  "demo/tsconfig.node.json": {
+    "mtime": 1789960706.2503254,
+    "ast_hash": "f9cb81ddcea69ffdab672fc8c48dca66",
+    "semantic_hash": ""
+  },
+  "demo/vite.config.ts": {
+    "mtime": 1791996881.281043,
+    "ast_hash": "5d3b101890a5d364c332ab8cf762fd36",
+    "semantic_hash": ""
+  },
+  "run-demo.ps1": {
+    "mtime": 1791997320.3098826,
+    "ast_hash": "c8c3befca6f8e09f0a00062da5c29ca0",
+    "semantic_hash": ""
+  },
+  "README_DEMO.md": {
+    "mtime": 1791999960.2448442,
+    "ast_hash": "49b6f226a8f821bb805928c76d26f3b1",
+    "semantic_hash": ""
+  },
+  "demo/README.md": {
+    "mtime": 1789960706.2383106,
+    "ast_hash": "10495bfcc6c568eca4dab6dd5df795d3",
+    "semantic_hash": ""
+  },
+  "demo/index.html": {
+    "mtime": 1791997194.8293967,
+    "ast_hash": "d8ca8b5b70bfd24e2f8e5c9e584a4da9",
+    "semantic_hash": ""
+  },
+  "demo/public/favicon.svg": {
+    "mtime": 1789960706.2419457,
+    "ast_hash": "7e840862161341271697daa99a40d76b",
+    "semantic_hash": ""
+  },
+  "demo/public/icons.svg": {
+    "mtime": 1789960706.2419457,
+    "ast_hash": "3b4fcfcf393eca4d264dca4a4663bc37",
+    "semantic_hash": ""
+  },
+  "demo/src/assets/hero.png": {
+    "mtime": 1789960706.2461045,
+    "ast_hash": "aead493361b27e7510691c5d7072dfc1",
+    "semantic_hash": ""
+  },
+  "demo/src/assets/react.svg": {
+    "mtime": 1789960706.2481098,
+    "ast_hash": "f0402b67b6ce880f65666bb49e841696",
+    "semantic_hash": ""
+  },
+  "demo/src/assets/vite.svg": {
+    "mtime": 1789960706.2496843,
+    "ast_hash": "9960a24288958394ac50e57ff638b036",
+    "semantic_hash": ""
+  },
+  "cmd/telemetry-daemon/main.go": {
+    "mtime": 1791999898.511587,
+    "ast_hash": "7decc993e18263ac748ecebfd5533ef6",
+    "semantic_hash": ""
+  },
+  "demo/src/components/ChargilyTopupModal.tsx": {
+    "mtime": 1791999505.9542754,
+    "ast_hash": "c905f6317f96e5484c413196429f1f87",
+    "semantic_hash": ""
+  },
+  "demo/src/utils/audio.ts": {
+    "mtime": 1791999349.7812283,
+    "ast_hash": "48eba96567b893030318684fc5e35d1c",
+    "semantic_hash": ""
+  },
+  "docker/valhalla/valhalla.json": {
+    "mtime": 1791999803.083395,
+    "ast_hash": "fb3eb1cc21a3df41e0add3f181f09ed6",
+    "semantic_hash": ""
+  },
+  "go.mod": {
+    "mtime": 1791999794.7689714,
+    "ast_hash": "b12d3c0608d46e75cb445361cdcbe61c",
+    "semantic_hash": ""
+  },
+  "internal/telemetry/flusher.go": {
+    "mtime": 1791999872.999919,
+    "ast_hash": "ac9623e2208fd15dd6c249fc13fe188a",
+    "semantic_hash": ""
+  },
+  "internal/telemetry/h3index.go": {
+    "mtime": 1791999848.1297226,
+    "ast_hash": "d79618bf164d56c25ca9632a2a3fe307",
+    "semantic_hash": ""
+  },
+  "internal/telemetry/hub.go": {
+    "mtime": 1791999860.481059,
+    "ast_hash": "07e1cfe1380eb7885d5adb9e3ea54786",
+    "semantic_hash": ""
+  },
+  "internal/valhalla/client.go": {
+    "mtime": 1791999883.1314068,
+    "ast_hash": "aa9dc7e004404eeae9a3ef8bb5a7478a",
+    "semantic_hash": ""
+  },
+  "scripts/build-valhalla-tiles.ps1": {
+    "mtime": 1791999809.9240785,
+    "ast_hash": "6b3c8644b9f35b7ccd6f95d728fbee9e",
+    "semantic_hash": ""
+  },
+  "scripts/build-valhalla-tiles.sh": {
+    "mtime": 1791999815.5533721,
+    "ast_hash": "2f0b0db19884be0a261cb05700c63498",
+    "semantic_hash": ""
+  },
+  "demo/src/utils/supabase.ts": {
+    "mtime": 1792001152.9523368,
+    "ast_hash": "f0c37e751ffdb3b0aca325e1a3349c71",
+    "semantic_hash": ""
+  }
+}

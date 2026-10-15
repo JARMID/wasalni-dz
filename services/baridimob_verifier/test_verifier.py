@@ -2,6 +2,10 @@
 Unit tests for BaridiMob OCR receipt parser, RIP checksum calculator, and settlement engine.
 """
 
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent))
+
 import unittest
 from parser import calculate_algerian_rip_key, verify_algerian_rip, parse_baridimob_text
 from verifier import BaridiMobSettlementEngine
