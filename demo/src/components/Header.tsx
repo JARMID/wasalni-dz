@@ -228,20 +228,6 @@ export const Header: React.FC<HeaderProps> = ({
                 <ChevronDown className="w-3.5 h-3.5" />
               </button>
 
-              {/* 10 Logos Showcase Button */}
-              {onOpenLogoShowcase && (
-                <button
-                  onClick={() => {
-                    soundEngine.playClick();
-                    onOpenLogoShowcase();
-                  }}
-                  title="Explorer et choisir parmi les 10 logos officiels WASSLANI"
-                  className="flex items-center space-x-1.5 px-2.5 py-1 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/35 text-amber-500 dark:text-amber-400 text-xs font-bold transition-all shadow-sm cursor-pointer ml-1"
-                >
-                  <Sparkles className="w-3 h-3 text-amber-500 animate-pulse" />
-                  <span className="hidden sm:inline">10 Logos</span>
-                </button>
-              )}
 
               {/* Brand Dropdown Menu */}
               {isBrandMenuOpen && (
@@ -306,36 +292,24 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="flex items-center space-x-2 sm:space-x-2.5">
               
               {/* Primary Call to Action: Book Ride */}
-              <button
-                onClick={() => handleTabChange('rider')}
-                className="hidden sm:flex items-center space-x-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs shadow-md shadow-blue-500/20 transition-all cursor-pointer"
-              >
-                <Smartphone className="w-3.5 h-3.5" />
-                <span>{t('marketingCtaOrder')}</span>
-                <ArrowRight className="w-3 h-3" />
-              </button>
-
               {/* Secondary CTA: Driver Space */}
-              <button
-                onClick={() => handleTabChange('driver')}
+              <a
+                href="#drivers"
                 className="hidden md:flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-slate-200/60 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 font-bold text-xs border border-slate-300/70 dark:border-white/10 transition-all cursor-pointer"
               >
-                <Car className="w-3.5 h-3.5 text-amber-500" />
-                <span>{t('marketingCtaDriver')}</span>
-              </button>
+                <Car className="w-3.5 h-3.5 text-[var(--brand-accent)]" />
+                <span>Devenir Chauffeur</span>
+              </a>
 
-              {/* AI Copilot Button */}
-              <button
-                onClick={() => {
-                  soundEngine.playClick();
-                  onOpenCopilot();
-                }}
-                title="Copilote IA Réglementaire (Décret 12-230 & Loi 25-11)"
-                className="flex items-center space-x-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-blue-600/15 hover:bg-blue-600/25 border border-blue-500/40 text-blue-700 dark:text-blue-300 text-xs font-bold transition-all shadow-md cursor-pointer group"
+              {/* Primary Call to Action: Download App */}
+              <a
+                href="#download"
+                className="hidden sm:flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-[var(--brand-primary)] to-[var(--brand-primary-hover)] hover:opacity-95 text-white font-bold text-xs shadow-md shadow-[var(--brand-primary)]/25 transition-all cursor-pointer"
               >
-                <Bot className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400 group-hover:rotate-12 transition-transform" />
-                <span className="hidden xl:inline">Copilote IA</span>
-              </button>
+                <Smartphone className="w-3.5 h-3.5" />
+                <span>Télécharger l'App</span>
+                <ArrowRight className="w-3 h-3" />
+              </a>
 
               {/* Graphics Chart Palette Switcher */}
               <div className="relative">
