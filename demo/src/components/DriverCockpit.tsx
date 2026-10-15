@@ -60,6 +60,11 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
   const [isTopupModalOpen, setIsTopupModalOpen] = useState(false);
   const [isBaridiMobModalOpen, setIsBaridiMobModalOpen] = useState(false);
 
+  // Live Algerian Taximeter Simulator State (Décret 12-230)
+  const [simulatedKm, setSimulatedKm] = useState<number>(6.2);
+  const [simulatedWaitMins, setSimulatedWaitMins] = useState<number>(4);
+  const calculatedMeterAmount = Math.round(25 + simulatedKm * 35 + simulatedWaitMins * 5);
+
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(lang, key);
 
   const handleVerifyPin = () => {
@@ -318,22 +323,78 @@ export const DriverCockpit: React.FC<DriverCockpitProps> = ({
             </div>
           )}
 
-          {/* TRIP IN PROGRESS */}
+          {/* TRIP IN PROGRESS WITH LIVE COMPTEUR FISCAL */}
           {currentRide && currentRide.status === 'in_progress' && (
-            <div className="p-4 rounded-2xl border border-blue-500/30 bg-blue-600/10 space-y-3 animate-fadeIn">
+            <div className="p-5 rounded-2xl border border-blue-500/30 bg-blue-600/10 space-y-4 animate-fadeIn">
               <div className="flex items-center justify-between text-xs font-bold text-blue-600 dark:text-blue-400">
-                <span>{t('driverTripLive')}</span>
-                <span>{currentRide.rideCode}</span>
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-blue-500 animate-ping" />
+                  <span>{t('driverTripLive')}</span>
+                </span>
+                <span className="font-mono">{currentRide.rideCode}</span>
               </div>
+
+              {/* Algerian Regulated Taximeter Screen (Décret 12-230) */}
+              <div className="p-4 rounded-2xl bg-slate-950 border-2 border-amber-500/50 shadow-inner text-amber-400 font-mono space-y-3">
+                <div className="flex items-center justify-between text-[10px] uppercase tracking-wider text-amber-500/70 border-b border-amber-500/20 pb-1.5">
+                  <span>Taximètre Homologué Décret 12-230</span>
+                  <span className="px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold">Tarif 1 Jour</span>
+                </div>
+
+                <div className="flex items-end justify-between">
+                  <div>
+                    <span className="text-[10px] uppercase text-slate-400 block">Distance & Attente</span>
+                    <div className="flex items-center space-x-3 text-sm text-white">
+                      <span>{simulatedKm.toFixed(1)} km</span>
+                      <span className="text-slate-500">•</span>
+                      <span>{simulatedWaitMins} mins</span>
+                    </div>
+                  </div>
+
+                  <div className="text-right">
+                    <span className="text-[10px] uppercase text-slate-400 block">Montant Compteur</span>
+                    <span className="text-2xl sm:text-3xl font-black text-amber-400 tracking-wider">
+                      {calculatedMeterAmount}.00 <span className="text-xs">DA</span>
+                    </span>
+                  </div>
+                </div>
+
+                {/* Micro Simulator Controls */}
+                <div className="pt-2 border-t border-amber-500/20 flex items-center justify-between text-[10px]">
+                  <span className="text-slate-400">Avancer la simulation :</span>
+                  <div className="flex items-center space-x-1.5">
+                    <button
+                      type="button"
+                      onClick={() => { soundEngine.playClick(); setSimulatedKm(prev => Number((prev + 1.0).toFixed(1))); }}
+                      className="px-2 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-bold cursor-pointer transition-colors"
+                    >
+                      +1.0 km (+35 DA)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => { soundEngine.playClick(); setSimulatedWaitMins(prev => prev + 2); }}
+                      className="px-2 py-1 rounded bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 font-bold cursor-pointer transition-colors"
+                    >
+                      +2 min (+10 DA)
+                    </button>
+                  </div>
+                </div>
+              </div>
+
               <div className="p-3 rounded-xl bg-white/50 dark:bg-slate-900/60 border text-xs">
                 <span className="text-slate-400 block text-[10px]">Destination</span>
                 <strong className="text-slate-900 dark:text-white">{currentRide.destination.name}</strong>
               </div>
+
               <button
-                onClick={() => { soundEngine.playClick(); onArrivedDestination(); }}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 text-white font-black text-xs cursor-pointer shadow-lg"
+                onClick={() => {
+                  soundEngine.playClick();
+                  setMeterFareInput(calculatedMeterAmount);
+                  onArrivedDestination();
+                }}
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 text-white font-black text-xs cursor-pointer shadow-lg transition-all"
               >
-                {t('driverFinishBtn')}
+                {t('driverFinishBtn')} ({calculatedMeterAmount + 100} DZD)
               </button>
             </div>
           )}

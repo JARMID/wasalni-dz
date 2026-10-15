@@ -115,6 +115,7 @@ export interface DashcamIncident {
   lng: number;
   encryptionKeyId: string;
   fileSizeBytes: number;
+  videoHash?: string;
   status: 'pending_triage' | 'under_investigation' | 'cleared_no_fault' | 'forwarded_to_police';
 }
 

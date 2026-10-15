@@ -286,6 +286,49 @@ export async function reverseGeocodeAlgiers(lat: number, lng: number): Promise<G
   }
 }
 
+export interface SearchLocationResult {
+  id: string;
+  name: string;
+  lat: number;
+  lng: number;
+  commune: string;
+  displayName: string;
+}
+
+export async function searchNominatimLocations(query: string): Promise<SearchLocationResult[]> {
+  if (!query || query.trim().length < 2) return [];
+
+  try {
+    const encoded = encodeURIComponent(query.trim() + ' Alger');
+    const url = `https://nominatim.openstreetmap.org/search?q=${encoded}&format=json&limit=5&countrycodes=dz&addressdetails=1`;
+    const res = await fetch(url, {
+      headers: {
+        'Accept': 'application/json',
+      },
+    });
+    if (!res.ok) throw new Error('Nominatim search failed');
+    const data = await res.json();
+    if (!Array.isArray(data)) return [];
+
+    return data.map((item: any, idx: number) => {
+      const addr = item.address || {};
+      const name = item.name || addr.road || addr.suburb || addr.quarter || query;
+      const commune = addr.town || addr.city || addr.quarter || 'Alger';
+      return {
+        id: `search-${item.place_id || idx}`,
+        name,
+        lat: parseFloat(item.lat),
+        lng: parseFloat(item.lon),
+        commune,
+        displayName: item.display_name,
+      };
+    });
+  } catch (_) {
+    return [];
+  }
+}
+
+
 // 5. HaveIBeenPwned k-Anonymity Security & Privacy Auditor (Law 18-07)
 export async function checkPwnedPinOrPassword(input: string): Promise<PwnedCheckResult> {
   if (!input || input.trim().length === 0) {

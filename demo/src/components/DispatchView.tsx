@@ -10,7 +10,13 @@ import {
   Server,
   Car,
   MapPin,
-  Activity
+  Activity,
+  Video,
+  Play,
+  Pause,
+  X,
+  RotateCcw,
+  Camera
 } from 'lucide-react';
 import type { DashcamIncident, DriverProfile, RideRequest } from '../types';
 import { ALGIERS_MUNICIPAL_FLEET } from '../data/mockData';
@@ -35,6 +41,8 @@ export const DispatchView: React.FC<DispatchViewProps> = ({
     incidents.length > 0 ? incidents[0] : null
   );
   const [requisitionSent, setRequisitionSent] = useState(false);
+  const [isVideoPlaybackOpen, setIsVideoPlaybackOpen] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(true);
   const t = (key: Parameters<typeof getTranslation>[1]) => getTranslation(lang, key);
 
   const handleSelectIncident = (inc: DashcamIncident) => {
@@ -197,13 +205,23 @@ export const DispatchView: React.FC<DispatchViewProps> = ({
 
               <div className="flex items-center justify-between pt-2 border-t border-slate-200 dark:border-white/10">
                 <span className="text-[10px] text-slate-500 dark:text-slate-400">Dossier: {selectedIncident.id}</span>
-                <button
-                  onClick={handleSendRequisition}
-                  className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-sans font-bold text-xs transition-colors shadow-lg shadow-amber-400/20"
-                >
-                  <Send className="w-3.5 h-3.5" />
-                  <span>{requisitionSent ? 'Dossier Transmis au Parquet' : 'Notifier le Parquet'}</span>
-                </button>
+                <div className="flex items-center space-x-2">
+                  <button
+                    type="button"
+                    onClick={() => { soundEngine.playClick(); setIsVideoPlaybackOpen(true); }}
+                    className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-sans font-bold text-xs transition-colors shadow-md cursor-pointer"
+                  >
+                    <Video className="w-3.5 h-3.5" />
+                    <span>Visualiser Flux Scellé</span>
+                  </button>
+                  <button
+                    onClick={handleSendRequisition}
+                    className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-sans font-bold text-xs transition-colors shadow-lg shadow-amber-400/20 cursor-pointer"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span>{requisitionSent ? 'Dossier Transmis au Parquet' : 'Notifier le Parquet'}</span>
+                  </button>
+                </div>
               </div>
             </div>
           )}
@@ -324,6 +342,98 @@ export const DispatchView: React.FC<DispatchViewProps> = ({
           </table>
         </div>
       </div>
+
+      {/* Video Evidence Playback Modal (Loi 25-11 Judicial Lockbox) */}
+      {isVideoPlaybackOpen && selectedIncident && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-fadeIn">
+          <div className="relative w-full max-w-2xl bg-slate-950 text-white rounded-3xl border border-slate-800 shadow-2xl overflow-hidden font-mono">
+            {/* Modal Top Bar */}
+            <div className="flex items-center justify-between p-4 border-b border-slate-800 bg-slate-900/80">
+              <div className="flex items-center space-x-2 text-xs">
+                <Video className="w-4 h-4 text-rose-500" />
+                <span className="font-bold text-slate-200">Preuve Dashcam CameraX • Dossier {selectedIncident.id}</span>
+                <span className="px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 text-[10px] font-bold">Loi 25-11 Scellé</span>
+              </div>
+              <button
+                onClick={() => setIsVideoPlaybackOpen(false)}
+                className="p-1.5 rounded-xl hover:bg-slate-800 text-slate-400 hover:text-white transition-colors cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Simulated Video Viewfinder */}
+            <div className="relative aspect-video bg-black flex items-center justify-center overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-900/60 to-slate-950/80 flex items-center justify-center">
+                <div className="w-full h-full relative opacity-40">
+                  <div className="absolute inset-x-0 bottom-0 h-40 bg-[radial-gradient(ellipse_at_bottom,_var(--tw-gradient-stops))] from-blue-900/40 via-transparent to-transparent" />
+                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center space-y-2">
+                    <span className="w-16 h-16 rounded-full bg-blue-500/10 border border-blue-400/30 flex items-center justify-center mx-auto text-blue-400 animate-pulse">
+                      <Camera className="w-8 h-8" />
+                    </span>
+                    <span className="text-xs text-slate-400 block">Flux CameraX 1080p 60fps • Alger Centre</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* OSD Telemetry HUD Overlay */}
+              <div className="absolute inset-x-0 top-0 p-4 flex items-center justify-between text-[11px] bg-gradient-to-b from-black/80 to-transparent">
+                <div>
+                  <span className="text-amber-400 font-bold block">{driver.fullName} ({driver.licensePlate})</span>
+                  <span className="text-slate-400 text-[10px]">DTW: {driver.agrementNumber} • Alger 16</span>
+                </div>
+                <div className="text-right">
+                  <span className="text-white font-bold block">{selectedIncident.timestamp}</span>
+                  <span className="text-blue-400 text-[10px]">GPS: {driver.currentLat.toFixed(4)}°N, {driver.currentLng.toFixed(4)}°E</span>
+                </div>
+              </div>
+
+              {/* Impact Shock Telemetry Bar */}
+              <div className="absolute inset-x-0 bottom-12 p-3 bg-gradient-to-t from-black/90 to-transparent flex items-center justify-between text-xs">
+                <div className="flex items-center space-x-3">
+                  <div className="px-2.5 py-1 rounded-lg bg-rose-500/20 border border-rose-500/40 text-rose-400 font-black">
+                    CHOC G-SENSOR : 2.84 G
+                  </div>
+                  <div className="text-[11px] text-slate-300">
+                    Vitesse au choc: <span className="font-bold text-white">{selectedIncident.speedKmh} km/h</span> → 0 km/h
+                  </div>
+                </div>
+                <span className="text-[10px] text-blue-400 font-bold">SHA-256 Intégrité Validée</span>
+              </div>
+            </div>
+
+            {/* Video Controls & Verification Footer */}
+            <div className="p-4 bg-slate-900 border-t border-slate-800 space-y-3">
+              <div className="flex items-center justify-between text-xs">
+                <div className="flex items-center space-x-2">
+                  <button
+                    onClick={() => setIsPlaying(!isPlaying)}
+                    className="p-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold cursor-pointer transition-colors"
+                  >
+                    {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                  </button>
+                  <button
+                    onClick={() => { soundEngine.playClick(); }}
+                    className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 cursor-pointer transition-colors"
+                  >
+                    <RotateCcw className="w-4 h-4" />
+                  </button>
+                  <span className="text-[11px] text-slate-400">00:18 / 00:30 (Buffer 30s)</span>
+                </div>
+
+                <span className="text-[10px] text-amber-400">
+                  Déverrouillé par Quorum Shamir 2-sur-3 (Police DTW + DPO)
+                </span>
+              </div>
+
+              <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-[10px] text-slate-400 break-all">
+                <span className="text-slate-500 block mb-0.5">Empreinte Cryptographique Immutable :</span>
+                <span className="text-blue-400">{selectedIncident.videoHash || 'SHA-256: 7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069'}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

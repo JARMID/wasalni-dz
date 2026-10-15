@@ -24,7 +24,8 @@ import {
   Smartphone as SmartphoneIcon,
   Search,
   PhoneCall,
-  AlertTriangle
+  AlertTriangle,
+  FileText
 } from 'lucide-react';
 
 import type { 
@@ -42,6 +43,7 @@ import { ALGIERS_LOCATIONS } from '../data/mockData';
 import { ChargilyTopupModal } from './ChargilyTopupModal';
 import { BaridiMobModal } from './BaridiMobModal';
 import { InteractiveMap } from './InteractiveMap';
+import { OfficialReceiptModal } from './OfficialReceiptModal';
 import { soundEngine } from '../utils/audio';
 import type { AppLang } from '../utils/i18n';
 import { getTranslation } from '../utils/i18n';
@@ -49,9 +51,11 @@ import {
   fetchLiveForex, 
   checkPwnedPinOrPassword, 
   reverseGeocodeAlgiers, 
+  searchNominatimLocations,
   type ForexRates, 
   type PwnedCheckResult, 
-  type GeocodedAddress 
+  type GeocodedAddress,
+  type SearchLocationResult 
 } from '../utils/publicApis';
 
 interface RiderViewProps {
@@ -133,6 +137,12 @@ export const RiderView: React.FC<RiderViewProps> = ({
   const [isTopupOpen, setIsTopupOpen] = useState(false);
   const [isBaridiMobOpen, setIsBaridiMobOpen] = useState(false);
   const [copiedPin, setCopiedPin] = useState(false);
+  const [isReceiptOpen, setIsReceiptOpen] = useState(false);
+
+  // Live OpenStreetMap Nominatim Address Search
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<SearchLocationResult[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
 
   // Zero-Key Public APIs Integration (Frankfurter, HaveIBeenPwned, Nominatim)
   const [currency, setCurrency] = useState<'DZD' | 'EUR' | 'USD'>('DZD');
@@ -194,6 +204,33 @@ export const RiderView: React.FC<RiderViewProps> = ({
       soundEngine.playSelection();
       setDestination(loc);
     }
+  };
+
+  const handleSearchQuery = async (query: string) => {
+    setSearchQuery(query);
+    if (query.trim().length >= 3) {
+      setIsSearching(true);
+      const results = await searchNominatimLocations(query);
+      setSearchResults(results);
+      setIsSearching(false);
+    } else {
+      setSearchResults([]);
+    }
+  };
+
+  const handleSelectSearchResult = (result: SearchLocationResult) => {
+    soundEngine.playSelection();
+    const newLocation: LocationPoint = {
+      id: result.id,
+      name: result.name,
+      nameAr: result.name,
+      commune: result.commune,
+      lat: result.lat,
+      lng: result.lng,
+    };
+    setDestination(newLocation);
+    setSearchQuery('');
+    setSearchResults([]);
   };
 
   const handleOrder = () => {
@@ -593,11 +630,46 @@ export const RiderView: React.FC<RiderViewProps> = ({
           )}
         </div>
 
-        <div className="space-y-1">
-          <label className="text-[10px] text-slate-500 font-bold uppercase tracking-wider flex items-center gap-1">
-            <Navigation2 className="w-3.5 h-3.5 text-blue-500" />
-            <span>{t('riderDestination')}</span>
+        <div className="space-y-1 relative">
+          <label className="text-[10px] text-slate-500 font-bold uppercase tracking-wider flex items-center justify-between">
+            <span className="flex items-center gap-1">
+              <Navigation2 className="w-3.5 h-3.5 text-blue-500" />
+              <span>{t('riderDestination')}</span>
+            </span>
+            <span className="text-[9px] text-blue-600 dark:text-blue-400 font-normal">Recherche Nominatim</span>
           </label>
+
+          {/* Live Search Input */}
+          <div className="flex items-center space-x-2 p-2 rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-950">
+            <Search className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => handleSearchQuery(e.target.value)}
+              placeholder="Chercher une rue ou commune (ex: Didouche, Bab El Oued)..."
+              className="w-full text-xs bg-transparent outline-none text-slate-900 dark:text-white font-medium"
+            />
+            {isSearching && <span className="w-3 h-3 border-2 border-blue-500 border-t-transparent rounded-full animate-spin shrink-0" />}
+          </div>
+
+          {/* Autocomplete Suggestions Dropdown */}
+          {searchResults.length > 0 && (
+            <div className="absolute top-full left-0 right-0 z-40 mt-1 p-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/15 rounded-xl shadow-2xl max-h-48 overflow-y-auto">
+              {searchResults.map((res) => (
+                <button
+                  key={res.id}
+                  type="button"
+                  onClick={() => handleSelectSearchResult(res)}
+                  className="w-full text-left p-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-950/40 text-xs text-slate-800 dark:text-slate-200 truncate cursor-pointer transition-colors"
+                >
+                  <div className="font-bold text-slate-900 dark:text-white truncate">{res.name}</div>
+                  <div className="text-[10px] text-slate-400 truncate">{res.displayName}</div>
+                </button>
+              ))}
+            </div>
+          )}
+
+          {/* Preset Fast Select */}
           <select 
             value={destination.id}
             onChange={(e) => {
@@ -1025,12 +1097,22 @@ export const RiderView: React.FC<RiderViewProps> = ({
             ) : null}
           </div>
 
-          <button
-            onClick={() => onCancelRide()}
-            className="w-full py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-bold text-xs cursor-pointer shadow-md"
-          >
-            Nouvelle Course / Navette
-          </button>
+          <div className="pt-2 flex flex-col gap-2">
+            <button
+              onClick={() => { soundEngine.playClick(); setIsReceiptOpen(true); }}
+              className="w-full py-2.5 rounded-xl bg-blue-600/15 hover:bg-blue-600/25 text-blue-600 dark:text-blue-300 font-bold text-xs border border-blue-500/30 flex items-center justify-center gap-1.5 cursor-pointer transition-all"
+            >
+              <FileText className="w-4 h-4" />
+              <span>Voir / Imprimer Quittance Officielle DTW</span>
+            </button>
+
+            <button
+              onClick={() => onCancelRide()}
+              className="w-full py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-bold text-xs cursor-pointer shadow-md"
+            >
+              Nouvelle Course / Navette
+            </button>
+          </div>
         </div>
       );
     }
@@ -1128,6 +1210,17 @@ export const RiderView: React.FC<RiderViewProps> = ({
             targetAccountName="Portefeuille Passager (2010)"
           />
         </>
+      )}
+
+      {/* Official Receipt & Taximeter Facture Modal */}
+      {currentRide && (
+        <OfficialReceiptModal
+          isOpen={isReceiptOpen}
+          onClose={() => setIsReceiptOpen(false)}
+          ride={currentRide}
+          driver={driver}
+          lang={lang}
+        />
       )}
     </div>
   );

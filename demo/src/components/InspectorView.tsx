@@ -14,23 +14,51 @@ import {
 import type { AppLang } from '../utils/i18n';
 import type { DriverProfile } from '../types';
 
+export const WILAYAS_58: Record<string, string> = {
+  '01': 'Adrar', '02': 'Chlef', '03': 'Laghouat', '04': 'Oum El Bouaghi', '05': 'Batna',
+  '06': 'Béjaïa', '07': 'Biskra', '08': 'Béchar', '09': 'Blida', '10': 'Bouira',
+  '11': 'Tamanrasset', '12': 'Tébessa', '13': 'Tlemcen', '14': 'Tiaret', '15': 'Tizi Ouzou',
+  '16': 'Alger', '17': 'Djelfa', '18': 'Jijel', '19': 'Sétif', '20': 'Saïda',
+  '21': 'Skikda', '22': 'Sidi Bel Abbès', '23': 'Annaba', '24': 'Guelma', '25': 'Constantine',
+  '26': 'Médéa', '27': 'Mostaganem', '28': 'M\'Sila', '29': 'Mascara', '30': 'Ouargla',
+  '31': 'Oran', '32': 'El Bayadh', '33': 'Illizi', '34': 'Bordj Bou Arréridj', '35': 'Boumerdès',
+  '36': 'El Tarf', '37': 'Tindouf', '38': 'Tissemsilt', '39': 'El Oued', '40': 'Khenchela',
+  '41': 'Souk Ahras', '42': 'Tipaza', '43': 'Mila', '44': 'Aïn Defla', '45': 'Naâma',
+  '46': 'Aïn Témouchent', '47': 'Ghardaïa', '48': 'Relizane', '49': 'El M\'Ghair', '50': 'El Meniaa',
+  '51': 'Ouled Djellal', '52': 'Bordj Baji Mokhtar', '53': 'Béni Abbès', '54': 'Timimoun',
+  '55': 'Touggourt', '56': 'Djanet', '57': 'In Salah', '58': 'In Guezzam'
+};
+
 interface InspectorViewProps {
   driver: DriverProfile;
   lang: AppLang;
 }
 
 export const InspectorView: React.FC<InspectorViewProps> = ({ driver }) => {
-  const [scannedPlate, setScannedPlate] = useState('04829-116-16');
+  const [scannedPlate, setScannedPlate] = useState('10482-116-16');
   const [isScanning, setIsScanning] = useState(false);
   const [scanResult, setScanResult] = useState<'verified' | 'unverified' | null>('verified');
   const [offlineMode, setOfflineMode] = useState(false);
+  const [inspectionIssued, setInspectionIssued] = useState(false);
 
-  const handleSimulateScan = () => {
+  // Extract Wilaya Code from plate suffix
+  const extractedWilayaCode = scannedPlate.trim().slice(-2);
+  const resolvedWilayaName = WILAYAS_58[extractedWilayaCode] || 'Wilaya Non Reconnue';
+  const isWilaya16 = extractedWilayaCode === '16';
+
+  const handleSimulateScan = (plateOverride?: string) => {
+    const targetPlate = plateOverride || scannedPlate;
     setIsScanning(true);
     setTimeout(() => {
       setIsScanning(false);
-      setScanResult('verified');
-    }, 900);
+      const isKnown = targetPlate.includes('16') || targetPlate.includes('31') || targetPlate.includes('09');
+      setScanResult(isKnown ? 'verified' : 'unverified');
+    }, 600);
+  };
+
+  const handleIssueClearance = () => {
+    setInspectionIssued(true);
+    setTimeout(() => setInspectionIssued(false), 3000);
   };
 
   return (
@@ -104,7 +132,7 @@ export const InspectorView: React.FC<InspectorViewProps> = ({ driver }) => {
               </span>
 
               <button
-                onClick={handleSimulateScan}
+                onClick={() => handleSimulateScan()}
                 disabled={isScanning}
                 className="mt-3 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs flex items-center space-x-2 shadow-lg shadow-blue-600/30 transition-all cursor-pointer disabled:opacity-50"
               >
@@ -114,9 +142,10 @@ export const InspectorView: React.FC<InspectorViewProps> = ({ driver }) => {
             </div>
 
             {/* Manual Plate Search Input */}
-            <div className="space-y-1.5">
-              <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                Numéro d'Immatriculation (Alger 16)
+            <div className="space-y-2">
+              <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                <span>Immatriculation & Wilaya</span>
+                <span className="font-mono text-[10px] text-blue-500 font-bold">58 Wilayas</span>
               </label>
               <div className="flex space-x-2">
                 <div className="relative flex-1">
@@ -125,16 +154,61 @@ export const InspectorView: React.FC<InspectorViewProps> = ({ driver }) => {
                     value={scannedPlate}
                     onChange={(e) => setScannedPlate(e.target.value)}
                     className="w-full px-3 py-2 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 font-mono font-bold text-sm text-slate-900 dark:text-white uppercase focus:outline-none focus:border-blue-500"
-                    placeholder="04829-116-16"
+                    placeholder="10482-116-16"
                   />
                   <Car className="w-4 h-4 absolute right-3 top-2.5 text-slate-400" />
                 </div>
                 <button
-                  onClick={handleSimulateScan}
-                  className="px-3 py-2 rounded-xl bg-slate-200 dark:bg-white/10 hover:bg-blue-600 hover:text-white text-slate-700 dark:text-slate-200 font-bold text-xs transition-colors cursor-pointer"
+                  onClick={() => handleSimulateScan()}
+                  className="px-3 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition-colors cursor-pointer"
                 >
                   <Search className="w-4 h-4" />
                 </button>
+              </div>
+
+              {/* Resolved Territorial Jurisdiction Badge */}
+              <div className="p-2 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs flex items-center justify-between">
+                <span className="text-slate-500 font-mono text-[10px]">Territoire Décret 12-230 :</span>
+                <span className={`font-mono font-bold text-[11px] ${
+                  isWilaya16 ? 'text-blue-600 dark:text-blue-400' : 'text-amber-500'
+                }`}>
+                  Wilaya {extractedWilayaCode} ({resolvedWilayaName})
+                </span>
+              </div>
+
+              {/* Quick Test Presets */}
+              <div className="space-y-1">
+                <span className="text-[10px] text-slate-400 font-semibold block">Plaques d'essai rapide :</span>
+                <div className="grid grid-cols-2 gap-1.5 font-mono text-[10px]">
+                  <button
+                    type="button"
+                    onClick={() => { setScannedPlate('10482-116-16'); handleSimulateScan('10482-116-16'); }}
+                    className="p-1.5 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-300 border border-blue-500/20 text-left truncate cursor-pointer"
+                  >
+                    16 Alger (Urbain)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setScannedPlate('04829-122-31'); handleSimulateScan('04829-122-31'); }}
+                    className="p-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-300 border border-amber-500/20 text-left truncate cursor-pointer"
+                  >
+                    31 Oran (Inter-Wilaya)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setScannedPlate('08912-120-09'); handleSimulateScan('08912-120-09'); }}
+                    className="p-1.5 rounded-lg bg-slate-100 dark:bg-white/5 hover:bg-white/10 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10 text-left truncate cursor-pointer"
+                  >
+                    09 Blida (Mitidja)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => { setScannedPlate('99999-000-00'); handleSimulateScan('99999-000-00'); }}
+                    className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 border border-rose-500/20 text-left truncate cursor-pointer"
+                  >
+                    00 Inconnu (Alerte)
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -293,12 +367,69 @@ export const InspectorView: React.FC<InspectorViewProps> = ({ driver }) => {
                 </div>
               </div>
 
+              {/* Clearance Action Button */}
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={handleIssueClearance}
+                  className={`w-full py-3 rounded-xl font-bold text-xs flex items-center justify-center space-x-2 transition-all cursor-pointer shadow-md ${
+                    inspectionIssued
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-slate-900 dark:bg-white text-white dark:text-slate-950 hover:opacity-90'
+                  }`}
+                >
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>
+                    {inspectionIssued
+                      ? 'Quittance Délivrée & Enregistrée au Fichier DTW'
+                      : 'Délivrer Quittance de Contrôle Conforme'}
+                  </span>
+                </button>
+              </div>
+
               {/* Cryptographic Seal */}
               <div className="text-[10px] font-mono text-slate-500 dark:text-slate-400 flex items-center justify-between pt-1">
                 <span>Certificat DTW ECDSA: 4f8a92...b71c0d (Signé électroniquement)</span>
                 <span className="text-blue-600 dark:text-blue-400 font-bold">Anti-Fraude Garanti</span>
               </div>
 
+            </div>
+          )}
+
+          {scanResult === 'unverified' && (
+            <div className="glass-panel p-6 rounded-3xl border-2 border-rose-500/50 shadow-2xl space-y-4 animate-scaleUp">
+              <div className="p-3.5 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center space-x-3 text-rose-600 dark:text-rose-400">
+                <Car className="w-6 h-6 shrink-0" />
+                <div>
+                  <h4 className="font-extrabold text-sm uppercase">Véhicule Non Homologué • Alerte Fourrière</h4>
+                  <p className="text-[11px] text-rose-500">
+                    Aucun agrément municipal ni livret de place valide dans la base DTW Alger
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-4 rounded-2xl bg-slate-900 text-white space-y-2 text-xs font-mono">
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Plaque Contrôlée :</span>
+                  <span className="font-bold text-rose-400">{scannedPlate}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Statut Juridique :</span>
+                  <span className="font-bold text-rose-400">Clandestin / Non Agréé</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Mesure Réglementaire :</span>
+                  <span className="font-bold text-amber-400">Mise en Fourrière (Décret 12-230 Art. 62)</span>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => handleIssueClearance()}
+                className="w-full py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs shadow-lg shadow-rose-600/30 transition-all cursor-pointer"
+              >
+                Transmettre Signalement au Poste Central
+              </button>
             </div>
           )}
         </div>
