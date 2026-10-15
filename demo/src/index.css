@@ -1,5 +1,122 @@
 @import "tailwindcss";
 
+@theme {
+  --color-blue-300: var(--brand-primary-lighter, #fdba74);
+  --color-blue-400: var(--brand-primary-light, #fb923c);
+  --color-blue-500: var(--brand-primary, #ff5c00);
+  --color-blue-600: var(--brand-primary, #ff5c00);
+  --color-blue-700: var(--brand-primary-hover, #ea580c);
+  --color-blue-800: var(--brand-primary-dark, #c2410c);
+  --color-blue-900: var(--brand-primary-darker, #7c2d12);
+  --color-blue-950: var(--brand-primary-deep, #18110b);
+
+  --color-indigo-600: var(--brand-primary-hover, #ea580c);
+  --color-indigo-500: var(--brand-primary, #ff5c00);
+
+  --color-amber-300: var(--brand-accent-lighter, #a5b4fc);
+  --color-amber-400: var(--brand-accent-light, #818cf8);
+  --color-amber-500: var(--brand-accent, #6366f1);
+  --color-amber-600: var(--brand-accent-hover, #4f46e5);
+
+  --color-yellow-400: var(--brand-accent-light, #818cf8);
+  --color-yellow-500: var(--brand-accent, #6366f1);
+}
+
+:root {
+  /* Default Graphics Chart: Braise Mandarine Solaire & Titane */
+  --brand-primary: #ff5c00;
+  --brand-primary-light: #fb923c;
+  --brand-primary-lighter: #fdba74;
+  --brand-primary-hover: #ea580c;
+  --brand-primary-dark: #c2410c;
+  --brand-primary-darker: #7c2d12;
+  --brand-primary-deep: #18110b;
+
+  --brand-accent: #6366f1;
+  --brand-accent-light: #818cf8;
+  --brand-accent-lighter: #a5b4fc;
+  --brand-accent-hover: #4f46e5;
+
+  --brand-canvas-dark: #0f1115;
+  --brand-surface-dark: #181a20;
+}
+
+/* Palette 1: Carmin Solaire & Carbone */
+html.theme-carmin {
+  --brand-primary: #e11d48;
+  --brand-primary-light: #f43f5e;
+  --brand-primary-lighter: #fda4af;
+  --brand-primary-hover: #be123c;
+  --brand-primary-dark: #9f1239;
+  --brand-primary-darker: #4c0519;
+  --brand-primary-deep: #1f040a;
+
+  --brand-accent: #38bdf8;
+  --brand-accent-light: #7dd3fc;
+  --brand-accent-lighter: #bae6fd;
+  --brand-accent-hover: #0284c7;
+
+  --brand-canvas-dark: #0b0d13;
+  --brand-surface-dark: #131722;
+}
+
+/* Palette 2: Braise Mandarine & Titane (Explicit) */
+html.theme-mandarine {
+  --brand-primary: #ff5c00;
+  --brand-primary-light: #fb923c;
+  --brand-primary-lighter: #fdba74;
+  --brand-primary-hover: #ea580c;
+  --brand-primary-dark: #c2410c;
+  --brand-primary-darker: #7c2d12;
+  --brand-primary-deep: #18110b;
+
+  --brand-accent: #6366f1;
+  --brand-accent-light: #818cf8;
+  --brand-accent-lighter: #a5b4fc;
+  --brand-accent-hover: #4f46e5;
+
+  --brand-canvas-dark: #0f1115;
+  --brand-surface-dark: #181a20;
+}
+
+/* Palette 3: Cyan Spatial & Nuit Abyssale */
+html.theme-cyan {
+  --brand-primary: #06b6d4;
+  --brand-primary-light: #22d3ee;
+  --brand-primary-lighter: #67e8f9;
+  --brand-primary-hover: #0891b2;
+  --brand-primary-dark: #0e7490;
+  --brand-primary-darker: #155e75;
+  --brand-primary-deep: #082f49;
+
+  --brand-accent: #f97316;
+  --brand-accent-light: #fb923c;
+  --brand-accent-lighter: #fdba74;
+  --brand-accent-hover: #ea580c;
+
+  --brand-canvas-dark: #040711;
+  --brand-surface-dark: #0b1120;
+}
+
+/* Palette 4: Monochrome Obsidienne & Champagne */
+html.theme-monochrome {
+  --brand-primary: #f4f4f5;
+  --brand-primary-light: #ffffff;
+  --brand-primary-lighter: #ffffff;
+  --brand-primary-hover: #e4e4e7;
+  --brand-primary-dark: #a1a1aa;
+  --brand-primary-darker: #52525b;
+  --brand-primary-deep: #18181b;
+
+  --brand-accent: #d4af37;
+  --brand-accent-light: #e5c158;
+  --brand-accent-lighter: #f3d98a;
+  --brand-accent-hover: #b89726;
+
+  --brand-canvas-dark: #000000;
+  --brand-surface-dark: #121214;
+}
+
 @custom-variant dark (&:where(.dark, .dark *));
 @import "leaflet/dist/leaflet.css";
 
@@ -16,24 +133,24 @@
   /* Dark theme styles */
   html.dark,
   html.dark body {
-    background-color: #080c14 !important;
+    background-color: var(--brand-canvas-dark, #0f1115) !important;
     color: #f8fafc !important;
     background-image: 
-      radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.09) 0%, transparent 60%),
-      radial-gradient(circle at 100% 50%, rgba(245, 158, 11, 0.05) 0%, transparent 50%),
-      radial-gradient(circle at 0% 100%, rgba(37, 99, 235, 0.06) 0%, transparent 50%) !important;
+      radial-gradient(circle at 50% 0%, rgba(255, 92, 0, 0.08) 0%, transparent 60%),
+      radial-gradient(circle at 100% 50%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
+      radial-gradient(circle at 0% 100%, rgba(255, 92, 0, 0.05) 0%, transparent 50%) !important;
     background-attachment: fixed !important;
   }
 
   /* Light theme styles */
   html.light,
   html.light body {
-    background-color: #f8fafc !important;
-    color: #0f172a !important;
+    background-color: #fafaf8 !important;
+    color: #18181b !important;
     background-image: 
-      radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.06) 0%, transparent 60%),
-      radial-gradient(circle at 100% 50%, rgba(245, 158, 11, 0.04) 0%, transparent 50%),
-      radial-gradient(circle at 0% 100%, rgba(37, 99, 235, 0.04) 0%, transparent 50%) !important;
+      radial-gradient(circle at 50% 0%, rgba(255, 92, 0, 0.05) 0%, transparent 60%),
+      radial-gradient(circle at 100% 50%, rgba(99, 102, 241, 0.03) 0%, transparent 50%),
+      radial-gradient(circle at 0% 100%, rgba(255, 92, 0, 0.03) 0%, transparent 50%) !important;
     background-attachment: fixed !important;
   }
 }
@@ -90,9 +207,9 @@
 }
 .dark .glass-panel-interactive:hover {
   background: rgba(20, 28, 48, 0.92);
-  border-color: rgba(37, 99, 235, 0.55);
+  border-color: var(--brand-primary);
   transform: translateY(-2px);
-  box-shadow: 0 16px 36px -10px rgba(37, 99, 235, 0.25);
+  box-shadow: 0 16px 36px -10px var(--brand-primary);
 }
 
 .light .glass-panel-interactive {
@@ -104,9 +221,9 @@
 }
 .light .glass-panel-interactive:hover {
   background: #ffffff;
-  border-color: rgba(37, 99, 235, 0.5);
+  border-color: var(--brand-primary);
   transform: translateY(-2px);
-  box-shadow: 0 16px 36px -10px rgba(37, 99, 235, 0.18);
+  box-shadow: 0 16px 36px -10px var(--brand-primary);
 }
 
 /* Smartphone Mockup Frame */
@@ -192,14 +309,20 @@
 }
 
 /* Glow effects */
+.glow-primary {
+  box-shadow: 0 0 30px -5px var(--brand-primary);
+}
+.glow-accent {
+  box-shadow: 0 0 25px -5px var(--brand-accent);
+}
 .glow-azure {
-  box-shadow: 0 0 30px -5px rgba(56, 189, 248, 0.3);
+  box-shadow: 0 0 30px -5px var(--brand-accent);
 }
 .glow-sapphire {
-  box-shadow: 0 0 30px -5px rgba(37, 99, 235, 0.3);
+  box-shadow: 0 0 30px -5px var(--brand-primary);
 }
 .glow-gold {
-  box-shadow: 0 0 25px -5px rgba(217, 119, 6, 0.25);
+  box-shadow: 0 0 25px -5px var(--brand-accent);
 }
 
 /* Leaflet map container */

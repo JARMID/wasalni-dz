@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Header, BRAND_OPTIONS } from './components/Header';
-import type { ActiveTab, AppLang, BrandOption } from './components/Header';
+import type { ActiveTab, AppLang, BrandOption, GraphicsPalette } from './components/Header';
 import { LandingView } from './components/LandingView';
 import { RiderView } from './components/RiderView';
 import { DriverCockpit } from './components/DriverCockpit';
@@ -61,6 +61,15 @@ export function App() {
     return 'logo-01';
   });
   const [isLogoModalOpen, setIsLogoModalOpen] = useState<boolean>(false);
+  const [selectedPalette, setSelectedPalette] = useState<GraphicsPalette>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('wasslani_graphics_chart');
+      if (saved && ['mandarine', 'carmin', 'cyan', 'monochrome'].includes(saved)) {
+        return saved as GraphicsPalette;
+      }
+    }
+    return 'mandarine';
+  });
   const [isDark, setIsDark] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('naql_theme');
@@ -75,6 +84,18 @@ export function App() {
       localStorage.setItem('wasslani_selected_logo', selectedLogoId);
     } catch (_) {}
   }, [selectedLogoId]);
+
+  // Sync selected graphics palette to root HTML classes and localStorage
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      const root = document.documentElement;
+      root.classList.remove('theme-mandarine', 'theme-carmin', 'theme-cyan', 'theme-monochrome');
+      root.classList.add(`theme-${selectedPalette}`);
+    }
+    try {
+      localStorage.setItem('wasslani_graphics_chart', selectedPalette);
+    } catch (_) {}
+  }, [selectedPalette]);
 
   // Listen to hash changes for standalone direct-URL portal navigation
   useEffect(() => {
@@ -541,6 +562,8 @@ export function App() {
         onSelectBrand={setSelectedBrand}
         selectedLogoId={selectedLogoId}
         onOpenLogoShowcase={() => setIsLogoModalOpen(true)}
+        selectedPalette={selectedPalette}
+        onSelectPalette={setSelectedPalette}
       />
 
       {/* Main Content Arena */}
