@@ -113,7 +113,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.05),
+                  color: Colors.white.withValues(alpha: 0.05),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: Colors.white10),
                 ),
@@ -163,6 +163,234 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
     );
   }
 
+  void _showChatDialog(String driverName, String plate) {
+    final TextEditingController chatController = TextEditingController();
+    final List<Map<String, String>> chatMessages = [
+      {
+        'sender': 'driver',
+        'text': 'Salam Alikoum ! Je suis en route avec ma Peugeot 301.',
+        'time': '16:42'
+      }
+    ];
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDlgState) => AlertDialog(
+          backgroundColor: const Color(0xFF131D31),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+          titlePadding: const EdgeInsets.fromLTRB(20, 16, 16, 12),
+          title: Row(
+            children: [
+              const CircleAvatar(
+                backgroundColor: Color(0xFF2563EB),
+                radius: 18,
+                child: Icon(Icons.person, color: Colors.white, size: 20),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(driverName, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                    Text(plate, style: const TextStyle(fontSize: 11, color: Colors.white54)),
+                  ],
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.close, size: 20),
+                onPressed: () => Navigator.pop(ctx),
+              ),
+            ],
+          ),
+          content: SizedBox(
+            width: double.maxFinite,
+            height: 360,
+            child: Column(
+              children: [
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      'راني نستنى قدام الباب',
+                      'Je suis devant l\'entrée',
+                      'راني في إشارة المرور',
+                      'Climatisation svp',
+                    ].map((chip) => Padding(
+                      padding: const EdgeInsets.only(right: 6),
+                      child: ActionChip(
+                        backgroundColor: const Color(0xFF2563EB).withValues(alpha: 0.15),
+                        side: BorderSide(color: const Color(0xFF2563EB).withValues(alpha: 0.3)),
+                        label: Text(chip, style: const TextStyle(fontSize: 10, color: Color(0xFF60A5FA))),
+                        onPressed: () {
+                          setDlgState(() {
+                            chatMessages.add({
+                              'sender': 'rider',
+                              'text': chip,
+                              'time': '16:43',
+                            });
+                          });
+                        },
+                      ),
+                    )).toList(),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: chatMessages.length,
+                    itemBuilder: (ctx, idx) {
+                      final msg = chatMessages[idx];
+                      final isRider = msg['sender'] == 'rider';
+                      return Align(
+                        alignment: isRider ? Alignment.centerRight : Alignment.centerLeft,
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(vertical: 4),
+                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: isRider ? const Color(0xFF2563EB) : const Color(0xFF1E293B),
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: Text(
+                            msg['text'] ?? '',
+                            style: const TextStyle(fontSize: 13, color: Colors.white),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: chatController,
+                        decoration: InputDecoration(
+                          hintText: 'Écrire un message...',
+                          hintStyle: const TextStyle(fontSize: 12, color: Colors.white38),
+                          filled: true,
+                          fillColor: const Color(0xFF0F172A),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    IconButton(
+                      icon: const Icon(Icons.send, color: Color(0xFF2563EB)),
+                      onPressed: () {
+                        if (chatController.text.trim().isNotEmpty) {
+                          setDlgState(() {
+                            chatMessages.add({
+                              'sender': 'rider',
+                              'text': chatController.text.trim(),
+                              'time': '16:44',
+                            });
+                            chatController.clear();
+                          });
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showOfficialReceiptDialog(RideDriverAssigned assigned) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Column(
+          children: [
+            const Text(
+              'RÉPUBLIQUE ALGÉRIENNE DÉMOCRATIQUE ET POPULAIRE',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.black87),
+            ),
+            const SizedBox(height: 2),
+            const Text(
+              'Direction des Transports de la Wilaya d\'Alger (DTW)',
+              textAlign: TextAlign.center,
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Colors.black54),
+            ),
+            const SizedBox(height: 6),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+              decoration: BoxDecoration(color: const Color(0xFF2563EB).withValues(alpha: 0.1), borderRadius: BorderRadius.circular(4)),
+              child: const Text('QUITTANCE TAXIMÈTRE DÉCRET 12-230', style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Color(0xFF2563EB))),
+            ),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Chauffeur: ${assigned.driverName}', style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 13)),
+            Text('Agrément DTW: ${assigned.agrementNumber}', style: const TextStyle(color: Colors.black54, fontSize: 11)),
+            Text('Immatriculation: ${assigned.vehiclePlate}', style: const TextStyle(color: Colors.black87, fontSize: 11)),
+            const Divider(height: 20),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Prise en charge (Tarif 1 Jour):', style: TextStyle(color: Colors.black54, fontSize: 12)),
+                Text('25.00 DA', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 12)),
+              ],
+            ),
+            const SizedBox(height: 4),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Frais d\'approche (CNRC 604103):', style: TextStyle(color: Colors.black54, fontSize: 12)),
+                Text('100.00 DA', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 12)),
+              ],
+            ),
+            const SizedBox(height: 4),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('Trajet horokilométrique:', style: TextStyle(color: Colors.black54, fontSize: 12)),
+                Text('725.00 DA', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 12)),
+              ],
+            ),
+            const Divider(height: 20),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('TOTAL RÉGLÉ:', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 14)),
+                Text('850.00 DA', style: TextStyle(color: Color(0xFF2563EB), fontWeight: FontWeight.bold, fontSize: 16)),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Center(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.blue.shade900),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: const Text('★ CONFORME CONTRÔLE ROUTIER DTW ★', style: TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Color(0xFF1E3A8A))),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Fermer'),
+          ),
+        ],
+      ),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -194,9 +422,9 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
               margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               decoration: BoxDecoration(
-                color: const Color(0xFF2563EB).withOpacity(0.15),
+                color: const Color(0xFF2563EB).withValues(alpha: 0.15),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: const Color(0xFF2563EB).withOpacity(0.4)),
+                border: Border.all(color: const Color(0xFF2563EB).withValues(alpha: 0.4)),
               ),
               child: Row(
                 children: [
@@ -248,7 +476,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
               decoration: BoxDecoration(
                 color: const Color(0xFF131D31),
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: const Color(0xFF2563EB).withOpacity(0.3)),
+                border: Border.all(color: const Color(0xFF2563EB).withValues(alpha: 0.3)),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -266,7 +494,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                       const SizedBox(width: 8),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(color: Colors.amber.withOpacity(0.2), borderRadius: BorderRadius.circular(6)),
+                        decoration: BoxDecoration(color: Colors.amber.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(6)),
                         child: const Text('DÉCRET 12-230', style: TextStyle(fontSize: 10, color: Colors.amber, fontWeight: FontWeight.bold)),
                       ),
                     ],
@@ -295,6 +523,58 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                         ),
                       ),
                     ],
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(0xFF2563EB),
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          ),
+                          icon: const Icon(Icons.chat, size: 16),
+                          label: const Text('Chat Chauffeur', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                          onPressed: () => _showChatDialog(assigned.driverName, assigned.vehiclePlate),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: const Color(0xFFF59E0B),
+                            side: const BorderSide(color: Color(0xFFF59E0B)),
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          ),
+                          icon: const Icon(Icons.receipt_long, size: 16),
+                          label: const Text('Quittance DTW', style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                          onPressed: () => _showOfficialReceiptDialog(assigned),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  SizedBox(
+                    width: double.infinity,
+                    child: TextButton.icon(
+                      style: TextButton.styleFrom(
+                        foregroundColor: Colors.redAccent,
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                      ),
+                      icon: const Icon(Icons.shield_outlined, size: 16, color: Colors.redAccent),
+                      label: const Text('SOS 1548 Sûreté Nationale (Urgence)', style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600)),
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            backgroundColor: Colors.redAccent,
+                            content: Text('Alerte SOS 1548 transmise à la Sûreté Nationale avec géolocalisation active.'),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),
@@ -420,7 +700,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF0EA5E9).withOpacity(0.12) : const Color(0xFF131D31),
+          color: isSelected ? const Color(0xFF0EA5E9).withValues(alpha: 0.12) : const Color(0xFF131D31),
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
             color: isSelected ? const Color(0xFF0EA5E9) : Colors.white10,
@@ -452,7 +732,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.08),
+                          color: Colors.white.withValues(alpha: 0.08),
                           borderRadius: BorderRadius.circular(6),
                         ),
                         child: Text(badge, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Colors.amber)),
@@ -488,7 +768,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
               borderRadius: BorderRadius.circular(24),
               boxShadow: [
                 BoxShadow(
-                  color: const Color(0xFF2563EB).withOpacity(0.3),
+                  color: const Color(0xFF2563EB).withValues(alpha: 0.3),
                   blurRadius: 20,
                   offset: const Offset(0, 8),
                 ),
@@ -500,7 +780,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text('PORTEFEUILLE WASSLANI DZ', style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1.5)),
+                    Text('PORTEFEUILLE WASSLANI', style: TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1.5)),
                     Icon(Icons.shield, color: Colors.white70, size: 20),
                   ],
                 ),
@@ -615,7 +895,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
         children: [
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(color: Colors.amber.withOpacity(0.15), borderRadius: BorderRadius.circular(6)),
+            decoration: BoxDecoration(color: Colors.amber.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(6)),
             child: Text(code, style: const TextStyle(fontSize: 10, color: Colors.amber, fontWeight: FontWeight.bold)),
           ),
           const SizedBox(height: 8),

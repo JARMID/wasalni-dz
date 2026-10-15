@@ -61,6 +61,147 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
   final TextEditingController _pinController = TextEditingController();
   final TextEditingController _meterController = TextEditingController(text: '750');
 
+  // Taximeter live simulation
+  double _meterKm = 4.2;
+  int _meterWaitMins = 6;
+  double get _computedMeterDzd => 25.0 + (_meterKm * 35.0) + (_meterWaitMins * 5.0);
+
+  void _showDriverChatDialog() {
+    final TextEditingController chatController = TextEditingController();
+    final List<Map<String, String>> chatMessages = [
+      {
+        'sender': 'driver',
+        'text': 'Salam Alikoum ! Je suis en route avec ma Peugeot 301.',
+        'time': '16:42'
+      },
+      {
+        'sender': 'rider',
+        'text': 'Salam, parfait je vous attends devant la sortie.',
+        'time': '16:43'
+      }
+    ];
+
+    showDialog(
+      context: context,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDlgState) => AlertDialog(
+          backgroundColor: const Color(0xFF131B29),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Row(
+            children: [
+              const CircleAvatar(
+                backgroundColor: Color(0xFFF59E0B),
+                radius: 16,
+                child: Icon(Icons.person, color: Colors.black, size: 18),
+              ),
+              const SizedBox(width: 10),
+              const Expanded(
+                child: Text('Chat Passager en Direct', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              ),
+              IconButton(
+                icon: const Icon(Icons.close, size: 18),
+                onPressed: () => Navigator.pop(ctx),
+              ),
+            ],
+          ),
+          content: SizedBox(
+            width: 400,
+            height: 340,
+            child: Column(
+              children: [
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: [
+                      'راني في الطريق',
+                      'راني قدام الباب',
+                      'زحمة سير في باش جراح',
+                      'J\'arrive dans 2 minutes',
+                    ].map((chip) => Padding(
+                      padding: const EdgeInsets.only(right: 6),
+                      child: ActionChip(
+                        backgroundColor: const Color(0xFFF59E0B).withValues(alpha: 0.15),
+                        side: BorderSide(color: const Color(0xFFF59E0B).withValues(alpha: 0.3)),
+                        label: Text(chip, style: const TextStyle(fontSize: 10, color: Color(0xFFF59E0B))),
+                        onPressed: () {
+                          setDlgState(() {
+                            chatMessages.add({
+                              'sender': 'driver',
+                              'text': chip,
+                              'time': '16:44',
+                            });
+                          });
+                        },
+                      ),
+                    )).toList(),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: chatMessages.length,
+                    itemBuilder: (ctx, idx) {
+                      final msg = chatMessages[idx];
+                      final isDriver = msg['sender'] == 'driver';
+                      return Align(
+                        alignment: isDriver ? Alignment.centerRight : Alignment.centerLeft,
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(vertical: 4),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: isDriver ? const Color(0xFF2563EB) : const Color(0xFF1E293B),
+                            borderRadius: BorderRadius.circular(14),
+                          ),
+                          child: Text(
+                            msg['text'] ?? '',
+                            style: const TextStyle(fontSize: 12, color: Colors.white),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: chatController,
+                        decoration: InputDecoration(
+                          hintText: 'Message au passager...',
+                          hintStyle: const TextStyle(fontSize: 12, color: Colors.white38),
+                          filled: true,
+                          fillColor: const Color(0xFF0F172A),
+                          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    IconButton(
+                      icon: const Icon(Icons.send, color: Color(0xFFF59E0B)),
+                      onPressed: () {
+                        if (chatController.text.trim().isNotEmpty) {
+                          setDlgState(() {
+                            chatMessages.add({
+                              'sender': 'driver',
+                              'text': chatController.text.trim(),
+                              'time': '16:45',
+                            });
+                            chatController.clear();
+                          });
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   void _triggerCrashLockbox() {
     final now = DateTime.now();
     final dek = EnvelopeEncryption.generateDek();
@@ -164,9 +305,9 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF2563EB).withOpacity(0.1),
+                  color: const Color(0xFF2563EB).withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: const Color(0xFF2563EB).withOpacity(0.3)),
+                  border: Border.all(color: const Color(0xFF2563EB).withValues(alpha: 0.3)),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -275,7 +416,7 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
           ),
           Switch(
             value: driver.isOnline,
-            activeColor: const Color(0xFF2563EB),
+            activeThumbColor: const Color(0xFF2563EB),
             onChanged: (val) => setState(() => driver = driver.copyWith(isOnline: val)),
           ),
         ],
@@ -300,9 +441,9 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
-                      color: Colors.amber.withOpacity(0.08),
+                      color: Colors.amber.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: Colors.amber.withOpacity(0.2)),
+                      border: Border.all(color: Colors.amber.withValues(alpha: 0.2)),
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -319,7 +460,7 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
                         const SizedBox(width: 8),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          decoration: BoxDecoration(color: const Color(0xFF2563EB).withOpacity(0.2), borderRadius: BorderRadius.circular(6)),
+                          decoration: BoxDecoration(color: const Color(0xFF2563EB).withValues(alpha: 0.2), borderRadius: BorderRadius.circular(6)),
                           child: const Text('CONFORME', style: TextStyle(fontSize: 10, color: Color(0xFF60A5FA), fontWeight: FontWeight.bold)),
                         ),
                       ],
@@ -355,7 +496,7 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
                             left: 10,
                             child: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                              decoration: BoxDecoration(color: Colors.red.withOpacity(0.8), borderRadius: BorderRadius.circular(6)),
+                              decoration: BoxDecoration(color: Colors.red.withValues(alpha: 0.8), borderRadius: BorderRadius.circular(6)),
                               child: const Row(
                                 children: [
                                   CircleAvatar(radius: 3, backgroundColor: Colors.white),
@@ -438,7 +579,7 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
         children: [
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(color: Colors.amber.withOpacity(0.2), borderRadius: BorderRadius.circular(6)),
+            decoration: BoxDecoration(color: Colors.amber.withValues(alpha: 0.2), borderRadius: BorderRadius.circular(6)),
             child: const Text('NOUVELLE COURSE RÉGLEMENTÉE', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold, fontSize: 11)),
           ),
           const SizedBox(height: 12),
@@ -492,21 +633,42 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
           const Text('En route vers le point de prise en charge', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
           Text('Code PIN requis à l\'embarquement: $pickupPin', style: const TextStyle(fontSize: 14, color: Colors.white70)),
-          const SizedBox(height: 24),
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFF59E0B), foregroundColor: Colors.black),
-            onPressed: () {
-              final assigned = currentRide as RideDriverAssigned;
-              setState(() {
-                currentRide = RideDriverArrived(
-                  rideId: assigned.rideId,
-                  rideCode: assigned.rideCode,
-                  pickupPin: assigned.pickupPin,
-                  arrivedAt: DateTime.now(),
-                );
-              });
-            },
-            child: const Text('Je suis Arrivé sur Place', style: TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF2563EB),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+                icon: const Icon(Icons.chat, size: 16, color: Colors.white),
+                label: const Text('Chat Passager', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                onPressed: _showDriverChatDialog,
+              ),
+              const SizedBox(width: 12),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFFF59E0B),
+                  foregroundColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+                onPressed: () {
+                  final assigned = currentRide as RideDriverAssigned;
+                  setState(() {
+                    currentRide = RideDriverArrived(
+                      rideId: assigned.rideId,
+                      rideCode: assigned.rideCode,
+                      pickupPin: assigned.pickupPin,
+                      arrivedAt: DateTime.now(),
+                    );
+                  });
+                },
+                child: const Text('Je suis Arrivé sur Place', style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+            ],
           ),
         ],
       ),
@@ -549,23 +711,116 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
       RideInProgress(:final fraisApprocheDzd) => Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.speed, size: 56, color: const Color(0xFF2563EB)),
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.speed, size: 28, color: Color(0xFF2563EB)),
+              SizedBox(width: 8),
+              Text('Taximètre Réglementaire Actif', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+            ],
+          ),
+          const SizedBox(height: 4),
+          const Text('Prise en charge: 25 DA • Trajet: 35 DA/km • Attente: 5 DA/min', style: TextStyle(fontSize: 11, color: Colors.white54)),
+          const SizedBox(height: 14),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: Colors.black45,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(color: Colors.white12),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Column(
+                  children: [
+                    const Text('DISTANCE', style: TextStyle(fontSize: 10, color: Colors.white54, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 4),
+                    Text('${_meterKm.toStringAsFixed(1)} km', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                  ],
+                ),
+                Container(height: 28, width: 1, color: Colors.white12),
+                Column(
+                  children: [
+                    const Text('ATTENTE', style: TextStyle(fontSize: 10, color: Colors.white54, fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 4),
+                    Text('$_meterWaitMins min', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                  ],
+                ),
+                Container(height: 28, width: 1, color: Colors.white12),
+                Column(
+                  children: [
+                    const Text('COMPTEUR', style: TextStyle(fontSize: 10, color: Color(0xFFF59E0B), fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 4),
+                    Text('${_computedMeterDzd.toStringAsFixed(0)} DA', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFFF59E0B))),
+                  ],
+                ),
+                Container(height: 28, width: 1, color: Colors.white12),
+                Column(
+                  children: [
+                    const Text('TOTAL AVEC APPROCHE', style: TextStyle(fontSize: 10, color: Color(0xFF60A5FA), fontWeight: FontWeight.bold)),
+                    const SizedBox(height: 4),
+                    Text('${(_computedMeterDzd + fraisApprocheDzd).toStringAsFixed(0)} DA', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF60A5FA))),
+                  ],
+                ),
+              ],
+            ),
+          ),
           const SizedBox(height: 12),
-          const Text('Course en cours...', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
-          Text('Frais d\'approche légal: ${fraisApprocheDzd.toStringAsFixed(0)} DA', style: const TextStyle(color: Colors.amber)),
-          const SizedBox(height: 24),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: const Color(0xFF60A5FA),
+                  side: const BorderSide(color: Color(0xFF2563EB)),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                ),
+                icon: const Icon(Icons.add_road, size: 14),
+                label: const Text('+1.0 km (+35 DA)', style: TextStyle(fontSize: 11)),
+                onPressed: () => setState(() => _meterKm += 1.0),
+              ),
+              const SizedBox(width: 8),
+              OutlinedButton.icon(
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: const Color(0xFFF59E0B),
+                  side: const BorderSide(color: Color(0xFFF59E0B)),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                ),
+                icon: const Icon(Icons.timer, size: 14),
+                label: const Text('+2 min (+10 DA)', style: TextStyle(fontSize: 11)),
+                onPressed: () => setState(() => _meterWaitMins += 2),
+              ),
+              const SizedBox(width: 8),
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF2563EB),
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                ),
+                icon: const Icon(Icons.chat, size: 14, color: Colors.white),
+                label: const Text('Chat', style: TextStyle(fontSize: 11, color: Colors.white)),
+                onPressed: _showDriverChatDialog,
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
           ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFF59E0B), foregroundColor: Colors.black),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFFF59E0B),
+              foregroundColor: Colors.black,
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            ),
             onPressed: () {
               final inProg = currentRide as RideInProgress;
+              final finalMeter = _computedMeterDzd;
+              _meterController.text = finalMeter.toStringAsFixed(0);
               setState(() {
                 currentRide = RideFareEntry(
                   rideId: inProg.rideId,
                   rideCode: inProg.rideCode,
                   serviceMode: inProg.serviceMode,
                   fraisApprocheDzd: inProg.fraisApprocheDzd,
-                  suggestedMeterDzd: 750.0,
+                  suggestedMeterDzd: finalMeter,
                 );
               });
             },
