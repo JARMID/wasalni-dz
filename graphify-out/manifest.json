@@ -85,8 +85,8 @@
     "semantic_hash": ""
   },
   "demo/src/App.tsx": {
-    "mtime": 1792099461.319049,
-    "ast_hash": "d5ca68a6b4c2ac77d5f2c4279b1aa69d",
+    "mtime": 1792161020.7875893,
+    "ast_hash": "9bdca4ce00e760a1a2686dbe12998f8a",
     "semantic_hash": ""
   },
   "demo/src/components/DashcamHUD.tsx": {
@@ -105,8 +105,8 @@
     "semantic_hash": ""
   },
   "demo/src/components/Header.tsx": {
-    "mtime": 1792095916.5683935,
-    "ast_hash": "22c3b62877ed9b54f0c0b846233c3302",
+    "mtime": 1792161010.8348236,
+    "ast_hash": "f4ebd6cc4e4906af49c3e41565cc58ec",
     "semantic_hash": ""
   },
   "demo/src/components/InteractiveMap.tsx": {
@@ -210,8 +210,8 @@
     "semantic_hash": ""
   },
   "cmd/telemetry-daemon/main.go": {
-    "mtime": 1791999898.511587,
-    "ast_hash": "7decc993e18263ac748ecebfd5533ef6",
+    "mtime": 1792111363.8456542,
+    "ast_hash": "2ba69c2e7d028a9c4aec06b6f8bc45c1",
     "semantic_hash": ""
   },
   "demo/src/components/ChargilyTopupModal.tsx": {
@@ -280,8 +280,8 @@
     "semantic_hash": ""
   },
   "demo/src/components/FluidShaderCanvas.tsx": {
-    "mtime": 1792099549.133201,
-    "ast_hash": "c19351ee7ca767a14715708ee3cb8280",
+    "mtime": 1792161963.5394802,
+    "ast_hash": "cacefba6188e48953461cf17b449eb21",
     "semantic_hash": ""
   },
   "demo/src/components/FooterReveal.tsx": {
@@ -290,8 +290,8 @@
     "semantic_hash": ""
   },
   "demo/src/components/HeroScrollyStudio.tsx": {
-    "mtime": 1792099634.998616,
-    "ast_hash": "ba61fb761190b054e732ae50d0ba79cd",
+    "mtime": 1792139006.824673,
+    "ast_hash": "29ebcd2667230780e2c9f05b83e95394",
     "semantic_hash": ""
   },
   "demo/src/components/HorizontalShowcase.tsx": {
@@ -305,8 +305,8 @@
     "semantic_hash": ""
   },
   "demo/src/components/LandingView.tsx": {
-    "mtime": 1792099559.388809,
-    "ast_hash": "309d4b1074fcdff9f7542bf8d162e4f2",
+    "mtime": 1792161351.258536,
+    "ast_hash": "c1f7236f4e69a3c56392fb97ff15de1c",
     "semantic_hash": ""
   },
   "demo/src/components/LogoShowcaseModal.tsx": {
@@ -365,13 +365,13 @@
     "semantic_hash": ""
   },
   "mobile/packages/driver_app/lib/main.dart": {
-    "mtime": 1792086205.266011,
-    "ast_hash": "4ed6604695625969c343bb672055b92e",
+    "mtime": 1792140271.6574378,
+    "ast_hash": "01b79997d90664340d4168df1e81055a",
     "semantic_hash": ""
   },
   "mobile/packages/driver_app/test/driver_app_test.dart": {
-    "mtime": 1792080829.1362245,
-    "ast_hash": "80e80cb881c97e80db5d6bb6d386d36a",
+    "mtime": 1792140219.3535793,
+    "ast_hash": "8734dd3f183db924b122087b7c827d50",
     "semantic_hash": ""
   },
   "mobile/packages/naql_core/lib/models/dashcam_incident.dart": {
@@ -400,8 +400,8 @@
     "semantic_hash": ""
   },
   "mobile/packages/naql_core/lib/naql_core.dart": {
-    "mtime": 1792001623.6889818,
-    "ast_hash": "d5ee71fe33a994cf3fe4d42993bb07b0",
+    "mtime": 1792139304.1565502,
+    "ast_hash": "ba54002109970877d78b656190d54259",
     "semantic_hash": ""
   },
   "mobile/packages/naql_core/lib/security/envelope_encryption.dart": {
@@ -415,18 +415,18 @@
     "semantic_hash": ""
   },
   "mobile/packages/naql_core/test/naql_core_test.dart": {
-    "mtime": 1792001647.2754223,
-    "ast_hash": "4e9ad4140b5da1b6dc561e4aabe7f776",
+    "mtime": 1792112904.7228465,
+    "ast_hash": "69773d7324b43921450541c4160f3b73",
     "semantic_hash": ""
   },
   "mobile/packages/rider_app/lib/main.dart": {
-    "mtime": 1792086197.9566996,
-    "ast_hash": "5fb5fadce762725a639f30ed7fd44ca8",
+    "mtime": 1792139802.7193668,
+    "ast_hash": "8b046c3b50586a8e247640e94f8835d6",
     "semantic_hash": ""
   },
   "mobile/packages/rider_app/test/rider_app_test.dart": {
-    "mtime": 1792080952.8463528,
-    "ast_hash": "a004ec2d7e80333a6c5ad0e477556c45",
+    "mtime": 1792139771.2516897,
+    "ast_hash": "5f2e12564d3db5097852759205ff6ac3",
     "semantic_hash": ""
   },
   "scripts/test_live_supabase.js": {
@@ -435,8 +435,8 @@
     "semantic_hash": ""
   },
   "scripts/verify-entire-platform.ps1": {
-    "mtime": 1792004442.9690926,
-    "ast_hash": "1e309ea899bac03a97c7373f08223b56",
+    "mtime": 1792140438.3526223,
+    "ast_hash": "9467241c3fe5169169dbca87ebf7e8bf",
     "semantic_hash": ""
   },
   "scripts/verify-entire-platform.sh": {
@@ -445,33 +445,33 @@
     "semantic_hash": ""
   },
   "services/baridimob_verifier/parser.py": {
-    "mtime": 1792001873.8102648,
-    "ast_hash": "98363326ca687d969f00e9f2a3f7595e",
+    "mtime": 1792138849.3299074,
+    "ast_hash": "ae8cf08b3a3fec12832763f5bda1ece9",
     "semantic_hash": ""
   },
   "services/baridimob_verifier/test_verifier.py": {
-    "mtime": 1792001891.0384638,
-    "ast_hash": "7524508a0930973d04983f15d5c89652",
+    "mtime": 1792138819.5884402,
+    "ast_hash": "eb06ea64ded5324997734cd3236d4874",
     "semantic_hash": ""
   },
   "services/baridimob_verifier/verifier.py": {
-    "mtime": 1792001883.5428395,
-    "ast_hash": "2c19791dae3924e3f24e67f0b2f1410f",
+    "mtime": 1792138784.087595,
+    "ast_hash": "448d54b026b6d4f6f40295e16d6e89c9",
     "semantic_hash": ""
   },
   "mobile/packages/driver_app/pubspec.yaml": {
-    "mtime": 1792001670.8250668,
-    "ast_hash": "78e39670069441d2cb285069b48ffb3c",
+    "mtime": 1792114681.5399437,
+    "ast_hash": "0176f6ec1970dc4bef806fd6fae859df",
     "semantic_hash": ""
   },
   "mobile/packages/naql_core/pubspec.yaml": {
-    "mtime": 1792001561.666462,
-    "ast_hash": "0a47f8fd8f495271f8ec4b0b46de9989",
+    "mtime": 1792113829.0540068,
+    "ast_hash": "56f80323896048da4138d7726aa27968",
     "semantic_hash": ""
   },
   "mobile/packages/rider_app/pubspec.yaml": {
-    "mtime": 1792001776.8238375,
-    "ast_hash": "79d5e5adea3ae72ae953f709e3dd2b7d",
+    "mtime": 1792114484.6254077,
+    "ast_hash": "bed5fb596c9b8ffd727feb2dbd930ae9",
     "semantic_hash": ""
   },
   "demo/public/driver-avatar.svg": {
@@ -527,6 +527,646 @@
   "demo/public/logos/logo-10-celestial-arrow.svg": {
     "mtime": 1792091818.27464,
     "ast_hash": "fdd4539d9039aad397e0c8e372f67143",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/android/app/build.gradle.kts": {
+    "mtime": 1792101778.2312179,
+    "ast_hash": "21d8a0097f7804715c26aec07d772a98",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/android/app/src/main/kotlin/dz/wasslani/driver_app/MainActivity.kt": {
+    "mtime": 1792101778.2337492,
+    "ast_hash": "34929a081101bac52d9e4baa01813271",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/android/build.gradle.kts": {
+    "mtime": 1792101778.235547,
+    "ast_hash": "803fe22651fbe96ed401eb0b66a492d1",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/android/settings.gradle.kts": {
+    "mtime": 1792101778.2628205,
+    "ast_hash": "087a01c04d081ae02a8e5db89f4bf3f3",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/ios/RunnerTests/RunnerTests.swift": {
+    "mtime": 1792101778.3270068,
+    "ast_hash": "24e5d095048eb86c30423f4e04b6e57b",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/ios/Runner/AppDelegate.swift": {
+    "mtime": 1771867536.2246253,
+    "ast_hash": "9e1de9c329a3fe4931876063de95132b",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json": {
+    "mtime": 1771867536.2246253,
+    "ast_hash": "31a08e429403e265cabfb31b3d65f049",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/ios/Runner/Assets.xcassets/LaunchImage.imageset/Contents.json": {
+    "mtime": 1771867536.2310221,
+    "ast_hash": "b9e927ac17345f2d5f052fe68a3487f9",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/ios/Runner/Runner-Bridging-Header.h": {
+    "mtime": 1771867536.2347975,
+    "ast_hash": "7ad7b5cea096132de13ba526b2b9efbe",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/ios/Runner/SceneDelegate.swift": {
+    "mtime": 1771867536.2347975,
+    "ast_hash": "0c3e86af131f6a9e547c80b5ed058914",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/web/manifest.json": {
+    "mtime": 1792112164.5272176,
+    "ast_hash": "831e6d385220b572b19aa6e5012b259e",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/windows/flutter/generated_plugin_registrant.cc": {
+    "mtime": 1792101778.9755478,
+    "ast_hash": "a8f91348d8d9090f22ec69d597c41e1f",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/windows/flutter/generated_plugin_registrant.h": {
+    "mtime": 1792101778.9741955,
+    "ast_hash": "0ea33875f9f8e118f9c2ded03e2e2835",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/windows/runner/flutter_window.cpp": {
+    "mtime": 1771867536.2696784,
+    "ast_hash": "2f463f9b7da67a2d692a012f9ea85e0c",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/windows/runner/flutter_window.h": {
+    "mtime": 1771867536.2702448,
+    "ast_hash": "7defcc89d4a26d56e801241d624d48fb",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/windows/runner/main.cpp": {
+    "mtime": 1792101778.3477373,
+    "ast_hash": "d30d9a8eab9a49ee76cd4744b5839d60",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/windows/runner/resource.h": {
+    "mtime": 1771867536.2712615,
+    "ast_hash": "1ade5dd15e613479a15e8832ed276f2b",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/windows/runner/utils.cpp": {
+    "mtime": 1782794670.2196639,
+    "ast_hash": "e18900a4c2c2962ad732d3b83f0396b9",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/windows/runner/utils.h": {
+    "mtime": 1771867536.2742898,
+    "ast_hash": "fd81e143f5614eb6fd75efe539002853",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/windows/runner/win32_window.cpp": {
+    "mtime": 1771867536.2749746,
+    "ast_hash": "571eb8234dbc2661be03aa5f2a4d2fca",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/windows/runner/win32_window.h": {
+    "mtime": 1771867536.2749746,
+    "ast_hash": "7569387d58711ab975940f4df3b4bcda",
+    "semantic_hash": ""
+  },
+  "mobile/packages/naql_core/lib/models/driver_shift.dart": {
+    "mtime": 1792112862.3426933,
+    "ast_hash": "33edb4d1e92d2f63682a42e29fff9a6b",
+    "semantic_hash": ""
+  },
+  "mobile/packages/naql_core/lib/models/geo_hub.dart": {
+    "mtime": 1792102394.0138042,
+    "ast_hash": "f893bd53a1ca64223fe4415bb5e1627c",
+    "semantic_hash": ""
+  },
+  "mobile/packages/naql_core/lib/models/ride_rating.dart": {
+    "mtime": 1792112869.7581186,
+    "ast_hash": "3016fd5d19d624d147199db7a5daa8b3",
+    "semantic_hash": ""
+  },
+  "mobile/packages/naql_core/lib/models/route_maneuver.dart": {
+    "mtime": 1792112865.9782982,
+    "ast_hash": "8bddc9d9921208a81cb36e3fd4180e22",
+    "semantic_hash": ""
+  },
+  "mobile/packages/naql_core/lib/models/taximeter_quittance.dart": {
+    "mtime": 1792139246.5085933,
+    "ast_hash": "dc3b3a62935266df60a3d44ba9134309",
+    "semantic_hash": ""
+  },
+  "mobile/packages/naql_core/lib/models/trip_history_item.dart": {
+    "mtime": 1792111390.9124894,
+    "ast_hash": "cc44297368a8b8a4d7fa421d3874d405",
+    "semantic_hash": ""
+  },
+  "mobile/packages/naql_core/lib/services/audio_haptic_service.dart": {
+    "mtime": 1792139293.9566715,
+    "ast_hash": "08b9e6e2bf1fb975233fbc89b6aaeaec",
+    "semantic_hash": ""
+  },
+  "mobile/packages/naql_core/lib/services/geo_routing_service.dart": {
+    "mtime": 1792112882.5232687,
+    "ast_hash": "2162bb857e7cae3c6cb9e021b9a9ad64",
+    "semantic_hash": ""
+  },
+  "mobile/packages/naql_core/lib/services/offline_sync_queue.dart": {
+    "mtime": 1792139391.500342,
+    "ast_hash": "fd4e998c18adadb2f741ae08c3797c5d",
+    "semantic_hash": ""
+  },
+  "mobile/packages/naql_core/lib/services/spare_change_engine.dart": {
+    "mtime": 1792102185.5243423,
+    "ast_hash": "ac80666226c9446f74123fbfba3b15ad",
+    "semantic_hash": ""
+  },
+  "mobile/packages/naql_core/lib/services/supabase_service.dart": {
+    "mtime": 1792114234.6967418,
+    "ast_hash": "3a1c0baf0ab89f45e378f868ad6ab9ca",
+    "semantic_hash": ""
+  },
+  "mobile/packages/naql_core/lib/services/tariff_service.dart": {
+    "mtime": 1792102098.271525,
+    "ast_hash": "ead6a0a55ee756f4279ec7b091578882",
+    "semantic_hash": ""
+  },
+  "mobile/packages/naql_core/lib/widgets/quittance_qr_widget.dart": {
+    "mtime": 1792139285.2316282,
+    "ast_hash": "0df1b0177d02b759d9534a149bdaddc1",
+    "semantic_hash": ""
+  },
+  "mobile/packages/naql_core/test/offline_sync_queue_test.dart": {
+    "mtime": 1792139404.0038726,
+    "ast_hash": "c13d9f8ed91698f9e2f716f671e801c8",
+    "semantic_hash": ""
+  },
+  "mobile/packages/naql_core/test/supabase_service_test.dart": {
+    "mtime": 1792114254.7868109,
+    "ast_hash": "dbca6ea02d0466a293fa14cafe678a6d",
+    "semantic_hash": ""
+  },
+  "mobile/packages/naql_core/test/taximeter_quittance_test.dart": {
+    "mtime": 1792139318.848374,
+    "ast_hash": "d65918d6f67ce041a7b69b910236fbb9",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/android/app/build.gradle.kts": {
+    "mtime": 1792101657.3432088,
+    "ast_hash": "ba83c3ce201bcb10355699666ca2431f",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/android/app/src/main/kotlin/dz/wasslani/rider_app/MainActivity.kt": {
+    "mtime": 1792101657.3549635,
+    "ast_hash": "b30d89fe9df080d902162edf83f95d2e",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/android/build.gradle.kts": {
+    "mtime": 1792101657.3673718,
+    "ast_hash": "803fe22651fbe96ed401eb0b66a492d1",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/android/settings.gradle.kts": {
+    "mtime": 1792101657.5164614,
+    "ast_hash": "087a01c04d081ae02a8e5db89f4bf3f3",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/ios/RunnerTests/RunnerTests.swift": {
+    "mtime": 1792101657.7780848,
+    "ast_hash": "24e5d095048eb86c30423f4e04b6e57b",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/ios/Runner/AppDelegate.swift": {
+    "mtime": 1771867536.2246253,
+    "ast_hash": "9e1de9c329a3fe4931876063de95132b",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json": {
+    "mtime": 1771867536.2246253,
+    "ast_hash": "31a08e429403e265cabfb31b3d65f049",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/ios/Runner/Assets.xcassets/LaunchImage.imageset/Contents.json": {
+    "mtime": 1771867536.2310221,
+    "ast_hash": "b9e927ac17345f2d5f052fe68a3487f9",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/ios/Runner/Runner-Bridging-Header.h": {
+    "mtime": 1771867536.2347975,
+    "ast_hash": "7ad7b5cea096132de13ba526b2b9efbe",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/ios/Runner/SceneDelegate.swift": {
+    "mtime": 1771867536.2347975,
+    "ast_hash": "0c3e86af131f6a9e547c80b5ed058914",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/web/manifest.json": {
+    "mtime": 1792112147.316058,
+    "ast_hash": "04deec1c138f1ac492520764afd193ca",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/windows/flutter/generated_plugin_registrant.cc": {
+    "mtime": 1792101660.016659,
+    "ast_hash": "a8f91348d8d9090f22ec69d597c41e1f",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/windows/flutter/generated_plugin_registrant.h": {
+    "mtime": 1792101660.016659,
+    "ast_hash": "0ea33875f9f8e118f9c2ded03e2e2835",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/windows/runner/flutter_window.cpp": {
+    "mtime": 1771867536.2696784,
+    "ast_hash": "2f463f9b7da67a2d692a012f9ea85e0c",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/windows/runner/flutter_window.h": {
+    "mtime": 1771867536.2702448,
+    "ast_hash": "7defcc89d4a26d56e801241d624d48fb",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/windows/runner/main.cpp": {
+    "mtime": 1792101657.8929205,
+    "ast_hash": "6eaa33591f9faad63add8f544bfcea8d",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/windows/runner/resource.h": {
+    "mtime": 1771867536.2712615,
+    "ast_hash": "1ade5dd15e613479a15e8832ed276f2b",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/windows/runner/utils.cpp": {
+    "mtime": 1782794670.2196639,
+    "ast_hash": "e18900a4c2c2962ad732d3b83f0396b9",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/windows/runner/utils.h": {
+    "mtime": 1771867536.2742898,
+    "ast_hash": "fd81e143f5614eb6fd75efe539002853",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/windows/runner/win32_window.cpp": {
+    "mtime": 1771867536.2749746,
+    "ast_hash": "571eb8234dbc2661be03aa5f2a4d2fca",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/windows/runner/win32_window.h": {
+    "mtime": 1771867536.2749746,
+    "ast_hash": "7569387d58711ab975940f4df3b4bcda",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/README.md": {
+    "mtime": 1792101778.3286545,
+    "ast_hash": "b73a70e80fc1563f8506a01ec5047cfe",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/analysis_options.yaml": {
+    "mtime": 1792101778.2295575,
+    "ast_hash": "9e65f4b9beebb674c0dc252f70a5c177",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/ios/Runner/Assets.xcassets/LaunchImage.imageset/README.md": {
+    "mtime": 1771867536.2332785,
+    "ast_hash": "f7ee1b402881509d197f34963e569927",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/web/index.html": {
+    "mtime": 1792112168.5849688,
+    "ast_hash": "5ba6fe6533cd27117eaa7e61a003a68c",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/windows/CMakeLists.txt": {
+    "mtime": 1792101778.340686,
+    "ast_hash": "e26309fe549a1392da9f28455f66cc33",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/windows/flutter/CMakeLists.txt": {
+    "mtime": 1771867536.2672417,
+    "ast_hash": "bbf66fed5180bd9ae8198b8d7c4a0001",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/windows/runner/CMakeLists.txt": {
+    "mtime": 1771867536.2682488,
+    "ast_hash": "028602ab9754bffe716659ada7590d29",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/README.md": {
+    "mtime": 1792101657.7955253,
+    "ast_hash": "6f9150e12ab47622a53bf5302dacc6c2",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/analysis_options.yaml": {
+    "mtime": 1792101657.3291996,
+    "ast_hash": "9e65f4b9beebb674c0dc252f70a5c177",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/ios/Runner/Assets.xcassets/LaunchImage.imageset/README.md": {
+    "mtime": 1771867536.2332785,
+    "ast_hash": "f7ee1b402881509d197f34963e569927",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/web/index.html": {
+    "mtime": 1792112152.9000337,
+    "ast_hash": "415ddcb4f88b19f688ec6daf6d639019",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/windows/CMakeLists.txt": {
+    "mtime": 1792101657.850069,
+    "ast_hash": "33e27934ad81d99fdeff92d3641809d7",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/windows/flutter/CMakeLists.txt": {
+    "mtime": 1771867536.2672417,
+    "ast_hash": "bbf66fed5180bd9ae8198b8d7c4a0001",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/windows/runner/CMakeLists.txt": {
+    "mtime": 1771867536.2682488,
+    "ast_hash": "028602ab9754bffe716659ada7590d29",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/android/app/src/main/res/mipmap-hdpi/ic_launcher.png": {
+    "mtime": 1771867536.2046473,
+    "ast_hash": "13e9c72ec37fac220397aa819fa1ef2d",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/android/app/src/main/res/mipmap-mdpi/ic_launcher.png": {
+    "mtime": 1771867536.2066567,
+    "ast_hash": "6270344430679711b81476e29878caa7",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png": {
+    "mtime": 1771867536.2066567,
+    "ast_hash": "a0a8db5985280b3679d99a820ae2db79",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png": {
+    "mtime": 1771867536.2076547,
+    "ast_hash": "afe1b655b9f32da22f9a4301bb8e6ba8",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png": {
+    "mtime": 1771867536.208663,
+    "ast_hash": "57838d52c318faff743130c3fcfae0c6",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png": {
+    "mtime": 1771867573.9529562,
+    "ast_hash": "c785f8932297af4acd5f5ccb7630f01c",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png": {
+    "mtime": 1771867574.0318851,
+    "ast_hash": "a2f8558fb1d42514111fbbb19fb67314",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png": {
+    "mtime": 1771867573.9433215,
+    "ast_hash": "2247a840b6ee72b8a069208af170e5b1",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png": {
+    "mtime": 1771867574.0386374,
+    "ast_hash": "1b3b1538136316263c7092951e923e9d",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png": {
+    "mtime": 1771867574.1289535,
+    "ast_hash": "be8887071dd7ec39cb754d236aa9584f",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png": {
+    "mtime": 1771867573.7747273,
+    "ast_hash": "043119ef4faa026ff82bd03f241e5338",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png": {
+    "mtime": 1771867574.037409,
+    "ast_hash": "2b1452c4c1bda6177b4fbbb832df217f",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png": {
+    "mtime": 1771867573.7958274,
+    "ast_hash": "2247a840b6ee72b8a069208af170e5b1",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png": {
+    "mtime": 1771867574.0519617,
+    "ast_hash": "8245359312aea1b0d2412f79a07b0ca5",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png": {
+    "mtime": 1771867573.7979844,
+    "ast_hash": "5b3c0902200ce596e9848f22e1f0fe0e",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png": {
+    "mtime": 1771867573.9502985,
+    "ast_hash": "5b3c0902200ce596e9848f22e1f0fe0e",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png": {
+    "mtime": 1771867573.7706344,
+    "ast_hash": "e419d22a37bc40ba185aca1acb6d4ac6",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png": {
+    "mtime": 1771867573.8699172,
+    "ast_hash": "36c0d7a7132bdde18898ffdfcfcdc4d2",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png": {
+    "mtime": 1771867574.146366,
+    "ast_hash": "643842917530acf4c5159ae851b0baf2",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png": {
+    "mtime": 1771867574.0497458,
+    "ast_hash": "665cb5e3c5729da6d639d26eff47a503",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage.png": {
+    "mtime": 1771867573.7656348,
+    "ast_hash": "978c1bee49d7ad5fc1a4d81099b13e18",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@2x.png": {
+    "mtime": 1771867573.6945326,
+    "ast_hash": "978c1bee49d7ad5fc1a4d81099b13e18",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@3x.png": {
+    "mtime": 1771867573.6567543,
+    "ast_hash": "978c1bee49d7ad5fc1a4d81099b13e18",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/web/favicon.png": {
+    "mtime": 1771867536.261812,
+    "ast_hash": "5dcef449791fa27946b3d35ad8803796",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/web/icons/Icon-192.png": {
+    "mtime": 1771867536.261812,
+    "ast_hash": "ac9a721a12bbc803b44f645561ecb1e1",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/web/icons/Icon-512.png": {
+    "mtime": 1771867536.2632344,
+    "ast_hash": "96e752610906ba2a93c65f8abe1645f1",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/web/icons/Icon-maskable-192.png": {
+    "mtime": 1771867577.3608234,
+    "ast_hash": "c457ef57daa1d16f64b27b786ec2ea3c",
+    "semantic_hash": ""
+  },
+  "mobile/packages/driver_app/web/icons/Icon-maskable-512.png": {
+    "mtime": 1771867577.3595963,
+    "ast_hash": "301a7604d45b3e739efc881eb04896ea",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/android/app/src/main/res/mipmap-hdpi/ic_launcher.png": {
+    "mtime": 1771867536.2046473,
+    "ast_hash": "13e9c72ec37fac220397aa819fa1ef2d",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/android/app/src/main/res/mipmap-mdpi/ic_launcher.png": {
+    "mtime": 1771867536.2066567,
+    "ast_hash": "6270344430679711b81476e29878caa7",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/android/app/src/main/res/mipmap-xhdpi/ic_launcher.png": {
+    "mtime": 1771867536.2066567,
+    "ast_hash": "a0a8db5985280b3679d99a820ae2db79",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/android/app/src/main/res/mipmap-xxhdpi/ic_launcher.png": {
+    "mtime": 1771867536.2076547,
+    "ast_hash": "afe1b655b9f32da22f9a4301bb8e6ba8",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/android/app/src/main/res/mipmap-xxxhdpi/ic_launcher.png": {
+    "mtime": 1771867536.208663,
+    "ast_hash": "57838d52c318faff743130c3fcfae0c6",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-1024x1024@1x.png": {
+    "mtime": 1771867573.9529562,
+    "ast_hash": "c785f8932297af4acd5f5ccb7630f01c",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@1x.png": {
+    "mtime": 1771867574.0318851,
+    "ast_hash": "a2f8558fb1d42514111fbbb19fb67314",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@2x.png": {
+    "mtime": 1771867573.9433215,
+    "ast_hash": "2247a840b6ee72b8a069208af170e5b1",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-20x20@3x.png": {
+    "mtime": 1771867574.0386374,
+    "ast_hash": "1b3b1538136316263c7092951e923e9d",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@1x.png": {
+    "mtime": 1771867574.1289535,
+    "ast_hash": "be8887071dd7ec39cb754d236aa9584f",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@2x.png": {
+    "mtime": 1771867573.7747273,
+    "ast_hash": "043119ef4faa026ff82bd03f241e5338",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-29x29@3x.png": {
+    "mtime": 1771867574.037409,
+    "ast_hash": "2b1452c4c1bda6177b4fbbb832df217f",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@1x.png": {
+    "mtime": 1771867573.7958274,
+    "ast_hash": "2247a840b6ee72b8a069208af170e5b1",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@2x.png": {
+    "mtime": 1771867574.0519617,
+    "ast_hash": "8245359312aea1b0d2412f79a07b0ca5",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-40x40@3x.png": {
+    "mtime": 1771867573.7979844,
+    "ast_hash": "5b3c0902200ce596e9848f22e1f0fe0e",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@2x.png": {
+    "mtime": 1771867573.9502985,
+    "ast_hash": "5b3c0902200ce596e9848f22e1f0fe0e",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-60x60@3x.png": {
+    "mtime": 1771867573.7706344,
+    "ast_hash": "e419d22a37bc40ba185aca1acb6d4ac6",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@1x.png": {
+    "mtime": 1771867573.8699172,
+    "ast_hash": "36c0d7a7132bdde18898ffdfcfcdc4d2",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-76x76@2x.png": {
+    "mtime": 1771867574.146366,
+    "ast_hash": "643842917530acf4c5159ae851b0baf2",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/ios/Runner/Assets.xcassets/AppIcon.appiconset/Icon-App-83.5x83.5@2x.png": {
+    "mtime": 1771867574.0497458,
+    "ast_hash": "665cb5e3c5729da6d639d26eff47a503",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage.png": {
+    "mtime": 1771867573.7656348,
+    "ast_hash": "978c1bee49d7ad5fc1a4d81099b13e18",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@2x.png": {
+    "mtime": 1771867573.6945326,
+    "ast_hash": "978c1bee49d7ad5fc1a4d81099b13e18",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/ios/Runner/Assets.xcassets/LaunchImage.imageset/LaunchImage@3x.png": {
+    "mtime": 1771867573.6567543,
+    "ast_hash": "978c1bee49d7ad5fc1a4d81099b13e18",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/web/favicon.png": {
+    "mtime": 1771867536.261812,
+    "ast_hash": "5dcef449791fa27946b3d35ad8803796",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/web/icons/Icon-192.png": {
+    "mtime": 1771867536.261812,
+    "ast_hash": "ac9a721a12bbc803b44f645561ecb1e1",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/web/icons/Icon-512.png": {
+    "mtime": 1771867536.2632344,
+    "ast_hash": "96e752610906ba2a93c65f8abe1645f1",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/web/icons/Icon-maskable-192.png": {
+    "mtime": 1771867577.3608234,
+    "ast_hash": "c457ef57daa1d16f64b27b786ec2ea3c",
+    "semantic_hash": ""
+  },
+  "mobile/packages/rider_app/web/icons/Icon-maskable-512.png": {
+    "mtime": 1771867577.3595963,
+    "ast_hash": "301a7604d45b3e739efc881eb04896ea",
     "semantic_hash": ""
   }
 }

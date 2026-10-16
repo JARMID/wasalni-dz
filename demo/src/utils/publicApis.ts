@@ -187,14 +187,14 @@ export async function fetchLiveForex(): Promise<ForexRates> {
   }
 
   try {
-    const res = await fetch('https://api.frankfurter.app/latest?from=EUR&to=USD,GBP');
+    const res = await fetch('https://open.er-api.com/v6/latest/EUR');
     if (!res.ok) throw new Error('Forex API error');
     const data = await res.json();
     const eurUsd = Number(data.rates?.USD ?? 1.10);
     const eurGbp = Number(data.rates?.GBP ?? 0.85);
 
-    // Official Bank of Algeria Reference Parity (~146.50 DZD / EUR)
-    const eurToDzd = 146.50;
+    // Official Bank of Algeria Reference Parity (~146.50 - 150.80 DZD / EUR)
+    const eurToDzd = Number(data.rates?.DZD ?? 146.50);
     const usdToDzd = Number((eurToDzd / eurUsd).toFixed(2));
     const gbpToDzd = Number((eurToDzd / eurGbp).toFixed(2));
 
@@ -204,7 +204,7 @@ export async function fetchLiveForex(): Promise<ForexRates> {
       eurToDzd,
       usdToDzd,
       gbpToDzd,
-      lastUpdated: data.date || new Date().toISOString().split('T')[0],
+      lastUpdated: data.time_last_update_utc || new Date().toISOString().split('T')[0],
     };
     lastForexFetch = now;
     return cachedForex;

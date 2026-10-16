@@ -158,12 +158,12 @@ export const ThreeCanvas: React.FC<ThreeCanvasProps> = ({ className = '' }) => {
 
     // 5. Animation Loop
     let animationFrameId: number;
-    let clock = new THREE.Clock();
+    const startTime = performance.now();
 
     const animate = () => {
       animationFrameId = requestAnimationFrame(animate);
 
-      const elapsedTime = clock.getElapsedTime();
+      const elapsedTime = (performance.now() - startTime) * 0.001;
 
       if (!prefersReducedMotion) {
         // Continuous organic rotation of grid

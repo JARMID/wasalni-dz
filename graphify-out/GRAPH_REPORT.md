@@ -1,16 +1,16 @@
-# Graph Report - dash  (2026-10-15)
+# Graph Report - dash  (2026-10-16)
 
 ## Corpus Check
-- 84 files · ~88,308 words
+- 146 files · ~120,324 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 789 nodes · 1153 edges · 52 communities (45 shown, 7 thin omitted)
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 7 edges (avg confidence: 0.71)
+- 1287 nodes · 1787 edges · 94 communities (75 shown, 19 thin omitted)
+- Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 33 edges (avg confidence: 0.78)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `7085f5d6`
+- Built from commit: `584df5bd`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -35,7 +35,7 @@
 - plugins
 - React + TypeScript + Vite
 - tsconfig.json
-- client.go
+- driver_app/windows/runner/win32_window.cpp
 - build-valhalla-tiles.sh script
 - dz-smart-taxi/telemetry
 - driver_profile.dart
@@ -47,9 +47,9 @@
 - rider_app/lib/main.dart
 - driver_app/lib/main.dart
 - AppLang
-- index.ts
 - react
-- InteractiveMap.tsx
+- rider_app/windows/runner/win32_window.cpp
+- offline_sync_queue.dart
 - thermal_state_machine.dart
 - SoundEngine
 - driver_app_test.dart
@@ -57,25 +57,57 @@
 - naql_core.dart
 - CockpitHomeScreen
 - vercel.json
-- ThreeCanvas.tsx
-- DriverCockpitApp
+- Flutter
+- StatelessWidget
 - verify-entire-platform.sh script
+- taximeter_quittance.dart
+- supabase_service.dart
+- driver_shift.dart
+- quittance_qr_widget.dart
+- trip_history_item.dart
+- spare_change_engine.dart
+- wWinMain
+- dashcam_incident.dart
+- wWinMain
+- driver_app/web/manifest.json
+- audio_haptic_service.dart
+- rider_app/web/manifest.json
+- package.json
+- ledger_entry.dart
+- RideState
+- ride_rating.dart
+- geo_hub.dart
+- route_maneuver.dart
+- @immutable
+- AiCopilotModal.tsx
+- MainActivity
+- driver_app
+- MainActivity
+- rider_app
+- OfflineSyncQueue
+- gsap
+- leaflet
+- lucide-react
+- react
+- three
+- @types/three
+- driver_app/ios/Runner/Assets.xcassets/LaunchImage.imageset/README.md
+- rider_app/ios/Runner/Assets.xcassets/LaunchImage.imageset/README.md
+- String?
 
 ## God Nodes (most connected - your core abstractions)
 1. `AppLang` - 32 edges
 2. `SoundEngine` - 29 edges
 3. `react` - 27 edges
 4. `compilerOptions` - 18 edges
-5. `DriverProfile` - 15 edges
-6. `getTranslation()` - 15 edges
-7. `compilerOptions` - 15 edges
-8. `ActiveTab` - 14 edges
-9. `TrajectoryFlusher` - 13 edges
-10. `RideState` - 13 edges
+5. `Win32Window` - 18 edges
+6. `Win32Window` - 18 edges
+7. `DriverProfile` - 15 edges
+8. `compilerOptions` - 15 edges
+9. `ActiveTab` - 14 edges
+10. `getTranslation()` - 13 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `main()` --calls--> `NewClient()`  [INFERRED]
-  cmd/telemetry-daemon/main.go → internal/valhalla/client.go
 - `main()` --calls--> `NewTrajectoryFlusher()`  [INFERRED]
   cmd/telemetry-daemon/main.go → internal/telemetry/flusher.go
 - `main()` --calls--> `LatLngToH3Res8()`  [INFERRED]
@@ -84,11 +116,13 @@
   cmd/telemetry-daemon/main.go → internal/telemetry/h3index.go
 - `main()` --calls--> `NewHub()`  [INFERRED]
   cmd/telemetry-daemon/main.go → internal/telemetry/hub.go
+- `main()` --calls--> `NewClient()`  [INFERRED]
+  cmd/telemetry-daemon/main.go → internal/valhalla/client.go
 
 ## Import Cycles
 - None detected.
 
-## Communities (52 total, 7 thin omitted)
+## Communities (94 total, 19 thin omitted)
 
 ### Community 0 - "Algeria Smart Taxi & Mobility Platform"
 Cohesion: 0.06
@@ -119,8 +153,8 @@ Cohesion: 0.13
 Nodes (14): 1. The Core Architectural Dilemma, 2. Dual-Tier Hardware and Software Deployment Architecture, 3.1 Resource Management and Thermal Throttling, 3.2 Automated G-Shock and Accident Detection, 3. Tier 1: Smartphone In-App Dashcam Implementation, 4.1 Hardware Specifications, 4.2 Synchronization Protocol, 4. Tier 2: Connected Fleet IoT Dashcam Architecture (+6 more)
 
 ### Community 7 - "TrajectoryFlusher"
-Cohesion: 0.08
-Nodes (23): main(), seedInitialDrivers(), Conn, DB, BuildLineStringMWKT(), NewTrajectoryFlusher(), GetNeighborCells(), RWMutex (+15 more)
+Cohesion: 0.07
+Nodes (30): main(), seedInitialDrivers(), Conn, DB, BuildLineStringMWKT(), NewTrajectoryFlusher(), GetNeighborCells(), RWMutex (+22 more)
 
 ### Community 8 - "1. Phased Engineering Roadmap"
 Cohesion: 0.17
@@ -131,12 +165,12 @@ Cohesion: 0.33
 Nodes (5): 1. Relational Entity Relationship Diagram, 2. PostgreSQL DDL Schema and Core Extensions, 4. Geospatial Proximity Matching RPC Function, Backend Schema and Database Architecture, Next-Generation Smart Taxi and Mobility Platform for Algeria
 
 ### Community 10 - "App.tsx"
-Cohesion: 0.18
-Nodes (17): App(), LedgerView(), LedgerViewProps, ALGIERS_MUNICIPAL_FLEET, INITIAL_DRIVER, INITIAL_LEDGER, INITIAL_WALLETS, MunicipalTaxiVehicle (+9 more)
+Cohesion: 0.19
+Nodes (16): App(), LedgerViewProps, ALGIERS_MUNICIPAL_FLEET, INITIAL_DRIVER, INITIAL_LEDGER, INITIAL_WALLETS, MunicipalTaxiVehicle, LedgerEntry (+8 more)
 
 ### Community 11 - "devDependencies"
-Cohesion: 0.08
-Nodes (24): devDependencies, oxlint, @types/node, @types/react, @types/react-dom, typescript, vite, @vitejs/plugin-react (+16 more)
+Cohesion: 0.13
+Nodes (15): devDependencies, oxlint, @types/node, @types/react, @types/react-dom, typescript, vite, @vitejs/plugin-react (+7 more)
 
 ### Community 14 - "compilerOptions"
 Cohesion: 0.08
@@ -147,8 +181,8 @@ Cohesion: 0.10
 Nodes (19): compilerOptions, allowImportingTsExtensions, erasableSyntaxOnly, lib, module, moduleDetection, noEmit, noFallthroughCasesInSwitch (+11 more)
 
 ### Community 16 - "dependencies"
-Cohesion: 0.07
-Nodes (27): canvas-confetti, dependencies, canvas-confetti, gsap, leaflet, lucide-react, react, react-dom (+19 more)
+Cohesion: 0.13
+Nodes (15): canvas-confetti, dependencies, canvas-confetti, react-dom, @supabase/supabase-js, tailwindcss, @tailwindcss/vite, @types/canvas-confetti (+7 more)
 
 ### Community 17 - "3. Parcours de Démonstration Guidé (Scénario en 6 Étapes)"
 Cohesion: 0.12
@@ -162,73 +196,77 @@ Nodes (8): plugins, rules, react/only-export-components, react/rules-of-hooks, $
 Cohesion: 0.50
 Nodes (3): Expanding the Oxlint configuration, React Compiler, React + TypeScript + Vite
 
-### Community 23 - "client.go"
-Cohesion: 0.33
-Nodes (7): haversineDistance(), NewClient(), Client, Location, MatrixElement, MatrixRequest, MatrixResponse
+### Community 23 - "driver_app/windows/runner/win32_window.cpp"
+Cohesion: 0.05
+Nodes (56): PluginRegistry, RegisterPlugins(), DartProject, HWND, LPARAM, LRESULT, UINT, WPARAM (+48 more)
 
 ### Community 27 - "driver_profile.dart"
-Cohesion: 0.04
-Nodes (46): @immutable, DateTime, DashcamIncident, driverId, encryptionKeyId, id, peakGForce, rideId (+38 more)
+Cohesion: 0.10
+Nodes (19): agrementNumber, communeName, copyWith, currentLat, currentLng, fullName, heading, id (+11 more)
 
 ### Community 28 - "ride_state.dart"
-Cohesion: 0.05
-Nodes (46): agrementNumber, arrivedAt, cancelledAt, completedAt, createdAt, currentSpeedKmh, destinationLat, destinationLng (+38 more)
+Cohesion: 0.06
+Nodes (35): agrementNumber, arrivedAt, cancelledAt, completedAt, createdAt, currentSpeedKmh, destinationLat, destinationLng (+27 more)
 
 ### Community 29 - "Header.tsx"
-Cohesion: 0.11
-Nodes (29): FluidShaderCanvas(), FluidShaderCanvasProps, PALETTE_COLORS, parseCssColor(), FooterReveal(), FooterRevealProps, ActiveTab, BRAND_OPTIONS (+21 more)
+Cohesion: 0.09
+Nodes (33): FluidShaderCanvas(), FluidShaderCanvasProps, PALETTE_COLORS, parseCssColor(), FooterReveal(), FooterRevealProps, ActiveTab, BRAND_OPTIONS (+25 more)
 
 ### Community 30 - "parse_baridimob_text"
-Cohesion: 0.16
-Nodes (15): Any, BaridiMobReceipt, calculate_algerian_rip_key(), parse_baridimob_text(), BaridiMob and Algérie Poste receipt parser. Extracts transaction references,…, Calculates the 2-digit control key for an Algerian CCP account according to…, Verifies an Algerian 20-digit Relevé d'Identité Postale (RIP). Format: 007…, Parses OCR-extracted text from a BaridiMob transaction voucher. Supports French… (+7 more)
+Cohesion: 0.15
+Nodes (15): BaridiMobReceipt, calculate_algerian_rip_key(), parse_baridimob_text(), BaridiMob and Algérie Poste receipt parser. Extracts transaction references,…, Calculates the 2-digit control key for an Algerian CCP account according to…, Verifies an Algerian 20-digit Relevé d'Identité Postale (RIP). Format: 007…, Parses OCR-extracted text from a BaridiMob transaction voucher. Supports French…, verify_algerian_rip() (+7 more)
 
 ### Community 31 - "envelope_encryption.dart"
-Cohesion: 0.09
-Nodes (21): dart:convert, dart:math, _bytesToHex, calculateFingerprint, combineShamir2of3, EnvelopeEncryption, generateDek, _gfDivide (+13 more)
+Cohesion: 0.11
+Nodes (18): _bytesToHex, calculateFingerprint, combineShamir2of3, EnvelopeEncryption, generateDek, _gfDivide, _gfMultiply, _gfPow (+10 more)
 
 ### Community 32 - "RiderView.tsx"
-Cohesion: 0.16
-Nodes (18): AiCopilotModal(), MOCK_RIDER_HISTORY, POPULAR_CHIPS, RECURRING_DAYS_LIST, RiderView(), ALGIERS_LOCATIONS, AiCopilotMessage, checkPwnedPinOrPassword() (+10 more)
+Cohesion: 0.09
+Nodes (39): DashcamHUD(), DashcamHUDProps, InteractiveMap(), InteractiveMapProps, MAP_STYLES, MapStyleConfig, MapStyleKey, SURROUNDING_TAXIS (+31 more)
 
 ### Community 33 - "rider_app/lib/main.dart"
-Cohesion: 0.09
-Nodes (21): _accumulatedSpareChangeDzd, build, _buildBookingTab, _buildLawItem, _buildModeCard, _buildRegulatoryTab, _buildWalletTab, _cancelRide (+13 more)
+Cohesion: 0.05
+Nodes (37): _accumulatedSpareChangeDzd, build, _buildBookingTab, _buildLawItem, _buildModeCard, _buildOfflineStatusBanner, _buildRegulatoryTab, _buildWalletTab (+29 more)
 
 ### Community 34 - "driver_app/lib/main.dart"
-Cohesion: 0.10
-Nodes (20): DriverProfile, List, build, _buildRideStateView, _computedMeterDzd, createState, currentRide, driver (+12 more)
+Cohesion: 0.06
+Nodes (33): DriverProfile, build, _buildComplianceRow, _buildOfflineStatusBanner, _buildRideStateView, _computedMeterDzd, createState, currentRide (+25 more)
 
 ### Community 35 - "AppLang"
-Cohesion: 0.18
-Nodes (16): AiCopilotModalProps, DashcamHUDProps, DispatchView(), DispatchViewProps, DriverCockpit(), DriverCockpitProps, LandingView(), OfficialReceiptModal() (+8 more)
-
-### Community 36 - "index.ts"
-Cohesion: 0.18
-Nodes (16): InspectorView(), InspectorViewProps, WILAYAS_58, OfficialCitationModal(), OfficialCitationModalProps, RiderViewProps, BookingType, DriverProfile (+8 more)
-
-### Community 37 - "react"
-Cohesion: 0.22
-Nodes (10): BaridiMobModal(), BaridiMobModalProps, SAMPLE_RECEIPTS, ChargilyTopupModal(), ChargilyTopupModalProps, CANNED_MESSAGES, RideChatModal(), RideChatModalProps (+2 more)
-
-### Community 38 - "InteractiveMap.tsx"
 Cohesion: 0.21
-Nodes (12): DashcamHUD(), InteractiveMap(), InteractiveMapProps, MAP_STYLES, MapStyleConfig, MapStyleKey, SURROUNDING_TAXIS, LocationPoint (+4 more)
+Nodes (18): DispatchView(), DispatchViewProps, DriverCockpit(), DriverCockpitProps, InspectorViewProps, LedgerView(), OfficialReceiptModalProps, CANNED_MESSAGES (+10 more)
+
+### Community 36 - "react"
+Cohesion: 0.25
+Nodes (7): InspectorView(), WILAYAS_58, OfficialCitationModal(), OfficialCitationModalProps, ThreeCanvasProps, OfficialCitationPV, react
+
+### Community 37 - "rider_app/windows/runner/win32_window.cpp"
+Cohesion: 0.05
+Nodes (56): PluginRegistry, RegisterPlugins(), DartProject, HWND, LPARAM, LRESULT, UINT, WPARAM (+48 more)
+
+### Community 38 - "offline_sync_queue.dart"
+Cohesion: 0.06
+Nodes (33): dart:async, DateTime? get, int get, attachSupabaseService, clearQueue, enqueueDashcamIncident, enqueuedAt, enqueueLedgerEntry (+25 more)
 
 ### Community 39 - "thermal_state_machine.dart"
 Cohesion: 0.15
 Nodes (12): double get, _currentLevel, _currentTempCelsius, description, fromTemperature, maxTempCelsius, name, targetFps (+4 more)
 
+### Community 40 - "SoundEngine"
+Cohesion: 0.15
+Nodes (6): BaridiMobModal(), BaridiMobModalProps, SAMPLE_RECEIPTS, ChargilyTopupModal(), ChargilyTopupModalProps, SoundEngine
+
 ### Community 41 - "driver_app_test.dart"
-Cohesion: 0.20
-Nodes (8): main, main, main, package:driver_app/main.dart, package:flutter/material.dart, package:flutter_test/flutter_test.dart, package:naql_core/naql_core.dart, package:rider_app/main.dart
+Cohesion: 0.17
+Nodes (14): dart:convert, main, main, main, main, main, main, package:driver_app/main.dart (+6 more)
 
 ### Community 42 - "service_mode.dart"
 Cohesion: 0.20
 Nodes (9): double?, approachFeeDzd, baseSeatCount, displayNameAr, displayNameFr, fixedSeatPriceDzd, fromId, id (+1 more)
 
 ### Community 43 - "naql_core.dart"
-Cohesion: 0.20
-Nodes (9): library, naql_core, models/dashcam_incident.dart, models/driver_profile.dart, models/ledger_entry.dart, models/ride_state.dart, models/service_mode.dart, security/envelope_encryption.dart (+1 more)
+Cohesion: 0.05
+Nodes (41): dart:math, library, naql_core, algiersHubs, calculateDistanceKm, distanceBetweenHubs, estimateDurationMinutes, estimateFareForRoute (+33 more)
 
 ### Community 44 - "CockpitHomeScreen"
 Cohesion: 0.40
@@ -238,26 +276,110 @@ Nodes (6): CockpitHomeScreen, _CockpitHomeScreenState, RiderHomeScreen, _RiderHo
 Cohesion: 0.40
 Nodes (4): buildCommand, framework, outputDirectory, rewrites
 
-### Community 47 - "DriverCockpitApp"
-Cohesion: 0.67
-Nodes (3): DriverCockpitApp, RiderApp, StatelessWidget
+### Community 46 - "Flutter"
+Cohesion: 0.08
+Nodes (21): Flutter, FlutterAppDelegate, FlutterImplicitEngineDelegate, FlutterSceneDelegate, AppDelegate, Any, Bool, FlutterImplicitEngineBridge (+13 more)
+
+### Community 47 - "StatelessWidget"
+Cohesion: 0.50
+Nodes (4): DriverCockpitApp, QuittanceQrWidget, RiderApp, StatelessWidget
+
+### Community 52 - "taximeter_quittance.dart"
+Cohesion: 0.07
+Nodes (27): agrementNumber, _computeVerificationHash, destinationName, distanceKm, driverName, durationMinutes, fareHorokilometriqueDzd, fraisApprocheDzd (+19 more)
+
+### Community 53 - "supabase_service.dart"
+Cohesion: 0.09
+Nodes (22): Client, Map, anonKey, baseUrl, bytes, _client, defaultAnonKey, defaultBaseUrl (+14 more)
+
+### Community 54 - "driver_shift.dart"
+Cohesion: 0.11
+Nodes (17): bool get, approachFeesDzd, commissionDeductionDzd, completedTrips, copyWith, driverId, endedAt, grossMeterEarningsDzd (+9 more)
+
+### Community 55 - "quittance_qr_widget.dart"
+Cohesion: 0.12
+Nodes (16): Color, CustomPainter, List, backgroundColor, build, data, foregroundColor, _generateMatrix (+8 more)
+
+### Community 56 - "trip_history_item.dart"
+Cohesion: 0.12
+Nodes (16): geo_hub.dart, agrementNumber, date, destination, distanceKm, driverName, fareDzd, id (+8 more)
+
+### Community 57 - "spare_change_engine.dart"
+Cohesion: 0.14
+Nodes (13): LedgerEntry, cashReturnedDzd, changeDueDzd, digitalCreditDzd, fareDzd, ledgerEntry, rideId, settle (+5 more)
+
+### Community 58 - "wWinMain"
+Cohesion: 0.23
+Nodes (9): _In_, _In_opt_, wWinMain(), string, vector, wchar_t, CreateAndAttachConsole(), GetCommandLineArguments() (+1 more)
+
+### Community 59 - "dashcam_incident.dart"
+Cohesion: 0.17
+Nodes (11): driverId, encryptionKeyId, id, peakGForce, rideId, shamirSharesCount, speedKmh, status (+3 more)
+
+### Community 60 - "wWinMain"
+Cohesion: 0.23
+Nodes (9): _In_, _In_opt_, wWinMain(), string, vector, wchar_t, CreateAndAttachConsole(), GetCommandLineArguments() (+1 more)
+
+### Community 61 - "driver_app/web/manifest.json"
+Cohesion: 0.18
+Nodes (10): background_color, description, display, icons, name, orientation, prefer_related_applications, short_name (+2 more)
+
+### Community 62 - "audio_haptic_service.dart"
+Cohesion: 0.18
+Nodes (10): AudioHapticService, isAudioEnabled, isHapticEnabled, onCrashLockboxTriggered, onDriverArrived, onRideDispatched, onSelectionClick, onSpareChangeCredited (+2 more)
+
+### Community 63 - "rider_app/web/manifest.json"
+Cohesion: 0.18
+Nodes (10): background_color, description, display, icons, name, orientation, prefer_related_applications, short_name (+2 more)
+
+### Community 64 - "package.json"
+Cohesion: 0.20
+Nodes (9): name, private, scripts, build, dev, lint, preview, type (+1 more)
+
+### Community 65 - "ledger_entry.dart"
+Cohesion: 0.20
+Nodes (9): amountDzd, creditAccount, debitAccount, description, entryType, id, rideId, timestamp (+1 more)
+
+### Community 66 - "RideState"
+Cohesion: 0.20
+Nodes (10): RideCancelled, RideCompleted, RideDriverArrived, RideDriverAssigned, RideFareEntry, RideIdle, RideInProgress, RideRequested (+2 more)
+
+### Community 67 - "ride_rating.dart"
+Cohesion: 0.22
+Nodes (8): DateTime, cleanlinessRating, comment, ratedAt, respectedTaximeter, rideId, safeDrivingRating, stars
+
+### Community 68 - "geo_hub.dart"
+Cohesion: 0.22
+Nodes (8): commune, GeoHub, id, lat, lng, localizedName, nameAr, nameFr
+
+### Community 69 - "route_maneuver.dart"
+Cohesion: 0.22
+Nodes (8): distanceMeters, instructionAr, instructionFr, localizedInstruction, ManeuverType, roadName, speedLimitKmh, package:meta/meta.dart
+
+### Community 70 - "@immutable"
+Cohesion: 0.29
+Nodes (7): @immutable, DashcamIncident, DriverProfile, DriverShift, LedgerEntry, RideRating, RouteManeuver
+
+### Community 71 - "AiCopilotModal.tsx"
+Cohesion: 0.50
+Nodes (4): AiCopilotModal(), AiCopilotModalProps, AiCopilotMessage, queryAiCopilot()
 
 ## Knowledge Gaps
-- **392 isolated node(s):** `$schema`, `typescript`, `oxc`, `react/rules-of-hooks`, `warn` (+387 more)
+- **633 isolated node(s):** `$schema`, `typescript`, `oxc`, `react/rules-of-hooks`, `warn` (+628 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **7 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **19 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `RideState` connect `ride_state.dart` to `rider_app/lib/main.dart`, `driver_app/lib/main.dart`, `driver_profile.dart`?**
-  _High betweenness centrality (0.021) - this node is a cross-community bridge._
-- **Why does `react` connect `react` to `RiderView.tsx`, `AppLang`, `index.ts`, `InteractiveMap.tsx`, `App.tsx`, `ThreeCanvas.tsx`, `plugins`, `Header.tsx`?**
+- **Why does `SupabaseService` connect `supabase_service.dart` to `rider_app/lib/main.dart`, `driver_app/lib/main.dart`, `offline_sync_queue.dart`?**
   _High betweenness centrality (0.010) - this node is a cross-community bridge._
-- **Why does `SoundEngine` connect `SoundEngine` to `RiderView.tsx`, `AppLang`, `index.ts`, `react`, `InteractiveMap.tsx`, `App.tsx`, `Header.tsx`?**
-  _High betweenness centrality (0.007) - this node is a cross-community bridge._
+- **Why does `RideState` connect `RideState` to `rider_app/lib/main.dart`, `driver_app/lib/main.dart`, `ride_state.dart`, `@immutable`?**
+  _High betweenness centrality (0.010) - this node is a cross-community bridge._
+- **Why does `GeoHub` connect `geo_hub.dart` to `trip_history_item.dart`, `rider_app/lib/main.dart`?**
+  _High betweenness centrality (0.008) - this node is a cross-community bridge._
 - **What connects `$schema`, `typescript`, `oxc` to the rest of the system?**
-  _392 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _633 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Algeria Smart Taxi & Mobility Platform` be split into smaller, more focused modules?**
   _Cohesion score 0.05714285714285714 - nodes in this community are weakly interconnected._
 - **Should `Technical Requirements Document (TRD)` be split into smaller, more focused modules?**

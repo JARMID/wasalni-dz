@@ -255,7 +255,7 @@ export const FluidShaderCanvas: React.FC<FluidShaderCanvasProps> = ({ palette, c
 
     // 6. Animation Loop with Visibility Throttling
     let animId: number;
-    const clock = new THREE.Clock();
+    const startTime = performance.now();
 
     // Viewport IntersectionObserver to prevent offscreen rendering
     let isVisible = true;
@@ -269,7 +269,7 @@ export const FluidShaderCanvas: React.FC<FluidShaderCanvasProps> = ({ palette, c
 
       if (!isVisible || document.hidden) return;
 
-      const elapsed = clock.getElapsedTime();
+      const elapsed = (performance.now() - startTime) * 0.001;
       uniforms.uTime.value = elapsed;
 
       // Mouse lerping
