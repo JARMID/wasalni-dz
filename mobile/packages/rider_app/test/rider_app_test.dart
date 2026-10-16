@@ -55,4 +55,45 @@ void main() {
     expect(find.text('طلب سيارة'), findsOneWidget);
     expect(find.textContaining('المحفظة'), findsWidgets);
   });
+
+  testWidgets('RiderApp renders favorite destinations and completes review flow', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(500, 1200);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const RiderApp());
+    await tester.pumpAndSettle();
+
+    // Verify favorite hubs appear
+    expect(find.text('Aéroport T4'), findsOneWidget);
+    expect(find.text('Alger Centre'), findsWidgets);
+    expect(find.text('USTHB'), findsOneWidget);
+
+    // Tap order button
+    final orderFinder = find.text('Commander un Taxi Certifié');
+    await tester.ensureVisible(orderFinder);
+    await tester.tap(orderFinder);
+    await tester.pumpAndSettle();
+
+    // Verify maneuvers itinerary appears
+    expect(find.textContaining('Itinéraire & Manœuvres'), findsOneWidget);
+
+    // Tap 'Arrivée à Destination & Évaluer'
+    final evalFinder = find.text('Arrivée à Destination & Évaluer');
+    await tester.ensureVisible(evalFinder);
+    await tester.tap(evalFinder);
+    await tester.pumpAndSettle();
+
+    // Verify rating dialog opened
+    expect(find.textContaining('Évaluation de la Course'), findsOneWidget);
+    expect(find.text('Respect du compteur légal'), findsOneWidget);
+
+    // Tap submit rating
+    final submitFinder = find.text('Envoyer l\'Avis');
+    await tester.tap(submitFinder);
+    await tester.pumpAndSettle();
+
+    // Returned to idle booking screen
+    expect(find.text('Commander un Taxi Certifié'), findsOneWidget);
+  });
 }

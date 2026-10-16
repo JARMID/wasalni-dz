@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import '../models/geo_hub.dart';
+import '../models/route_maneuver.dart';
 import '../models/service_mode.dart';
 import 'tariff_service.dart';
 
@@ -130,5 +131,51 @@ class GeoRoutingService {
       waitingMinutes: waitingMinutes,
       requestTime: requestTime,
     );
+  }
+
+  /// Generates realistic turn-by-turn maneuvers for navigation between two hubs in Algiers.
+  static List<RouteManeuver> generateRouteManeuvers(GeoHub origin, GeoHub destination) {
+    return [
+      RouteManeuver(
+        instructionFr: 'Départ depuis ${origin.nameFr}',
+        instructionAr: 'الانطلاق من ${origin.nameAr}',
+        distanceMeters: 400,
+        maneuverType: ManeuverType.straight,
+        roadName: origin.commune,
+        speedLimitKmh: 40,
+      ),
+      RouteManeuver(
+        instructionFr: 'Rejoindre la Rocade Sud en direction d\'Alger Centre',
+        instructionAr: 'الالتحاق بالطريق السريع الجنوبي باتجاه الجزائر الوسطى',
+        distanceMeters: 3200,
+        maneuverType: ManeuverType.slightRight,
+        roadName: 'Rocade Sud (N5)',
+        speedLimitKmh: 80,
+      ),
+      RouteManeuver(
+        instructionFr: 'Continuer sur l\'Autoroute de l\'Est',
+        instructionAr: 'مواصلة السير على الطريق السيار شرق-غرب',
+        distanceMeters: 4500,
+        maneuverType: ManeuverType.straight,
+        roadName: 'Autoroute A1 / Rocade Nord',
+        speedLimitKmh: 80,
+      ),
+      RouteManeuver(
+        instructionFr: 'Prendre la sortie vers ${destination.commune}',
+        instructionAr: 'اتخاذ المخرج باتجاه ${destination.commune}',
+        distanceMeters: 800,
+        maneuverType: ManeuverType.highwayExit,
+        roadName: 'Bretelle de liaison',
+        speedLimitKmh: 60,
+      ),
+      RouteManeuver(
+        instructionFr: 'Arrivée à destination : ${destination.nameFr}',
+        instructionAr: 'الوصول إلى الوجهة : ${destination.nameAr}',
+        distanceMeters: 150,
+        maneuverType: ManeuverType.destinationArrival,
+        roadName: destination.nameFr,
+        speedLimitKmh: 30,
+      ),
+    ];
   }
 }

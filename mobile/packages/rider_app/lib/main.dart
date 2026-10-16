@@ -658,6 +658,193 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
     );
   }
 
+  void _showRatingReviewDialog(RideDriverAssigned assigned) {
+    int stars = 5;
+    bool respectedMeter = true;
+    int cleanliness = 5;
+    int safeDriving = 5;
+    final commentController = TextEditingController();
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => StatefulBuilder(
+        builder: (ctx, setDlgState) => Directionality(
+          textDirection: _isArabic ? TextDirection.rtl : TextDirection.ltr,
+          child: AlertDialog(
+            backgroundColor: const Color(0xFF131D31),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            title: Row(
+              children: [
+                const Icon(Icons.star, color: Color(0xFFF59E0B)),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    _isArabic ? 'تقييم الرحلة وجودة الخدمة' : 'Évaluation de la Course (DTW)',
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    _isArabic
+                        ? 'السائق: ${assigned.driverName} • ${assigned.vehiclePlate}'
+                        : 'Chauffeur: ${assigned.driverName} • ${assigned.vehiclePlate}',
+                    style: const TextStyle(color: Colors.white70, fontSize: 13),
+                  ),
+                  const SizedBox(height: 14),
+                  Text(_isArabic ? 'التقييم العام:' : 'Note Globale:', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 6),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(5, (i) {
+                      final s = i + 1;
+                      return IconButton(
+                        icon: Icon(
+                          s <= stars ? Icons.star : Icons.star_border,
+                          color: const Color(0xFFF59E0B),
+                          size: 28,
+                        ),
+                        onPressed: () => setDlgState(() => stars = s),
+                      );
+                    }),
+                  ),
+                  const SizedBox(height: 10),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.black26,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.white10),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            _isArabic ? 'احترام تسعيرة العداد القانوني' : 'Respect du compteur légal',
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                        ),
+                        Switch(
+                          value: respectedMeter,
+                          activeThumbColor: const Color(0xFF2563EB),
+                          onChanged: (val) => setDlgState(() => respectedMeter = val),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(_isArabic ? 'نظافة المركبة:' : 'Propreté du Véhicule:', style: const TextStyle(fontSize: 12)),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [3, 4, 5].map((val) => Padding(
+                      padding: const EdgeInsets.only(right: 6),
+                      child: ChoiceChip(
+                        label: Text('$val ★'),
+                        selected: cleanliness == val,
+                        selectedColor: const Color(0xFF2563EB),
+                        onSelected: (sel) => sel ? setDlgState(() => cleanliness = val) : null,
+                      ),
+                    )).toList(),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(_isArabic ? 'سلامة القيادة والسرعة:' : 'Conduite Sécurisée:', style: const TextStyle(fontSize: 12)),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [3, 4, 5].map((val) => Padding(
+                      padding: const EdgeInsets.only(right: 6),
+                      child: ChoiceChip(
+                        label: Text('$val ★'),
+                        selected: safeDriving == val,
+                        selectedColor: const Color(0xFF2563EB),
+                        onSelected: (sel) => sel ? setDlgState(() => safeDriving = val) : null,
+                      ),
+                    )).toList(),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: commentController,
+                    decoration: InputDecoration(
+                      hintText: _isArabic ? 'ملاحظات إضافية (اختياري)...' : 'Remarques éventuelles (facultatif)...',
+                      hintStyle: const TextStyle(fontSize: 11, color: Colors.white38),
+                      filled: true,
+                      fillColor: const Color(0xFF0F172A),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                      contentPadding: const EdgeInsets.all(10),
+                    ),
+                    maxLines: 2,
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: Text(_isArabic ? 'تخطي' : 'Passer'),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF2563EB),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                onPressed: () {
+                  final rating = RideRating(
+                    rideId: assigned.rideId,
+                    stars: stars,
+                    respectedTaximeter: respectedMeter,
+                    cleanlinessRating: cleanliness,
+                    safeDrivingRating: safeDriving,
+                    ratedAt: DateTime.now(),
+                    comment: commentController.text.trim(),
+                  );
+                  Navigator.pop(ctx);
+                  setState(() {
+                    _tripHistory.insert(
+                      0,
+                      TripHistoryItem(
+                        id: assigned.rideId,
+                        date: DateTime.now(),
+                        origin: _origin,
+                        destination: _destination,
+                        serviceMode: _selectedMode,
+                        distanceKm: _currentDistanceKm,
+                        fareDzd: _currentEstimatedFareDzd,
+                        spareChangeDzd: 100.0,
+                        driverName: assigned.driverName,
+                        vehiclePlate: assigned.vehiclePlate,
+                        agrementNumber: assigned.agrementNumber,
+                        paymentRail: 'cash_with_spare_change',
+                      ),
+                    );
+                    _currentRide = const RideIdle();
+                  });
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      backgroundColor: const Color(0xFF2563EB),
+                      content: Text(
+                        _isArabic
+                            ? 'شكراً لك! تم تسجيل التقييم (${rating.compositeScore.toStringAsFixed(1)}/5) بنجاح.'
+                            : 'Merci ! Évaluation enregistrée (${rating.compositeScore.toStringAsFixed(1)}/5).',
+                      ),
+                    ),
+                  );
+                },
+                child: Text(_isArabic ? 'إرسال التقييم' : 'Envoyer l\'Avis'),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -759,7 +946,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
   Widget _buildBookingTab() {
     if (_currentRide is RideDriverAssigned) {
       final assigned = _currentRide as RideDriverAssigned;
-      return Padding(
+      return SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -906,7 +1093,100 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                 ],
               ),
             ),
-            const Spacer(),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFF131D31),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.white10),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          _isArabic ? 'إرشادات المسار (ولاية الجزائر):' : 'Itinéraire & Manœuvres (Wilaya d\'Alger):',
+                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF0EA5E9)),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        '${_currentDistanceKm.toStringAsFixed(1)} km',
+                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white70),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  ...GeoRoutingService.generateRouteManeuvers(_origin, _destination).map((maneuver) {
+                    IconData icon = Icons.straight;
+                    switch (maneuver.maneuverType) {
+                      case ManeuverType.turnRight:
+                      case ManeuverType.slightRight:
+                        icon = Icons.turn_right;
+                        break;
+                      case ManeuverType.turnLeft:
+                      case ManeuverType.slightLeft:
+                        icon = Icons.turn_left;
+                        break;
+                      case ManeuverType.roundabout:
+                        icon = Icons.rotate_right;
+                        break;
+                      case ManeuverType.highwayExit:
+                        icon = Icons.ramp_right;
+                        break;
+                      case ManeuverType.destinationArrival:
+                        icon = Icons.flag;
+                        break;
+                      default:
+                        icon = Icons.straight;
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4),
+                      child: Row(
+                        children: [
+                          Icon(icon, size: 16, color: const Color(0xFFF59E0B)),
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Text(
+                              maneuver.localizedInstruction(_isArabic),
+                              style: const TextStyle(fontSize: 12, color: Colors.white),
+                            ),
+                          ),
+                          Text(
+                            '${maneuver.distanceMeters} m',
+                            style: const TextStyle(fontSize: 10, color: Colors.white38, fontFamily: 'monospace'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF2563EB),
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                icon: const Icon(Icons.check_circle_outline, size: 18),
+                label: Text(
+                  _isArabic ? 'الوصول إلى الوجهة وتقييم الرحلة' : 'Arrivée à Destination & Évaluer',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                onPressed: () => _showRatingReviewDialog(assigned),
+              ),
+            ),
+            const SizedBox(height: 12),
             SizedBox(
               width: double.infinity,
               child: OutlinedButton(
@@ -914,6 +1194,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                   foregroundColor: Colors.redAccent,
                   side: const BorderSide(color: Colors.redAccent),
                   padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
                 onPressed: _cancelRide,
                 child: Text(_isArabic ? 'إلغاء الرحلة' : 'Annuler la Course'),
@@ -929,6 +1210,49 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Favorite Destinations Quick Chips
+          Text(
+            _isArabic ? 'وجهات مفضلة سريعة:' : 'Destinations favorites rapides:',
+            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white70),
+          ),
+          const SizedBox(height: 8),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                {'hubId': 'aeroport', 'fr': 'Aéroport T4', 'ar': 'مطار ت4', 'icon': Icons.flight},
+                {'hubId': 'grande-poste', 'fr': 'Alger Centre', 'ar': 'البريد المركزي', 'icon': Icons.account_balance},
+                {'hubId': 'kouba', 'fr': 'Kouba', 'ar': 'القبة', 'icon': Icons.home},
+                {'hubId': 'bab-ezzouar', 'fr': 'USTHB', 'ar': 'جامعة بومدين', 'icon': Icons.school},
+                {'hubId': 'hydra', 'fr': 'Hydra Ambassades', 'ar': 'حيدرة السفارات', 'icon': Icons.location_city},
+              ].map((fav) {
+                final hub = GeoRoutingService.findHubById(fav['hubId'] as String);
+                final isSelected = _destination.id == hub.id;
+                return Padding(
+                  padding: const EdgeInsets.only(right: 8),
+                  child: ActionChip(
+                    avatar: Icon(fav['icon'] as IconData, size: 14, color: isSelected ? Colors.white : const Color(0xFFF59E0B)),
+                    backgroundColor: isSelected ? const Color(0xFF2563EB) : const Color(0xFF131D31),
+                    side: BorderSide(color: isSelected ? const Color(0xFF2563EB) : Colors.white10),
+                    label: Text(
+                      _isArabic ? (fav['ar'] as String) : (fav['fr'] as String),
+                      style: TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                        color: isSelected ? Colors.white : Colors.white70,
+                      ),
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _destination = hub;
+                      });
+                    },
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+          const SizedBox(height: 16),
           Text(
             _isArabic ? 'اختر نمط النقل المعتمد:' : 'Sélectionnez votre mode de transport réglementé:',
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),

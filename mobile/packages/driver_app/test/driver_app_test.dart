@@ -82,4 +82,56 @@ void main() {
     // Verify Boîte Noire modal
     expect(find.textContaining('Boîte Noire Judiciaire'), findsOneWidget);
   });
+
+  testWidgets('DriverCockpitApp opens Agrément compliance dialog and tests navigation flow', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1280, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const DriverCockpitApp());
+    await tester.pumpAndSettle();
+
+    // Verify Agrément button in AppBar and open it
+    final agrementButton = find.text('Agrément');
+    expect(agrementButton, findsOneWidget);
+    await tester.tap(agrementButton);
+    await tester.pumpAndSettle();
+
+    // Verify compliance dialog details
+    expect(find.textContaining('Conformité Réglementaire Véhicule'), findsOneWidget);
+    expect(find.textContaining('LP-16-44021'), findsOneWidget);
+    expect(find.textContaining('SAA Multirisques'), findsOneWidget);
+
+    // Close compliance dialog
+    await tester.tap(find.text('Fermer'));
+    await tester.pumpAndSettle();
+
+    // Simulate new ride request
+    final simFinder = find.text('Simuler une Demande Passager');
+    expect(simFinder, findsOneWidget);
+    await tester.tap(simFinder);
+    await tester.pumpAndSettle();
+
+    // Accept ride
+    final acceptFinder = find.text('Accepter la Course');
+    expect(acceptFinder, findsOneWidget);
+    await tester.tap(acceptFinder);
+    await tester.pumpAndSettle();
+
+    // Arrive on place
+    final arriveFinder = find.text('Je suis Arrivé sur Place');
+    expect(arriveFinder, findsOneWidget);
+    await tester.tap(arriveFinder);
+    await tester.pumpAndSettle();
+
+    // Start trip
+    final startFinder = find.text('Démarrer la Course');
+    expect(startFinder, findsOneWidget);
+    await tester.tap(startFinder);
+    await tester.pumpAndSettle();
+
+    // Verify navigation banner is active with speed limit and road name
+    expect(find.textContaining('Rejoindre la Rocade Sud'), findsOneWidget);
+    expect(find.text('80'), findsOneWidget);
+  });
 }

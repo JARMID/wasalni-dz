@@ -55,6 +55,18 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
     currentLng: 3.0588,
   );
 
+  DriverShift shift = DriverShift(
+    shiftId: 'SH-2026-10-16-01',
+    driverId: 'DRV-16-0894',
+    startedAt: DateTime.now().subtract(const Duration(hours: 3, minutes: 25)),
+    completedTrips: 6,
+    totalDistanceKm: 58.4,
+    grossMeterEarningsDzd: 4950.0,
+    approachFeesDzd: 600.0,
+    spareChangeConvertedDzd: 840.0,
+    platformCommissionPercent: 10.0,
+  );
+
   final ThermalStateMachine thermalState = ThermalStateMachine(initialTemp: 34.0);
   RideState currentRide = const RideIdle();
   final List<DashcamIncident> incidents = [];
@@ -434,6 +446,114 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
     );
   }
 
+  void _showVehicleComplianceDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => Directionality(
+        textDirection: _isArabic ? TextDirection.rtl : TextDirection.ltr,
+        child: AlertDialog(
+          backgroundColor: const Color(0xFF131B29),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Row(
+            children: [
+              const Icon(Icons.verified, color: Color(0xFF2563EB)),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  _isArabic ? 'الاعتمادات القانونية للمركبة (DTW)' : 'Conformité Réglementaire Véhicule (DTW)',
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF2563EB).withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: const Color(0xFF2563EB).withValues(alpha: 0.3)),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(Icons.badge, color: Color(0xFF60A5FA), size: 18),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        _isArabic
+                            ? 'دفتر مقاعد رسمي: LP-16-44021 • صادر عن ولاية الجزائر'
+                            : 'Livret de Place Officiel: LP-16-44021 • Wilaya d\'Alger',
+                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+              _buildComplianceRow(
+                _isArabic ? 'رخصة الاستغلال:' : 'Numéro d\'Agrément DTW:',
+                driver.agrementNumber,
+              ),
+              _buildComplianceRow(
+                _isArabic ? 'المركبة المعتمدة:' : 'Véhicule Homologué:',
+                '${driver.vehicleModel} (${driver.vehicleYear})',
+              ),
+              _buildComplianceRow(
+                _isArabic ? 'رقم اللوحة المنجمية:' : 'Immatriculation:',
+                driver.vehiclePlate,
+              ),
+              _buildComplianceRow(
+                _isArabic ? 'الفحص التقني الدوري:' : 'Contrôle Technique:',
+                _isArabic ? 'صالح حتى 15 ديسمبر 2026' : 'Valide jusqu\'au 15/12/2026',
+              ),
+              _buildComplianceRow(
+                _isArabic ? 'التأمين المهني:' : 'Assurance Taxi:',
+                'SAA Multirisques Transport Pro',
+              ),
+              const Divider(height: 16, color: Colors.white10),
+              Row(
+                children: [
+                  const Icon(Icons.shield_outlined, color: Colors.amber, size: 16),
+                  const SizedBox(width: 6),
+                  Expanded(
+                    child: Text(
+                      _isArabic
+                          ? 'متوافق تماماً مع التفتيش الميداني لشرطة المرور ووزارة النقل.'
+                          : 'Conforme aux contrôles routiers inopinés de la Sûreté et DTW.',
+                      style: const TextStyle(fontSize: 11, color: Colors.amber),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(_isArabic ? 'إغلاق' : 'Fermer'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildComplianceRow(String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: const TextStyle(fontSize: 11, color: Colors.white54)),
+          Text(value, style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.white)),
+        ],
+      ),
+    );
+  }
+
   void _simulateRideRequest() {
     final kouba = GeoRoutingService.findHubById('kouba');
     final grandePoste = GeoRoutingService.findHubById('grande-poste');
@@ -623,6 +743,13 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
             ],
           ),
           actions: [
+            // Vehicle & Agrément Compliance Button
+            TextButton.icon(
+              style: TextButton.styleFrom(foregroundColor: const Color(0xFF60A5FA)),
+              icon: const Icon(Icons.verified, size: 16),
+              label: Text(_isArabic ? 'الاعتماد' : 'Agrément', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+              onPressed: _showVehicleComplianceDialog,
+            ),
             // Z-Report / Shift Summary
             TextButton.icon(
               style: TextButton.styleFrom(foregroundColor: const Color(0xFFF59E0B)),
@@ -1047,6 +1174,45 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
             style: const TextStyle(fontSize: 11, color: Colors.white54),
           ),
           const SizedBox(height: 14),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: const Color(0xFF2563EB).withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: const Color(0xFF2563EB).withValues(alpha: 0.3)),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.turn_slight_right, color: Color(0xFF60A5FA), size: 22),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _isArabic ? 'الالتحاق بالطريق السريع الجنوبي' : 'Rejoindre la Rocade Sud (N5)',
+                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Colors.white),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        _isArabic ? 'السرعة القصوى 80 كم/س • 3.2 كم' : 'Limitation 80 km/h • 3.2 km',
+                        style: const TextStyle(fontSize: 10, color: Colors.white60),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: Colors.red.shade900,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: const Text('80', style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Colors.white)),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(

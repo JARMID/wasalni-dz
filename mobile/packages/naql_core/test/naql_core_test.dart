@@ -216,6 +216,79 @@ void main() {
       expect(trip.paymentRail, equals('cash_with_spare_change'));
     });
   });
+
+  group('DriverShift & Hours of Service Tests', () {
+    test('calculates gross revenue, commission deduction, and net earnings accurately', () {
+      final shift = DriverShift(
+        shiftId: 'SHIFT-2026-10-16',
+        driverId: 'DRV-16-0894',
+        startedAt: DateTime.now().subtract(const Duration(hours: 5)),
+        completedTrips: 8,
+        totalDistanceKm: 64.0,
+        grossMeterEarningsDzd: 5600.0,
+        approachFeesDzd: 800.0, // 8 * 100 DA
+        spareChangeConvertedDzd: 750.0,
+        platformCommissionPercent: 10.0,
+      );
+
+      expect(shift.totalGrossRevenueDzd, equals(6400.0));
+      expect(shift.commissionDeductionDzd, equals(640.0));
+      expect(shift.netEarningsDzd, equals(5760.0));
+      expect(shift.isFatigueCompliant, isTrue);
+    });
+
+    test('flags fatigue non-compliance when shift exceeds 8 hours continuous driving', () {
+      final shift = DriverShift(
+        shiftId: 'SHIFT-OVERTIME',
+        driverId: 'DRV-16-0894',
+        startedAt: DateTime.now().subtract(const Duration(hours: 9)),
+      );
+
+      expect(shift.isFatigueCompliant, isFalse);
+    });
+  });
+
+  group('RouteManeuver & Navigation Tests', () {
+    test('generates realistic Algiers maneuvers between Kouba and Grande Poste', () {
+      final kouba = GeoRoutingService.findHubById('kouba');
+      final grandePoste = GeoRoutingService.findHubById('grande-poste');
+      final maneuvers = GeoRoutingService.generateRouteManeuvers(kouba, grandePoste);
+
+      expect(maneuvers.length, equals(5));
+      expect(maneuvers.first.maneuverType, equals(ManeuverType.straight));
+      expect(maneuvers.last.maneuverType, equals(ManeuverType.destinationArrival));
+      expect(maneuvers.first.localizedInstruction(true), contains('الانطلاق'));
+      expect(maneuvers.first.localizedInstruction(false), contains('Départ'));
+    });
+  });
+
+  group('RideRating & Compliance Tests', () {
+    test('computes composite quality score with taximeter honesty factor', () {
+      final honestRating = RideRating(
+        rideId: 'RIDE-101',
+        stars: 5,
+        respectedTaximeter: true,
+        cleanlinessRating: 5,
+        safeDrivingRating: 4,
+        ratedAt: DateTime.now(),
+      );
+
+      // (5 * 0.4) + (5 * 0.3) + (4 * 0.3) = 2.0 + 1.5 + 1.2 = 4.7
+      expect(honestRating.compositeScore, closeTo(4.7, 0.01));
+
+      final dishonestRating = RideRating(
+        rideId: 'RIDE-102',
+        stars: 5,
+        respectedTaximeter: false, // Penalty applied
+        cleanlinessRating: 5,
+        safeDrivingRating: 4,
+        ratedAt: DateTime.now(),
+      );
+
+      // 4.7 * 0.5 = 2.35
+      expect(dishonestRating.compositeScore, closeTo(2.35, 0.01));
+    });
+  });
 }
 
 
