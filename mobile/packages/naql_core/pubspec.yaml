@@ -1,5 +1,5 @@
 name: naql_core
-description: Core domain models, envelope encryption, thermal state machine, and double-entry interfaces for NAQL DZ.
+description: Core domain models, envelope encryption, thermal state machine, and double-entry interfaces for WASSLANI.
 version: 1.0.0
 publish_to: none
 

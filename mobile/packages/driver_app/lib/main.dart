@@ -246,6 +246,194 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
     );
   }
 
+  void _showIncidentLockboxDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => Directionality(
+        textDirection: _isArabic ? TextDirection.rtl : TextDirection.ltr,
+        child: AlertDialog(
+          backgroundColor: const Color(0xFF131B29),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Row(
+            children: [
+              const Icon(Icons.shield_sharp, color: Color(0xFF2563EB)),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  _isArabic ? 'السجل العدلي للصدمات (قانون 25-11)' : 'Boîte Noire Judiciaire (Loi 25-11)',
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.close, size: 18),
+                onPressed: () => Navigator.pop(ctx),
+              ),
+            ],
+          ),
+          content: SizedBox(
+            width: 500,
+            height: 380,
+            child: incidents.isEmpty
+                ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.check_circle_outline, size: 48, color: Colors.white24),
+                        const SizedBox(height: 12),
+                        Text(
+                          _isArabic ? 'لا توجد حوادث مسجلة حاليًا' : 'Aucun incident enregistré sur cet appareil',
+                          style: const TextStyle(color: Colors.white54, fontSize: 13),
+                        ),
+                      ],
+                    ),
+                  )
+                : ListView.separated(
+                    itemCount: incidents.length,
+                    separatorBuilder: (_, __) => const Divider(color: Colors.white10),
+                    itemBuilder: (ctx, i) {
+                      final inc = incidents[i];
+                      return Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.black38,
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(color: Colors.white10),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  '${inc.triggerType} • ${inc.speedKmh.toStringAsFixed(0)} km/h',
+                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.redAccent),
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF2563EB).withValues(alpha: 0.2),
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: Text(
+                                    _isArabic ? 'مشفر محليًا' : 'LOCKED AES-256',
+                                    style: const TextStyle(fontSize: 9, color: Color(0xFF60A5FA), fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              'ID: ${inc.id} • Ride: ${inc.rideId} • Date: ${inc.triggeredAt.toIso8601String().substring(0, 19).replaceAll("T", " ")}',
+                              style: const TextStyle(fontSize: 10, color: Colors.white54, fontFamily: 'monospace'),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              'Key Fingerprint: ${inc.encryptionKeyId} • Shamir 2/3: ${inc.shamirSharesCount} shares',
+                              style: const TextStyle(fontSize: 10, color: Colors.amber, fontFamily: 'monospace'),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(_isArabic ? 'إغلاق' : 'Fermer'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showZReportDialog() {
+    showDialog(
+      context: context,
+      builder: (ctx) => Directionality(
+        textDirection: _isArabic ? TextDirection.rtl : TextDirection.ltr,
+        child: AlertDialog(
+          backgroundColor: const Color(0xFF131B29),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Row(
+            children: [
+              const Icon(Icons.receipt_long, color: Color(0xFFF59E0B)),
+              const SizedBox(width: 10),
+              Text(
+                _isArabic ? 'تقرير نهاية الوردية (Z-Report)' : 'Rapport de Quart (Z-Report)',
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Chauffeur: ${driver.fullName} (${driver.agrementNumber})', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+              Text('Véhicule: ${driver.vehicleModel} • ${driver.vehiclePlate}', style: const TextStyle(fontSize: 11, color: Colors.white54)),
+              const Divider(height: 20, color: Colors.white10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(_isArabic ? 'الرحلات المنجزة اليوم:' : 'Courses réalisées aujourd\'hui:', style: const TextStyle(fontSize: 12, color: Colors.white70)),
+                  Text('${driver.totalTrips}', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(_isArabic ? 'إجمالي الكيلومترات:' : 'Kilométrage total parcouru:', style: const TextStyle(fontSize: 12, color: Colors.white70)),
+                  const Text('74.5 km', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(_isArabic ? 'المداخيل الإجمالية للعداد:' : 'Recette brute taximètre:', style: const TextStyle(fontSize: 12, color: Colors.white70)),
+                  const Text('6 800.00 DA', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(_isArabic ? 'رسوم الاقتراب (100 دج/رحلة):' : 'Frais d\'approche (100 DA/course):', style: const TextStyle(fontSize: 12, color: Colors.white70)),
+                  const Text('800.00 DA', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(_isArabic ? 'باقي الصرف المحول للمحفظة:' : 'Reliquats Flywheel convertis:', style: const TextStyle(fontSize: 12, color: Colors.white70)),
+                  const Text('1 150.00 DA', style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF60A5FA))),
+                ],
+              ),
+              const Divider(height: 20, color: Colors.white10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(_isArabic ? 'الرصيد الصافي للمحفظة:' : 'Solde net portefeuille:', style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                  Text('${driver.walletBalanceDzd.toStringAsFixed(0)} DA', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFFF59E0B))),
+                ],
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(_isArabic ? 'إغلاق' : 'Fermer'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _simulateRideRequest() {
     final kouba = GeoRoutingService.findHubById('kouba');
     final grandePoste = GeoRoutingService.findHubById('grande-poste');
@@ -435,11 +623,18 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
             ],
           ),
           actions: [
+            // Z-Report / Shift Summary
+            TextButton.icon(
+              style: TextButton.styleFrom(foregroundColor: const Color(0xFFF59E0B)),
+              icon: const Icon(Icons.summarize, size: 16),
+              label: Text(_isArabic ? 'تقرير الوردية' : 'Z-Report', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+              onPressed: _showZReportDialog,
+            ),
             // Language Switcher (FR / عربي)
             TextButton.icon(
               style: TextButton.styleFrom(
                 foregroundColor: Colors.white70,
-                padding: const EdgeInsets.symmetric(horizontal: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 6),
               ),
               icon: const Icon(Icons.language, size: 16, color: Color(0xFFF59E0B)),
               label: Text(_isArabic ? 'FR' : 'عربي', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
@@ -447,8 +642,8 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
             ),
             // Thermal Gauge
             Container(
-              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                 color: Colors.black45,
                 borderRadius: BorderRadius.circular(8),
@@ -456,9 +651,9 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.thermostat, size: 16, color: Color(0xFFF59E0B)),
+                  const Icon(Icons.thermostat, size: 15, color: Color(0xFFF59E0B)),
                   const SizedBox(width: 4),
-                  Text('${thermalState.currentTempCelsius.toInt()}°C (${thermalState.currentLevel.targetFps} fps)', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                  Text('${thermalState.currentTempCelsius.toInt()}°C', style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                 ],
               ),
             ),
@@ -569,6 +764,24 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
                               ),
                             ),
                             Positioned(
+                              top: 10,
+                              right: 10,
+                              child: OutlinedButton.icon(
+                                style: OutlinedButton.styleFrom(
+                                  backgroundColor: Colors.black54,
+                                  foregroundColor: Colors.white70,
+                                  side: const BorderSide(color: Colors.white24),
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                ),
+                                icon: const Icon(Icons.lock, size: 13, color: Color(0xFFF59E0B)),
+                                label: Text(
+                                  _isArabic ? 'الصندوق الأسود (${incidents.length})' : 'Boîte Noire (${incidents.length})',
+                                  style: const TextStyle(fontSize: 10),
+                                ),
+                                onPressed: _showIncidentLockboxDialog,
+                              ),
+                            ),
+                            Positioned(
                               bottom: 10,
                               left: 10,
                               right: 10,
@@ -590,6 +803,7 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
                                 ],
                               ),
                             ),
+
                           ],
                         ),
                       ),

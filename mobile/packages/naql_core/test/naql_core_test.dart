@@ -190,5 +190,32 @@ void main() {
       expect(kouba.localizedName(true), contains('القبة'));
     });
   });
+
+  group('TripHistoryItem Tests', () {
+    test('instantiates complete historical record with DTW credentials and spare change', () {
+      final kouba = GeoRoutingService.findHubById('kouba');
+      final grandePoste = GeoRoutingService.findHubById('grande-poste');
+      final trip = TripHistoryItem(
+        id: 'DZ-HIST-1001',
+        date: DateTime(2026, 10, 15, 14, 30),
+        origin: kouba,
+        destination: grandePoste,
+        serviceMode: ServiceMode.taxiIndividuel,
+        distanceKm: 14.2,
+        fareDzd: 600.0,
+        spareChangeDzd: 150.0,
+        driverName: 'Mohamed Brahimi',
+        vehiclePlate: '01842-120-16',
+        agrementNumber: '16/AGR/2021/0894',
+        paymentRail: 'cash_with_spare_change',
+      );
+
+      expect(trip.id, equals('DZ-HIST-1001'));
+      expect(trip.fareDzd, equals(600.0));
+      expect(trip.spareChangeDzd, equals(150.0));
+      expect(trip.paymentRail, equals('cash_with_spare_change'));
+    });
+  });
 }
+
 

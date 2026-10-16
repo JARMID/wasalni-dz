@@ -1,11 +1,11 @@
 {
-    "name": "rider_app",
-    "short_name": "rider_app",
+    "name": "WASSLANI | وصلني",
+    "short_name": "WASSLANI",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#0A0F1D",
+    "theme_color": "#2563EB",
+    "description": "Plateforme algérienne de transport urbain et réservation de taxis conforme au Décret Exécutif 12-230.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

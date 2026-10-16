@@ -1,11 +1,11 @@
 {
-    "name": "driver_app",
-    "short_name": "driver_app",
+    "name": "WASSLANI Cockpit Chauffeur | وصلني للسائقين",
+    "short_name": "WASSLANI Pro",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#0B0F17",
+    "theme_color": "#F59E0B",
+    "description": "Cockpit télémétrique et taximètre numérique certifié pour chauffeurs de taxi urbain.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

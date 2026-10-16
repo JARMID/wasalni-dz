@@ -6,6 +6,7 @@ export 'models/driver_profile.dart';
 export 'models/dashcam_incident.dart';
 export 'models/ledger_entry.dart';
 export 'models/geo_hub.dart';
+export 'models/trip_history_item.dart';
 export 'security/thermal_state_machine.dart';
 export 'security/envelope_encryption.dart';
 export 'services/tariff_service.dart';

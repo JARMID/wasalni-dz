@@ -36,7 +36,7 @@ class RiderHomeScreen extends StatefulWidget {
 }
 
 class _RiderHomeScreenState extends State<RiderHomeScreen> {
-  int _currentTabIndex = 0; // 0 = Booking, 1 = Wallet, 2 = Regulatory
+  int _currentTabIndex = 0; // 0 = Booking, 1 = Wallet & History, 2 = Regulatory
   bool _isArabic = false;
   ServiceMode _selectedMode = ServiceMode.taxiIndividuel;
   double _riderWalletBalanceDzd = 1450.0;
@@ -55,6 +55,52 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
         destination: _destination,
         mode: _selectedMode,
       );
+
+  // Completed Trip History with DTW receipts
+  final List<TripHistoryItem> _tripHistory = [
+    TripHistoryItem(
+      id: 'DZ-HIST-1001',
+      date: DateTime.now().subtract(const Duration(hours: 4)),
+      origin: GeoRoutingService.findHubById('kouba'),
+      destination: GeoRoutingService.findHubById('grande-poste'),
+      serviceMode: ServiceMode.taxiIndividuel,
+      distanceKm: 14.2,
+      fareDzd: 600.0,
+      spareChangeDzd: 150.0,
+      driverName: 'Mohamed Brahimi',
+      vehiclePlate: '01842-120-16',
+      agrementNumber: '16/AGR/2021/0894',
+      paymentRail: 'cash_with_spare_change',
+    ),
+    TripHistoryItem(
+      id: 'DZ-HIST-1002',
+      date: DateTime.now().subtract(const Duration(days: 2)),
+      origin: GeoRoutingService.findHubById('bab-ezzouar'),
+      destination: GeoRoutingService.findHubById('aeroport'),
+      serviceMode: ServiceMode.taxiIndividuel,
+      distanceKm: 8.5,
+      fareDzd: 450.0,
+      spareChangeDzd: 50.0,
+      driverName: 'Karim Belkacem',
+      vehiclePlate: '00492-119-16',
+      agrementNumber: '16/AGR/2019/0492',
+      paymentRail: 'cash_with_spare_change',
+    ),
+    TripHistoryItem(
+      id: 'DZ-HIST-1003',
+      date: DateTime.now().subtract(const Duration(days: 5)),
+      origin: GeoRoutingService.findHubById('hydra'),
+      destination: GeoRoutingService.findHubById('cheraga'),
+      serviceMode: ServiceMode.taxiIndividuel,
+      distanceKm: 11.0,
+      fareDzd: 720.0,
+      spareChangeDzd: 80.0,
+      driverName: 'Youcef Hamidi',
+      vehiclePlate: '07812-122-16',
+      agrementNumber: '16/AGR/2022/0781',
+      paymentRail: 'wallet',
+    ),
+  ];
 
   void _requestRide() {
     final now = DateTime.now();
@@ -256,6 +302,96 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
     );
   }
 
+  void _showShareTripDialog(String rideCode) {
+    final phoneController = TextEditingController();
+    showDialog(
+      context: context,
+      builder: (ctx) => Directionality(
+        textDirection: _isArabic ? TextDirection.rtl : TextDirection.ltr,
+        child: AlertDialog(
+          backgroundColor: const Color(0xFF131D31),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          title: Row(
+            children: [
+              const Icon(Icons.share, color: Color(0xFF0EA5E9)),
+              const SizedBox(width: 10),
+              Text(
+                _isArabic ? 'مشاركة مسار الرحلة الآمن' : 'Partage Sécurisé du Trajet',
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                _isArabic
+                    ? 'شارك رابط التتبع الفوري مع عائلتك متوافق مع قانون حماية المعطيات 18-07:'
+                    : 'Partagez le lien de géolocalisation en temps réel avec vos proches (Loi 18-07):',
+                style: const TextStyle(fontSize: 12, color: Colors.white70),
+              ),
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.black38,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.white12),
+                ),
+                child: SelectableText(
+                  'https://wasslani.dz/suivi/$rideCode',
+                  style: const TextStyle(fontFamily: 'monospace', fontSize: 12, color: Color(0xFF60A5FA)),
+                ),
+              ),
+              const SizedBox(height: 14),
+              TextField(
+                controller: phoneController,
+                keyboardType: TextInputType.phone,
+                decoration: InputDecoration(
+                  hintText: _isArabic ? 'رقم هاتف العائلة (05xx / 06xx / 07xx)' : 'Numéro du proche (05xx / 06xx / 07xx)',
+                  hintStyle: const TextStyle(fontSize: 12, color: Colors.white38),
+                  filled: true,
+                  fillColor: const Color(0xFF0F172A),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: Text(_isArabic ? 'إغلاق' : 'Fermer'),
+            ),
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF2563EB),
+                foregroundColor: Colors.white,
+              ),
+              icon: const Icon(Icons.send, size: 16),
+              label: Text(_isArabic ? 'إرسال الرابط' : 'Envoyer par SMS'),
+              onPressed: () {
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    backgroundColor: const Color(0xFF2563EB),
+                    content: Text(
+                      _isArabic
+                          ? 'تم إرسال رابط التتبع الفوري إلى ${phoneController.text.isEmpty ? "رقم الهاتف" : phoneController.text}'
+                          : 'Lien de suivi chiffré transmis avec succès par SMS.',
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   void _showChatDialog(String driverName, String plate) {
     final TextEditingController chatController = TextEditingController();
     final List<Map<String, String>> chatMessages = [
@@ -397,8 +533,13 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
     );
   }
 
-  void _showOfficialReceiptDialog(RideDriverAssigned assigned) {
-    final fareDzd = _currentEstimatedFareDzd;
+  void _showTripReceiptDialog({
+    required String driverName,
+    required String agrementNumber,
+    required String vehiclePlate,
+    required double fareDzd,
+    required double distanceKm,
+  }) {
     final tripFare = (fareDzd - 125.0).clamp(50.0, 5000.0);
 
     showDialog(
@@ -437,15 +578,15 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                _isArabic ? 'السائق: ${assigned.driverName}' : 'Chauffeur: ${assigned.driverName}',
+                _isArabic ? 'السائق: $driverName' : 'Chauffeur: $driverName',
                 style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 13),
               ),
               Text(
-                _isArabic ? 'رخصة الاستغلال: ${assigned.agrementNumber}' : 'Agrément DTW: ${assigned.agrementNumber}',
+                _isArabic ? 'رخصة الاستغلال: $agrementNumber' : 'Agrément DTW: $agrementNumber',
                 style: const TextStyle(color: Colors.black54, fontSize: 11),
               ),
               Text(
-                _isArabic ? 'رقم اللوحة: ${assigned.vehiclePlate}' : 'Immatriculation: ${assigned.vehiclePlate}',
+                _isArabic ? 'رقم اللوحة: $vehiclePlate' : 'Immatriculation: $vehiclePlate',
                 style: const TextStyle(color: Colors.black87, fontSize: 11),
               ),
               const Divider(height: 20),
@@ -468,7 +609,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(_isArabic ? 'مسافة الطريق (${_currentDistanceKm.toStringAsFixed(1)} كم):' : 'Trajet horokilométrique (${_currentDistanceKm.toStringAsFixed(1)} km):', style: const TextStyle(color: Colors.black54, fontSize: 12)),
+                  Text(_isArabic ? 'مسافة الطريق (${distanceKm.toStringAsFixed(1)} كم):' : 'Trajet horokilométrique (${distanceKm.toStringAsFixed(1)} km):', style: const TextStyle(color: Colors.black54, fontSize: 12)),
                   Text('${tripFare.toStringAsFixed(2)} DA', style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 12)),
                 ],
               ),
@@ -504,6 +645,16 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showOfficialReceiptDialog(RideDriverAssigned assigned) {
+    _showTripReceiptDialog(
+      driverName: assigned.driverName,
+      agrementNumber: assigned.agrementNumber,
+      vehiclePlate: assigned.vehiclePlate,
+      fareDzd: _currentEstimatedFareDzd,
+      distanceKm: _currentDistanceKm,
     );
   }
 
@@ -593,7 +744,7 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
             ),
             BottomNavigationBarItem(
               icon: const Icon(Icons.wallet),
-              label: _isArabic ? 'المحفظة' : 'Portefeuille WASSLANI',
+              label: _isArabic ? 'المحفظة والرحلات' : 'Portefeuille & Courses',
             ),
             BottomNavigationBarItem(
               icon: const Icon(Icons.verified_user),
@@ -691,11 +842,11 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                           ),
                           icon: const Icon(Icons.chat, size: 16),
-                          label: Text(_isArabic ? 'محادثة السائق' : 'Chat Chauffeur', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                          label: Text(_isArabic ? 'محادثة' : 'Chat', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                           onPressed: () => _showChatDialog(assigned.driverName, assigned.vehiclePlate),
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 6),
                       Expanded(
                         child: OutlinedButton.icon(
                           style: OutlinedButton.styleFrom(
@@ -705,8 +856,22 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                           ),
                           icon: const Icon(Icons.receipt_long, size: 16),
-                          label: Text(_isArabic ? 'وصل DTW' : 'Quittance DTW', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                          label: Text(_isArabic ? 'وصل DTW' : 'Quittance', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
                           onPressed: () => _showOfficialReceiptDialog(assigned),
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: const Color(0xFF0EA5E9),
+                            side: const BorderSide(color: Color(0xFF0EA5E9)),
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          ),
+                          icon: const Icon(Icons.share, size: 16),
+                          label: Text(_isArabic ? 'مشاركة' : 'Partager', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                          onPressed: () => _showShareTripDialog(assigned.rideCode),
                         ),
                       ),
                     ],
@@ -1094,6 +1259,107 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
             ),
           ),
           const SizedBox(height: 28),
+
+          // Trip History Header
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                _isArabic ? 'سجل الرحلات الرسمية المنجزة:' : 'Historique des Courses Fiscale DTW:',
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              Text(
+                '${_tripHistory.length} ${_isArabic ? "رحلات" : "trajets"}',
+                style: const TextStyle(fontSize: 12, color: Colors.white54),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+
+          ListView.separated(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: _tripHistory.length,
+            separatorBuilder: (_, __) => const SizedBox(height: 10),
+            itemBuilder: (ctx, idx) {
+              final item = _tripHistory[idx];
+              return Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF131D31),
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: Colors.white10),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            '${item.origin.localizedName(_isArabic)} → ${item.destination.localizedName(_isArabic)}',
+                            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          '${item.fareDzd.toStringAsFixed(0)} DA',
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: Color(0xFF60A5FA)),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          '${item.driverName} • ${item.distanceKm.toStringAsFixed(1)} km',
+                          style: const TextStyle(color: Colors.white54, fontSize: 11),
+                        ),
+                        if (item.spareChangeDzd > 0)
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF59E0B).withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              '+${item.spareChangeDzd.toStringAsFixed(0)} DA Flywheel',
+                              style: const TextStyle(color: Color(0xFFF59E0B), fontSize: 10, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Align(
+                      alignment: _isArabic ? Alignment.centerLeft : Alignment.centerRight,
+                      child: TextButton.icon(
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          foregroundColor: const Color(0xFFF59E0B),
+                        ),
+                        icon: const Icon(Icons.receipt_long, size: 14),
+                        label: Text(
+                          _isArabic ? 'عرض وصل DTW' : 'Voir Quittance DTW',
+                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                        ),
+                        onPressed: () => _showTripReceiptDialog(
+                          driverName: item.driverName,
+                          agrementNumber: item.agrementNumber,
+                          vehiclePlate: item.vehiclePlate,
+                          fareDzd: item.fareDzd,
+                          distanceKm: item.distanceKm,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 24),
 
           Text(
             _isArabic ? 'مبدأ تحويل باقي الصرف الرقمي (Flywheel):' : 'Principe du Spare Change Flywheel:',

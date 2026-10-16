@@ -53,6 +53,6 @@ void main() {
     expect(find.text('الراكب'), findsOneWidget);
     expect(find.textContaining('تاكسي فردي'), findsOneWidget);
     expect(find.text('طلب سيارة'), findsOneWidget);
-    expect(find.text('المحفظة'), findsOneWidget);
+    expect(find.textContaining('المحفظة'), findsWidgets);
   });
 }

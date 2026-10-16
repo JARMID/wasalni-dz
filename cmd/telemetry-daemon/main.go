@@ -20,7 +20,7 @@ import (
 
 func main() {
 	log.Println("==========================================================")
-	log.Println("   NAQL DZ: 1Hz TELEMETRY INGESTION & H3 DISPATCH DAEMON  ")
+	log.Println("   WASSLANI: 1Hz TELEMETRY INGESTION & H3 DISPATCH DAEMON ")
 	log.Println("==========================================================")
 
 	port := os.Getenv("PORT")
