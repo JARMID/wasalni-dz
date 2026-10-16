@@ -15,8 +15,8 @@ import {
   Sparkles,
   ShieldCheck,
   ArrowLeft,
-  ArrowRight,
-  Palette
+  Palette,
+  Globe
 } from 'lucide-react';
 import { soundEngine } from '../utils/audio';
 import type { AppLang } from '../utils/i18n';
@@ -40,7 +40,7 @@ export const BRAND_OPTIONS: BrandOption[] = [
   { id: 'naql', name: 'NAQL', nameAr: 'نقل الجزائر', tag: 'Institutionnel & Réglementé' },
 ];
 
-export type GraphicsPalette = 'mandarine' | 'carmin' | 'cyan' | 'monochrome';
+export type GraphicsPalette = 'saphir' | 'mandarine' | 'carmin' | 'cyan' | 'monochrome';
 
 export interface PaletteOption {
   id: GraphicsPalette;
@@ -51,6 +51,7 @@ export interface PaletteOption {
 }
 
 export const PALETTE_OPTIONS: PaletteOption[] = [
+  { id: 'saphir', name: 'Saphir Royal & Or Taxi', nameAr: 'ياقوت أزرق وذهبي تاكسي', dotColor: '#2563EB', tagline: 'Prestige officiel & lisibilité maximale' },
   { id: 'mandarine', name: 'Mandarine & Titane', nameAr: 'برتقالي شمسي وتيتانيوم', dotColor: '#FF5C00', tagline: 'Mobilité cinétique & fort contraste' },
   { id: 'carmin', name: 'Carmin & Carbone', nameAr: 'قرمزي كربوني', dotColor: '#E11D48', tagline: 'Énergie souveraine & vitesse' },
   { id: 'cyan', name: 'Cyan & Nuit Abyssale', nameAr: 'سماوي فضائي وليل', dotColor: '#06B6D4', tagline: 'Précision télématique & satellite' },
@@ -260,55 +261,79 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </div>
 
-            {/* Center Navigation Links (Consumer Marketing) */}
-            <nav className="hidden lg:flex items-center space-x-6 text-xs font-bold text-slate-600 dark:text-slate-300">
-              <a 
-                href="#services" 
-                className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            {/* Center Surface Tabs (Segmented Control for Direct Demo Access) */}
+            <nav className="hidden lg:flex items-center p-1 rounded-2xl bg-slate-200/70 dark:bg-slate-900/80 border border-slate-300/80 dark:border-white/10 shadow-inner">
+              <button
+                onClick={() => handleTabChange('home')}
+                className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm"
               >
-                {t('marketingNavServices')}
-              </a>
-              <a 
-                href="#drivers" 
-                className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                <Globe className="w-3.5 h-3.5" />
+                <span>{lang === 'ar' ? 'الموقع الرسمي' : 'Site Vitrine'}</span>
+              </button>
+
+              <button
+                onClick={() => handleTabChange('sync')}
+                className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
               >
-                {t('marketingNavDrivers')}
-              </a>
-              <a 
-                href="#safety" 
-                className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                <Layers className="w-3.5 h-3.5 text-blue-500 group-hover:text-white" />
+                <span>{lang === 'ar' ? 'العرض المباشر (شاشات متزامنة)' : 'Démo Multi-Écrans'}</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+              </button>
+
+              <button
+                onClick={() => handleTabChange('rider')}
+                className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
               >
-                {t('marketingNavSafety')}
-              </a>
-              <a 
-                href="#enterprise" 
-                className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                <Smartphone className="w-3.5 h-3.5 text-sky-500" />
+                <span>{lang === 'ar' ? 'الراكب' : 'Passager'}</span>
+              </button>
+
+              <button
+                onClick={() => handleTabChange('driver')}
+                className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
               >
-                {t('marketingNavEnterprise')}
-              </a>
+                <Car className="w-3.5 h-3.5 text-amber-500" />
+                <span>{lang === 'ar' ? 'السائق' : 'Cockpit'}</span>
+              </button>
+
+              <button
+                onClick={() => handleTabChange('dispatch')}
+                className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+              >
+                <Monitor className="w-3.5 h-3.5 text-blue-500" />
+                <span>{lang === 'ar' ? 'غرفة العمليات' : 'DTW'}</span>
+              </button>
+
+              <button
+                onClick={() => handleTabChange('ledger')}
+                className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+              >
+                <Wallet className="w-3.5 h-3.5 text-indigo-400" />
+                <span>{lang === 'ar' ? 'الدفتر المالي' : 'Finances'}</span>
+              </button>
             </nav>
 
             {/* Right Action Gates & Controls */}
             <div className="flex items-center space-x-2 sm:space-x-2.5">
               
-              {/* Primary Call to Action: Book Ride */}
-              {/* Secondary CTA: Driver Space */}
-              <a
-                href="#drivers"
-                className="hidden md:flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-slate-200/60 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 font-bold text-xs border border-slate-300/70 dark:border-white/10 transition-all cursor-pointer"
+              {/* Primary Call to Action: Live Interactive Demo Launcher */}
+              <button
+                onClick={() => handleTabChange('sync')}
+                className="flex items-center space-x-1.5 px-3 sm:px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg shadow-blue-600/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                title="Lancer le démonstrateur multi-appareils (Passager + Chauffeur + Carte)"
               >
-                <Car className="w-3.5 h-3.5 text-[var(--brand-accent)]" />
-                <span>Devenir Chauffeur</span>
-              </a>
+                <Layers className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">{lang === 'ar' ? 'تشغيل العرض الحي' : 'Lancer la Démo Live'}</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-300 animate-pulse" />
+              </button>
 
-              {/* Primary Call to Action: Download App */}
+              {/* Secondary Call to Action: Download App */}
               <a
                 href="#download"
-                className="hidden sm:flex items-center space-x-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-[var(--brand-primary)] to-[var(--brand-primary-hover)] hover:opacity-95 text-white font-bold text-xs shadow-md shadow-[var(--brand-primary)]/25 transition-all cursor-pointer"
+                className="hidden xl:flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-slate-200/70 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 font-bold text-xs border border-slate-300/80 dark:border-white/10 transition-all cursor-pointer"
               >
                 <Smartphone className="w-3.5 h-3.5" />
-                <span>Télécharger l'App</span>
-                <ArrowRight className="w-3 h-3" />
+                <span>{lang === 'ar' ? 'التطبيق' : 'Télécharger'}</span>
               </a>
 
               {/* Graphics Chart Palette Switcher */}
@@ -460,6 +485,63 @@ export const Header: React.FC<HeaderProps> = ({
                 </div>
               </div>
             </div>
+
+            {/* Center: Direct Surface Switcher Navigation in App Mode */}
+            <nav className="hidden xl:flex items-center p-1 rounded-2xl bg-slate-200/70 dark:bg-slate-900/80 border border-slate-300/80 dark:border-white/10 shadow-inner">
+              <button
+                onClick={() => handleTabChange('home')}
+                className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer"
+              >
+                <Globe className="w-3.5 h-3.5" />
+                <span>Site Vitrine</span>
+              </button>
+              <button
+                onClick={() => handleTabChange('sync')}
+                className={`flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  activeTab === 'sync' ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30' : 'text-slate-600 dark:text-slate-400 hover:text-white'
+                }`}
+              >
+                <Layers className="w-3.5 h-3.5 text-blue-500 group-hover:text-white" />
+                <span>Démo Sync</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+              </button>
+              <button
+                onClick={() => handleTabChange('rider')}
+                className={`flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  activeTab === 'rider' ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30' : 'text-slate-600 dark:text-slate-400 hover:text-white'
+                }`}
+              >
+                <Smartphone className="w-3.5 h-3.5 text-sky-500" />
+                <span>Passager</span>
+              </button>
+              <button
+                onClick={() => handleTabChange('driver')}
+                className={`flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  activeTab === 'driver' ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30' : 'text-slate-600 dark:text-slate-400 hover:text-white'
+                }`}
+              >
+                <Car className="w-3.5 h-3.5 text-amber-500" />
+                <span>Cockpit</span>
+              </button>
+              <button
+                onClick={() => handleTabChange('dispatch')}
+                className={`flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  activeTab === 'dispatch' ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30' : 'text-slate-600 dark:text-slate-400 hover:text-white'
+                }`}
+              >
+                <Monitor className="w-3.5 h-3.5 text-blue-500" />
+                <span>DTW</span>
+              </button>
+              <button
+                onClick={() => handleTabChange('ledger')}
+                className={`flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  activeTab === 'ledger' ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30' : 'text-slate-600 dark:text-slate-400 hover:text-white'
+                }`}
+              >
+                <Wallet className="w-3.5 h-3.5 text-indigo-400" />
+                <span>Grand Livre</span>
+              </button>
+            </nav>
 
             {/* Right: Quick Application Utility Controls */}
             <div className="flex items-center space-x-2 sm:space-x-2.5">

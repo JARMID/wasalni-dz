@@ -64,11 +64,12 @@ export function App() {
   const [selectedPalette, setSelectedPalette] = useState<GraphicsPalette>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('wasslani_graphics_chart');
-      if (saved && ['mandarine', 'carmin', 'cyan', 'monochrome'].includes(saved)) {
+      if (saved && ['saphir', 'mandarine', 'carmin', 'cyan', 'monochrome'].includes(saved)) {
+        if (saved === 'mandarine') return 'saphir';
         return saved as GraphicsPalette;
       }
     }
-    return 'mandarine';
+    return 'saphir';
   });
   const [isDark, setIsDark] = useState<boolean>(() => {
     if (typeof window !== 'undefined') {
@@ -89,7 +90,7 @@ export function App() {
   useEffect(() => {
     if (typeof document !== 'undefined') {
       const root = document.documentElement;
-      root.classList.remove('theme-mandarine', 'theme-carmin', 'theme-cyan', 'theme-monochrome');
+      root.classList.remove('theme-saphir', 'theme-mandarine', 'theme-carmin', 'theme-cyan', 'theme-monochrome');
       root.classList.add(`theme-${selectedPalette}`);
     }
     try {
@@ -743,14 +744,12 @@ export function App() {
 
       </main>
 
-      {/* Floating Decoupled Surface Switcher (Only visible in Demo & Multi-Surface views, hidden on Marketing home) */}
-      {activeTab !== 'home' && (
-        <SurfaceSwitcher
-          activeTab={activeTab}
-          onSelectTab={setActiveTab}
-          lang={lang}
-        />
-      )}
+      {/* Floating Decoupled Surface Switcher (Permanently accessible across all views with collapse/expand toggle) */}
+      <SurfaceSwitcher
+        activeTab={activeTab}
+        onSelectTab={setActiveTab}
+        lang={lang}
+      />
 
       {/* Spare Change Flywheel Modal */}
       <SpareChangeModal

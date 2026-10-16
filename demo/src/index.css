@@ -1,44 +1,48 @@
 @import "tailwindcss";
 
 @theme {
-  --color-blue-300: var(--brand-primary-lighter, #fdba74);
-  --color-blue-400: var(--brand-primary-light, #fb923c);
-  --color-blue-500: var(--brand-primary, #ff5c00);
-  --color-blue-600: var(--brand-primary, #ff5c00);
-  --color-blue-700: var(--brand-primary-hover, #ea580c);
-  --color-blue-800: var(--brand-primary-dark, #c2410c);
-  --color-blue-900: var(--brand-primary-darker, #7c2d12);
-  --color-blue-950: var(--brand-primary-deep, #18110b);
-
-  --color-indigo-600: var(--brand-primary-hover, #ea580c);
-  --color-indigo-500: var(--brand-primary, #ff5c00);
-
-  --color-amber-300: var(--brand-accent-lighter, #a5b4fc);
-  --color-amber-400: var(--brand-accent-light, #818cf8);
-  --color-amber-500: var(--brand-accent, #6366f1);
-  --color-amber-600: var(--brand-accent-hover, #4f46e5);
-
-  --color-yellow-400: var(--brand-accent-light, #818cf8);
-  --color-yellow-500: var(--brand-accent, #6366f1);
+  --color-brand-blue: #2563eb;
+  --color-brand-amber: #f59e0b;
+  --color-brand-cyan: #06b6d4;
+  --color-brand-slate: #0f172a;
 }
 
 :root {
-  /* Default Graphics Chart: Braise Mandarine Solaire & Titane */
-  --brand-primary: #ff5c00;
-  --brand-primary-light: #fb923c;
-  --brand-primary-lighter: #fdba74;
-  --brand-primary-hover: #ea580c;
-  --brand-primary-dark: #c2410c;
-  --brand-primary-darker: #7c2d12;
-  --brand-primary-deep: #18110b;
+  /* Default Official Graphics Chart: Bleu Saphir Royal & Or Taxi Agréé */
+  --brand-primary: #2563eb;
+  --brand-primary-light: #3b82f6;
+  --brand-primary-lighter: #60a5fa;
+  --brand-primary-hover: #1d4ed8;
+  --brand-primary-dark: #1e40af;
+  --brand-primary-darker: #1e3a8a;
+  --brand-primary-deep: #0a0f1d;
 
-  --brand-accent: #6366f1;
-  --brand-accent-light: #818cf8;
-  --brand-accent-lighter: #a5b4fc;
-  --brand-accent-hover: #4f46e5;
+  --brand-accent: #f59e0b;
+  --brand-accent-light: #fbbf24;
+  --brand-accent-lighter: #fde68a;
+  --brand-accent-hover: #d97706;
 
-  --brand-canvas-dark: #0f1115;
-  --brand-surface-dark: #181a20;
+  --brand-canvas-dark: #0a0e17;
+  --brand-surface-dark: #111827;
+}
+
+/* Palette 0: Saphir Royal & Or Taxi Agréé (Default) */
+html.theme-saphir {
+  --brand-primary: #2563eb;
+  --brand-primary-light: #3b82f6;
+  --brand-primary-lighter: #60a5fa;
+  --brand-primary-hover: #1d4ed8;
+  --brand-primary-dark: #1e40af;
+  --brand-primary-darker: #1e3a8a;
+  --brand-primary-deep: #0a0f1d;
+
+  --brand-accent: #f59e0b;
+  --brand-accent-light: #fbbf24;
+  --brand-accent-lighter: #fde68a;
+  --brand-accent-hover: #d97706;
+
+  --brand-canvas-dark: #0a0e17;
+  --brand-surface-dark: #111827;
 }
 
 /* Palette 1: Carmin Solaire & Carbone */
@@ -133,24 +137,24 @@ html.theme-monochrome {
   /* Dark theme styles */
   html.dark,
   html.dark body {
-    background-color: var(--brand-canvas-dark, #0f1115) !important;
+    background-color: var(--brand-canvas-dark, #0a0e17) !important;
     color: #f8fafc !important;
     background-image: 
-      radial-gradient(circle at 50% 0%, rgba(255, 92, 0, 0.08) 0%, transparent 60%),
-      radial-gradient(circle at 100% 50%, rgba(99, 102, 241, 0.05) 0%, transparent 50%),
-      radial-gradient(circle at 0% 100%, rgba(255, 92, 0, 0.05) 0%, transparent 50%) !important;
+      radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.12) 0%, transparent 60%),
+      radial-gradient(circle at 100% 50%, rgba(245, 158, 11, 0.04) 0%, transparent 50%),
+      radial-gradient(circle at 0% 100%, rgba(37, 99, 235, 0.06) 0%, transparent 50%) !important;
     background-attachment: fixed !important;
   }
 
   /* Light theme styles */
   html.light,
   html.light body {
-    background-color: #fafaf8 !important;
-    color: #18181b !important;
+    background-color: #f8fafc !important;
+    color: #0f172a !important;
     background-image: 
-      radial-gradient(circle at 50% 0%, rgba(255, 92, 0, 0.05) 0%, transparent 60%),
-      radial-gradient(circle at 100% 50%, rgba(99, 102, 241, 0.03) 0%, transparent 50%),
-      radial-gradient(circle at 0% 100%, rgba(255, 92, 0, 0.03) 0%, transparent 50%) !important;
+      radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.06) 0%, transparent 60%),
+      radial-gradient(circle at 100% 50%, rgba(245, 158, 11, 0.03) 0%, transparent 50%),
+      radial-gradient(circle at 0% 100%, rgba(37, 99, 235, 0.03) 0%, transparent 50%) !important;
     background-attachment: fixed !important;
   }
 }

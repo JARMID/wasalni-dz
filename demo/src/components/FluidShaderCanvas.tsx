@@ -9,6 +9,7 @@ interface FluidShaderCanvasProps {
 }
 
 const PALETTE_COLORS: Record<GraphicsPalette, { primary: string; accent: string; bg: string }> = {
+  saphir:    { primary: '#2563EB', accent: '#F59E0B', bg: '#0A0E17' },
   mandarine: { primary: '#FF5C00', accent: '#6366F1', bg: '#0F1115' },
   carmin:    { primary: '#E11D48', accent: '#38BDF8', bg: '#0B0D13' },
   cyan:      { primary: '#06B6D4', accent: '#F97316', bg: '#040711' },
@@ -77,7 +78,7 @@ const fragmentShader = `
     // Additive grid line illumination
     surfaceColor += uColorAccent * gridLine * 0.16;
 
-    // Edge falloff vignette to seamlessly blend into surrounding container
+    // Edge falloff vignette to blend directly into surrounding container
     float edgeFadeX = smoothstep(0.0, 0.16, vUv.x) * smoothstep(1.0, 0.84, vUv.x);
     float edgeFadeY = smoothstep(0.0, 0.16, vUv.y) * smoothstep(1.0, 0.84, vUv.y);
     float alpha = edgeFadeX * edgeFadeY * 0.82;

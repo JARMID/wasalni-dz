@@ -17,13 +17,17 @@ import {
   X,
   Building2,
   FileCheck2,
-  ChevronDown
+  ChevronDown,
+  Layers,
+  Video
 } from 'lucide-react';
 import type { AppLang } from '../utils/i18n';
 import type { ActiveTab, BrandOption, GraphicsPalette } from './Header';
 import { FluidShaderCanvas } from './FluidShaderCanvas';
 import { FooterReveal } from './FooterReveal';
 import { HeroScrollyStudio } from './HeroScrollyStudio';
+import { HorizontalShowcase } from './HorizontalShowcase';
+import { StickyStack } from './StickyStack';
 
 interface LocationHub {
   id: string;
@@ -155,6 +159,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
   const [driverFormSubmitted, setDriverFormSubmitted] = useState(false);
   const [smsPhone, setSmsPhone] = useState('');
   const [smsSent, setSmsSent] = useState(false);
+  const [heroInteractiveTab, setHeroInteractiveTab] = useState<'passenger' | 'driver' | 'estimator'>('passenger');
 
   // Form field IDs for accessibility
   const originSelectId = useId();
@@ -224,14 +229,14 @@ export const LandingView: React.FC<LandingViewProps> = ({
                 {isAr ? (
                   <>
                     سيارات الأجرة المعتمدة بالجزائر،{' '}
-                    <span className="bg-gradient-to-r from-[var(--brand-primary)] to-[var(--brand-accent)] bg-clip-text text-transparent">
+                    <span className="text-blue-600 dark:text-blue-400">
                       بالتسعيرة الرسمية
                     </span>
                   </>
                 ) : (
                   <>
                     Le taxi officiel d'Alger,{' '}
-                    <span className="bg-gradient-to-r from-[var(--brand-primary)] to-[var(--brand-accent)] bg-clip-text text-transparent">
+                    <span className="text-blue-600 dark:text-blue-400">
                       au tarif réglementé
                     </span>
                   </>
@@ -249,21 +254,33 @@ export const LandingView: React.FC<LandingViewProps> = ({
 
               {/* Action Buttons Row */}
               <div className="flex flex-wrap items-center gap-3 pt-2">
+                {/* Primary: Launch Live Synchronized Multi-Screen Demo */}
                 <button
-                  onClick={() => setIsAppModalOpen(true)}
-                  className="flex items-center space-x-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-[var(--brand-primary)] to-[var(--brand-primary-hover)] hover:opacity-95 text-white font-bold text-sm shadow-xl shadow-[var(--brand-primary)]/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                  onClick={() => onNavigateTab('sync')}
+                  className="flex items-center space-x-2.5 px-6 py-3.5 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm shadow-xl shadow-blue-600/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                  title="Ouvrir la démo multi-écrans en temps réel"
                 >
-                  <Smartphone className="w-4 h-4" />
-                  <span>{isAr ? 'تحميل التطبيق للركاب' : 'Télécharger l\'Application'}</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <Layers className="w-4 h-4 text-white" />
+                  <span>{isAr ? 'عرض المنصة التفاعلية المباشرة' : 'Lancer la Démo Multi-Appareils'}</span>
+                  <span className="w-2 h-2 rounded-full bg-amber-300 animate-pulse" />
                 </button>
 
+                {/* Secondary: Download App Modal */}
+                <button
+                  onClick={() => setIsAppModalOpen(true)}
+                  className="flex items-center space-x-2 px-5 py-3.5 rounded-2xl border border-slate-300 dark:border-white/15 bg-white/70 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 font-bold text-sm text-slate-800 dark:text-slate-200 transition-all cursor-pointer shadow-sm"
+                >
+                  <Smartphone className="w-4 h-4 text-blue-500" />
+                  <span>{isAr ? 'تحميل التطبيق' : 'Télécharger l\'App'}</span>
+                </button>
+
+                {/* Tertiary: Driver Space */}
                 <a
                   href="#drivers"
-                  className="flex items-center space-x-2 px-6 py-3.5 rounded-2xl glass-panel-interactive font-bold text-sm text-slate-800 dark:text-slate-200 cursor-pointer"
+                  className="flex items-center space-x-2 px-5 py-3.5 rounded-2xl border border-slate-300 dark:border-white/15 bg-slate-100/70 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 font-bold text-sm text-slate-700 dark:text-slate-300 transition-all cursor-pointer"
                 >
-                  <Car className="w-4 h-4 text-[var(--brand-accent)]" />
-                  <span>{isAr ? 'فضاء السائقين المهنيين' : 'Devenir Chauffeur Partenaire'}</span>
+                  <Car className="w-4 h-4 text-amber-500" />
+                  <span>{isAr ? 'فضاء السائقين' : 'Espace Chauffeurs'}</span>
                 </a>
               </div>
 
@@ -341,159 +358,412 @@ export const LandingView: React.FC<LandingViewProps> = ({
 
             </div>
 
-            {/* Right Column: Interactive Real-Time Fare Estimator Card */}
-            <div id="estimate" className="lg:col-span-5">
-              <div className="glass-panel rounded-3xl p-6 sm:p-7 border border-slate-200 dark:border-white/10 shadow-2xl space-y-5 bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl">
+            {/* Right Column: Antigravity 3D Device Showcase (Passenger Smartphone, Driver Cockpit HUD, Fare Estimator) */}
+            <div id="estimate" className="lg:col-span-5 relative">
+              <div className="glass-panel rounded-3xl p-5 sm:p-6 border border-slate-200 dark:border-white/10 shadow-2xl space-y-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl">
                 
-                {/* Estimator Card Header */}
-                <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-white/10">
-                  <div>
-                    <span className="text-xs font-mono uppercase tracking-wider text-[var(--brand-primary)] font-bold">
-                      {isAr ? 'حاسبة الأجرة الفورية' : 'Simulateur Officiel de Course'}
-                    </span>
-                    <h3 className="text-lg font-black text-slate-900 dark:text-white">
-                      {isAr ? 'احسب تسعيرة رحلتك بالجزائر' : 'Estimez votre trajet'}
-                    </h3>
-                  </div>
-                  <div className="w-9 h-9 rounded-xl bg-[var(--brand-primary)]/10 border border-[var(--brand-primary)]/20 flex items-center justify-center text-[var(--brand-primary)]">
-                    <Navigation className="w-4 h-4" />
-                  </div>
-                </div>
-
-                {/* Service Mode Selector */}
-                <div className="grid grid-cols-3 gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-slate-950/60 border border-slate-200 dark:border-white/5">
-                  <button
-                    onClick={() => setServiceType('compteur')}
-                    className={`py-2 px-2 text-center rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                      serviceType === 'compteur'
-                        ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm'
-                        : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
-                    }`}
-                  >
-                    <span>{isAr ? 'تاكسي فردي' : 'Compteur'}</span>
-                  </button>
-
-                  <button
-                    onClick={() => setServiceType('confort')}
-                    className={`py-2 px-2 text-center rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                      serviceType === 'confort'
-                        ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm'
-                        : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
-                    }`}
-                  >
-                    <span>{isAr ? 'برلين راحة' : 'Confort'}</span>
-                  </button>
-
-                  <button
-                    onClick={() => setServiceType('navette')}
-                    className={`py-2 px-2 text-center rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                      serviceType === 'navette'
-                        ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm'
-                        : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
-                    }`}
-                  >
-                    <span>{isAr ? 'رحلة مبرمجة' : 'Navette'}</span>
-                  </button>
-                </div>
-
-                {/* Origin Selector */}
-                <div className="space-y-1.5">
-                  <label htmlFor={originSelectId} className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-blue-500" />
-                    <span>{isAr ? 'نقطة الانطلاق' : 'Point de départ'}</span>
-                  </label>
-                  <div className="relative">
-                    <select
-                      id={originSelectId}
-                      value={originId}
-                      onChange={(e) => setOriginId(e.target.value)}
-                      className="w-full appearance-none px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-white/10 bg-white/70 dark:bg-slate-950/70 text-slate-900 dark:text-white font-medium text-xs focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] transition-all cursor-pointer"
+                {/* 3-Tab Segmented Selector Header */}
+                <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-white/10">
+                  <div className="flex items-center p-1 rounded-2xl bg-slate-100 dark:bg-slate-950/70 border border-slate-200 dark:border-white/5 w-full">
+                    <button
+                      onClick={() => setHeroInteractiveTab('passenger')}
+                      className={`flex-1 py-1.5 px-2 text-center rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center space-x-1.5 ${
+                        heroInteractiveTab === 'passenger'
+                          ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm'
+                          : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
+                      }`}
                     >
-                      {ALGIERS_HUBS.map(hub => (
-                        <option key={`orig-${hub.id}`} value={hub.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
-                          {isAr ? hub.nameAr : hub.nameFr} ({hub.commune})
-                        </option>
-                      ))}
-                    </select>
-                    <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                  </div>
-                </div>
+                      <Smartphone className="w-3.5 h-3.5" />
+                      <span>{isAr ? 'تطبيق الراكب' : 'Passager'}</span>
+                    </button>
 
-                {/* Swap Hubs Button */}
-                <div className="flex justify-center -my-2 relative z-10">
-                  <button
-                    onClick={handleSwapLocations}
-                    title="Inverser départ et arrivée"
-                    className="p-1.5 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-[var(--brand-primary)] hover:text-white transition-all cursor-pointer border border-slate-300 dark:border-white/10 shadow"
-                  >
-                    <ArrowRight className="w-3.5 h-3.5 rotate-90" />
-                  </button>
-                </div>
-
-                {/* Destination Selector */}
-                <div className="space-y-1.5">
-                  <label htmlFor={destSelectId} className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-[var(--brand-primary)]" />
-                    <span>{isAr ? 'الوجهة المقصودة' : 'Destination'}</span>
-                  </label>
-                  <div className="relative">
-                    <select
-                      id={destSelectId}
-                      value={destinationId}
-                      onChange={(e) => setDestinationId(e.target.value)}
-                      className="w-full appearance-none px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-white/10 bg-white/70 dark:bg-slate-950/70 text-slate-900 dark:text-white font-medium text-xs focus:outline-none focus:ring-2 focus:ring-[var(--brand-primary)] transition-all cursor-pointer"
+                    <button
+                      onClick={() => setHeroInteractiveTab('driver')}
+                      className={`flex-1 py-1.5 px-2 text-center rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center space-x-1.5 ${
+                        heroInteractiveTab === 'driver'
+                          ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm'
+                          : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
+                      }`}
                     >
-                      {ALGIERS_HUBS.map(hub => (
-                        <option key={`dest-${hub.id}`} value={hub.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
-                          {isAr ? hub.nameAr : hub.nameFr} ({hub.commune})
-                        </option>
-                      ))}
-                    </select>
-                    <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      <Car className="w-3.5 h-3.5" />
+                      <span>{isAr ? 'لوحة السائق' : 'Cockpit'}</span>
+                    </button>
+
+                    <button
+                      onClick={() => setHeroInteractiveTab('estimator')}
+                      className={`flex-1 py-1.5 px-2 text-center rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center space-x-1.5 ${
+                        heroInteractiveTab === 'estimator'
+                          ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm'
+                          : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
+                      }`}
+                    >
+                      <Navigation className="w-3.5 h-3.5" />
+                      <span>{isAr ? 'حاسبة التسعيرة' : 'Tarifs'}</span>
+                    </button>
                   </div>
                 </div>
 
-                {/* Dynamic Calculated Fare Card */}
-                <div className="p-4 rounded-2xl bg-gradient-to-br from-[var(--brand-primary)]/10 via-transparent to-[var(--brand-accent)]/10 border border-[var(--brand-primary)]/20 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
-                        {isAr ? 'الأجرة التقديرية الرسمية' : 'Tarif Légal Estimé'}
-                      </span>
-                      <div className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white flex items-baseline space-x-1.5">
-                        <span>{estimatedFareDzd}</span>
-                        <span className="text-sm font-bold text-[var(--brand-primary)]">DZD</span>
+                {/* TAB 1: PASSENGER SMARTPHONE 3D FRAME */}
+                {heroInteractiveTab === 'passenger' && (
+                  <div className="space-y-3.5 text-left animate-fadeIn">
+                    <div className="rounded-[2.2rem] p-3.5 bg-slate-950 border-4 border-slate-800 shadow-2xl relative overflow-hidden">
+                      
+                      {/* Top Phone Speaker / Dynamic Notch */}
+                      <div className="flex items-center justify-between px-3 py-1 mb-2">
+                        <span className="text-[10px] font-mono font-bold text-slate-400">14:32</span>
+                        <div className="w-20 h-4 rounded-full bg-slate-900 border border-white/10 flex items-center justify-center">
+                          <span className="w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse mr-1" />
+                          <span className="text-[8px] font-mono text-slate-300">WASSLANI</span>
+                        </div>
+                        <div className="flex items-center space-x-1 text-slate-400 text-[10px]">
+                          <span>5G</span>
+                          <span className="text-[9px]">100%</span>
+                        </div>
+                      </div>
+
+                      {/* Simulated Interactive Map Mini-View */}
+                      <div className="h-44 rounded-2xl bg-slate-900 border border-white/10 relative overflow-hidden flex flex-col justify-between p-3">
+                        <div className="absolute inset-0 opacity-25 bg-[radial-gradient(#3b82f6_1px,transparent_1px)] [background-size:14px_14px]" />
+                        
+                        {/* Status Chip */}
+                        <div className="relative z-10 flex items-center justify-between">
+                          <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-600/30 text-blue-300 border border-blue-500/40 flex items-center space-x-1">
+                            <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+                            <span>{isAr ? 'سائق معتمد في الطريق' : 'Chauffeur Agréé en approche'}</span>
+                          </span>
+                          <span className="text-[10px] font-mono font-bold text-slate-300 bg-slate-950/80 px-2 py-0.5 rounded-md border border-white/10">
+                            ~ 4 min
+                          </span>
+                        </div>
+
+                        {/* Route Line & Taxi Marker Simulation */}
+                        <div className="relative z-10 my-auto flex items-center justify-between px-4">
+                          <div className="flex flex-col items-center">
+                            <div className="w-6 h-6 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-bold shadow-lg shadow-blue-600/50">
+                              A
+                            </div>
+                            <span className="text-[9px] text-slate-300 font-bold mt-1">Kouba</span>
+                          </div>
+
+                          <div className="flex-1 h-0.5 bg-gradient-to-r from-blue-600 via-amber-400 to-sky-400 mx-2 relative flex items-center justify-center">
+                            <div className="w-6 h-6 rounded-full bg-amber-400 text-slate-950 flex items-center justify-center shadow-md animate-bounce">
+                              <Car className="w-3.5 h-3.5" />
+                            </div>
+                          </div>
+
+                          <div className="flex flex-col items-center">
+                            <div className="w-6 h-6 rounded-full bg-slate-800 text-slate-200 border border-white/20 flex items-center justify-center text-[10px] font-bold">
+                              B
+                            </div>
+                            <span className="text-[9px] text-slate-300 font-bold mt-1">G. Poste</span>
+                          </div>
+                        </div>
+
+                        {/* Passenger Boarding PIN */}
+                        <div className="relative z-10 flex items-center justify-between bg-slate-950/90 p-2 rounded-xl border border-white/10">
+                          <span className="text-[10px] text-slate-400">{isAr ? 'رمز الركوب الأمني :' : 'Code PIN d\'embarquement :'}</span>
+                          <span className="font-mono font-black text-amber-400 text-xs tracking-widest">4821</span>
+                        </div>
+                      </div>
+
+                      {/* Driver Card */}
+                      <div className="mt-3 p-3 rounded-2xl bg-slate-900 border border-white/10 flex items-center justify-between">
+                        <div className="flex items-center space-x-2.5">
+                          <div className="w-9 h-9 rounded-xl bg-blue-600/20 border border-blue-500/40 text-blue-400 flex items-center justify-center font-bold text-xs">
+                            KM
+                          </div>
+                          <div>
+                            <div className="font-bold text-xs text-white flex items-center space-x-1.5">
+                              <span>Karim M.</span>
+                              <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/20 text-amber-300 font-mono">DTW 16-0814</span>
+                            </div>
+                            <div className="text-[10px] text-slate-400 flex items-center space-x-1">
+                              <span>★ 4.96</span>
+                              <span>•</span>
+                              <span>Peugeot 301</span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="text-right">
+                          <div className="font-mono font-black text-sm text-white">450 <span className="text-[10px] text-blue-400 font-bold">DZD</span></div>
+                          <div className="text-[9px] text-slate-400">{isAr ? 'تسعيرة العداد' : 'Au compteur'}</div>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    {/* Direct Launch Actions */}
+                    <div className="grid grid-cols-2 gap-2 pt-1">
+                      <button
+                        onClick={() => onNavigateTab('rider')}
+                        className="w-full py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition-all flex items-center justify-center space-x-1.5 shadow-md shadow-blue-600/25 cursor-pointer"
+                      >
+                        <Smartphone className="w-3.5 h-3.5" />
+                        <span>{isAr ? 'فتح تطبيق الراكب' : 'Ouvrir l\'App Passager'}</span>
+                      </button>
+
+                      <button
+                        onClick={() => onNavigateTab('sync')}
+                        className="w-full py-2.5 px-3 rounded-xl bg-slate-200 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/15 text-slate-800 dark:text-white font-bold text-xs transition-all flex items-center justify-center space-x-1.5 border border-slate-300 dark:border-white/10 cursor-pointer"
+                      >
+                        <Layers className="w-3.5 h-3.5 text-blue-500" />
+                        <span>{isAr ? 'عرض الشاشات المتزامنة' : 'Démo Multi-Écrans'}</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* TAB 2: DRIVER TABLET COCKPIT & DASHCAM */}
+                {heroInteractiveTab === 'driver' && (
+                  <div className="space-y-3.5 text-left animate-fadeIn">
+                    <div className="rounded-2xl p-3.5 bg-slate-950 border-4 border-slate-800 shadow-2xl relative overflow-hidden">
+                      
+                      {/* Tablet Header */}
+                      <div className="flex items-center justify-between pb-2 border-b border-white/10 text-xs">
+                        <div className="flex items-center space-x-2">
+                          <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                          <span className="font-mono font-bold text-white text-[11px]">COCKPIT DTW 16-0814</span>
+                        </div>
+                        <span className="px-2 py-0.5 rounded text-[9px] font-mono bg-blue-600/30 text-blue-300 border border-blue-500/30">
+                          COMPTEUR HOMOLOGUÉ
+                        </span>
+                      </div>
+
+                      {/* Simulated CameraX Dashcam Feed */}
+                      <div className="h-44 my-2.5 rounded-xl bg-slate-900 border border-white/10 relative overflow-hidden flex flex-col justify-between p-3">
+                        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black/70 pointer-events-none" />
+                        
+                        {/* Dashcam Telemetry HUD Overlays */}
+                        <div className="relative z-10 flex items-center justify-between text-[10px] font-mono">
+                          <span className="text-amber-400 flex items-center space-x-1">
+                            <Video className="w-3 h-3" />
+                            <span>REC • CameraX 720p</span>
+                          </span>
+                          <span className="text-white">48 KM/H</span>
+                        </div>
+
+                        {/* Artificial Horizon / G-Force Crosshair */}
+                        <div className="relative z-10 my-auto text-center">
+                          <div className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-full bg-black/60 border border-white/20 text-slate-300 font-mono text-[10px]">
+                            <span>ACCÉLÉRATION : 0.18 G</span>
+                            <span className="text-blue-400">(SEUIL SÉCURISÉ)</span>
+                          </div>
+                        </div>
+
+                        {/* Taximeter Horokilométrique Readout */}
+                        <div className="relative z-10 flex items-center justify-between bg-black/80 p-2.5 rounded-xl border border-white/15">
+                          <div>
+                            <div className="text-[9px] text-slate-400 font-mono uppercase">COMPTEUR DÉCRET 12-230</div>
+                            <div className="font-mono font-black text-xl text-amber-400">790.00 <span className="text-xs text-white">DZD</span></div>
+                          </div>
+                          <div className="text-right text-[10px] font-mono text-slate-300">
+                            <div>TARIF 1 (JOUR)</div>
+                            <div className="text-blue-400">19.8 KM • 22 MIN</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Sensor & Regulatory Status Bar */}
+                      <div className="grid grid-cols-2 gap-2 text-[10px] font-mono text-slate-400">
+                        <div className="p-2 rounded-lg bg-slate-900 border border-white/5 flex items-center justify-between">
+                          <span>THERMIQUE :</span>
+                          <span className="text-blue-400 font-bold">36.4°C (NORMAL)</span>
+                        </div>
+                        <div className="p-2 rounded-lg bg-slate-900 border border-white/5 flex items-center justify-between">
+                          <span>SHAMIR 2-OF-3 :</span>
+                          <span className="text-blue-400 font-bold">VERROUILLÉ</span>
+                        </div>
+                      </div>
+
+                    </div>
+
+                    {/* Direct Launch Actions */}
+                    <div className="grid grid-cols-2 gap-2 pt-1">
+                      <button
+                        onClick={() => onNavigateTab('driver')}
+                        className="w-full py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition-all flex items-center justify-center space-x-1.5 shadow-md shadow-blue-600/25 cursor-pointer"
+                      >
+                        <Car className="w-3.5 h-3.5" />
+                        <span>{isAr ? 'فتح قمرة السائق' : 'Ouvrir Cockpit Chauffeur'}</span>
+                      </button>
+
+                      <button
+                        onClick={() => onNavigateTab('sync')}
+                        className="w-full py-2.5 px-3 rounded-xl bg-slate-200 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/15 text-slate-800 dark:text-white font-bold text-xs transition-all flex items-center justify-center space-x-1.5 border border-slate-300 dark:border-white/10 cursor-pointer"
+                      >
+                        <Layers className="w-3.5 h-3.5 text-blue-500" />
+                        <span>{isAr ? 'عرض الشاشات المتزامنة' : 'Démo Multi-Écrans'}</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+
+                {/* TAB 3: LIVE FARE ESTIMATOR FORM */}
+                {heroInteractiveTab === 'estimator' && (
+                  <div className="space-y-4 text-left animate-fadeIn">
+                    
+                    {/* Estimator Card Header */}
+                    <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-white/10">
+                      <div>
+                        <span className="text-[10px] font-mono uppercase tracking-wider text-blue-600 dark:text-blue-400 font-bold">
+                          {isAr ? 'حاسبة الأجرة الفورية' : 'Simulateur Officiel de Course'}
+                        </span>
+                        <h3 className="text-base font-black text-slate-900 dark:text-white">
+                          {isAr ? 'احسب تسعيرة رحلتك بالجزائر' : 'Estimez votre trajet'}
+                        </h3>
+                      </div>
+                      <div className="w-8 h-8 rounded-xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                        <Navigation className="w-4 h-4" />
                       </div>
                     </div>
 
-                    <div className="text-right space-y-1 text-xs">
-                      <div className="flex items-center space-x-1.5 text-slate-600 dark:text-slate-300 font-semibold justify-end">
-                        <Navigation className="w-3.5 h-3.5 text-blue-500" />
-                        <span>{estimatedDistance} km</span>
-                      </div>
-                      <div className="flex items-center space-x-1.5 text-slate-500 dark:text-slate-400 justify-end">
-                        <Clock className="w-3.5 h-3.5 text-amber-500" />
-                        <span>~{estimatedDurationMin} min</span>
+                    {/* Service Mode Selector */}
+                    <div className="grid grid-cols-3 gap-1 p-1 rounded-xl bg-slate-100 dark:bg-slate-950/60 border border-slate-200 dark:border-white/5">
+                      <button
+                        onClick={() => setServiceType('compteur')}
+                        className={`py-1.5 px-1.5 text-center rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                          serviceType === 'compteur'
+                            ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm'
+                            : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
+                        }`}
+                      >
+                        <span>{isAr ? 'تاكسي فردي' : 'Compteur'}</span>
+                      </button>
+
+                      <button
+                        onClick={() => setServiceType('confort')}
+                        className={`py-1.5 px-1.5 text-center rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                          serviceType === 'confort'
+                            ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm'
+                            : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
+                        }`}
+                      >
+                        <span>{isAr ? 'برلين راحة' : 'Confort'}</span>
+                      </button>
+
+                      <button
+                        onClick={() => setServiceType('navette')}
+                        className={`py-1.5 px-1.5 text-center rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                          serviceType === 'navette'
+                            ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-sm'
+                            : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
+                        }`}
+                      >
+                        <span>{isAr ? 'رحلة مبرمجة' : 'Navette'}</span>
+                      </button>
+                    </div>
+
+                    {/* Origin Selector */}
+                    <div className="space-y-1">
+                      <label htmlFor={originSelectId} className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
+                        <MapPin className="w-3.5 h-3.5 text-blue-500" />
+                        <span>{isAr ? 'نقطة الانطلاق' : 'Point de départ'}</span>
+                      </label>
+                      <div className="relative">
+                        <select
+                          id={originSelectId}
+                          value={originId}
+                          onChange={(e) => setOriginId(e.target.value)}
+                          className="w-full appearance-none px-3 py-2 rounded-xl border border-slate-300 dark:border-white/10 bg-white/70 dark:bg-slate-950/70 text-slate-900 dark:text-white font-medium text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all cursor-pointer"
+                        >
+                          {ALGIERS_HUBS.map(hub => (
+                            <option key={`orig-${hub.id}`} value={hub.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
+                              {isAr ? hub.nameAr : hub.nameFr} ({hub.commune})
+                            </option>
+                          ))}
+                        </select>
+                        <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                       </div>
                     </div>
-                  </div>
 
-                  <div className="pt-2 border-t border-slate-200/60 dark:border-white/10 text-[11px] text-slate-500 dark:text-slate-400">
-                    {isAr 
-                      ? 'يشمل رسم الانطلاق القانوني (100 دج) + التسعيرة الكيلومترية المعتمدة لولاية الجزائر.'
-                      : 'Inclut la prise en charge légale (100 DZD) et le barème officiel au kilomètre selon le Décret 12-230.'}
-                  </div>
-                </div>
+                    {/* Swap Hubs Button */}
+                    <div className="flex justify-center -my-1.5 relative z-10">
+                      <button
+                        onClick={handleSwapLocations}
+                        title="Inverser départ et arrivée"
+                        className="p-1 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-blue-600 hover:text-white transition-all cursor-pointer border border-slate-300 dark:border-white/10 shadow"
+                      >
+                        <ArrowRight className="w-3 h-3 rotate-90" />
+                      </button>
+                    </div>
 
-                {/* Order via Mobile CTA */}
-                <button
-                  onClick={() => setIsAppModalOpen(true)}
-                  className="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-[var(--brand-primary)] to-[var(--brand-primary-hover)] hover:opacity-95 text-white font-bold text-xs shadow-lg shadow-[var(--brand-primary)]/25 flex items-center justify-center space-x-2 transition-all cursor-pointer"
-                >
-                  <Smartphone className="w-4 h-4" />
-                  <span>{isAr ? 'تأكيد الحجز عبر التطبيق' : 'Commander sur l\'Application WASSLANI'}</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
+                    {/* Destination Selector */}
+                    <div className="space-y-1">
+                      <label htmlFor={destSelectId} className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
+                        <MapPin className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                        <span>{isAr ? 'الوجهة المقصودة' : 'Destination'}</span>
+                      </label>
+                      <div className="relative">
+                        <select
+                          id={destSelectId}
+                          value={destinationId}
+                          onChange={(e) => setDestinationId(e.target.value)}
+                          className="w-full appearance-none px-3 py-2 rounded-xl border border-slate-300 dark:border-white/10 bg-white/70 dark:bg-slate-950/70 text-slate-900 dark:text-white font-medium text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all cursor-pointer"
+                        >
+                          {ALGIERS_HUBS.map(hub => (
+                            <option key={`dest-${hub.id}`} value={hub.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
+                              {isAr ? hub.nameAr : hub.nameFr} ({hub.commune})
+                            </option>
+                          ))}
+                        </select>
+                        <ChevronDown className="w-4 h-4 text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      </div>
+                    </div>
+
+                    {/* Dynamic Calculated Fare Card */}
+                    <div className="p-3.5 rounded-2xl bg-blue-600/10 dark:bg-blue-950/30 border border-blue-500/25 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                            {isAr ? 'الأجرة التقديرية الرسمية' : 'Tarif Légal Estimé'}
+                          </span>
+                          <div className="text-2xl font-black text-slate-900 dark:text-white flex items-baseline space-x-1">
+                            <span>{estimatedFareDzd}</span>
+                            <span className="text-xs font-bold text-blue-600 dark:text-blue-400">DZD</span>
+                          </div>
+                        </div>
+
+                        <div className="text-right space-y-0.5 text-xs">
+                          <div className="flex items-center space-x-1 text-slate-600 dark:text-slate-300 font-semibold justify-end text-xs">
+                            <Navigation className="w-3 h-3 text-blue-500" />
+                            <span>{estimatedDistance} km</span>
+                          </div>
+                          <div className="flex items-center space-x-1 text-slate-500 dark:text-slate-400 justify-end text-xs">
+                            <Clock className="w-3 h-3 text-amber-500" />
+                            <span>~{estimatedDurationMin} min</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="pt-1.5 border-t border-slate-200/60 dark:border-white/10 text-[10px] text-slate-500 dark:text-slate-400">
+                        {isAr 
+                          ? 'يشمل رسم الانطلاق القانوني (100 دج) + التسعيرة الكيلومترية المعتمدة لولاية الجزائر.'
+                          : 'Inclut la prise en charge légale (100 DZD) et le barème officiel au kilomètre selon le Décret 12-230.'}
+                      </div>
+                    </div>
+
+                    {/* Action buttons */}
+                    <div className="grid grid-cols-2 gap-2 pt-1">
+                      <button
+                        onClick={() => onNavigateTab('rider')}
+                        className="w-full py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition-all flex items-center justify-center space-x-1.5 shadow-md shadow-blue-600/25 cursor-pointer"
+                      >
+                        <Smartphone className="w-3.5 h-3.5" />
+                        <span>{isAr ? 'طلب التاكسي الآن' : 'Commander en direct'}</span>
+                      </button>
+
+                      <button
+                        onClick={() => onNavigateTab('sync')}
+                        className="w-full py-2.5 px-3 rounded-xl bg-slate-200 dark:bg-white/10 hover:bg-slate-300 dark:hover:bg-white/15 text-slate-800 dark:text-white font-bold text-xs transition-all flex items-center justify-center space-x-1.5 border border-slate-300 dark:border-white/10 cursor-pointer"
+                      >
+                        <Layers className="w-3.5 h-3.5 text-blue-500" />
+                        <span>{isAr ? 'المنصة المتكاملة' : 'Démo Multi-Écrans'}</span>
+                      </button>
+                    </div>
+
+                  </div>
+                )}
 
               </div>
             </div>
@@ -604,6 +874,9 @@ export const LandingView: React.FC<LandingViewProps> = ({
         </div>
       </section>
 
+      {/* GSAP HORIZONTAL SHOWCASE: The 5 Decoupled Portals (Passager, Cockpit Chauffeur, DTW Dispatch, Grand Livre, Contrôle Routier) */}
+      <HorizontalShowcase lang={lang} onNavigateTab={onNavigateTab} />
+
       {/* SCROLLYTELLING STUDIO: 3 Core Pillars with GSAP ScrollTrigger & Hotspots */}
       <HeroScrollyStudio lang={lang} onNavigateTab={onNavigateTab} />
 
@@ -680,6 +953,9 @@ export const LandingView: React.FC<LandingViewProps> = ({
           </div>
         </div>
       </section>
+
+      {/* GSAP STICKY STACK: 3 Sovereign & Technological Pillars */}
+      <StickyStack lang={lang} onNavigateTab={onNavigateTab} />
 
       {/* SECTION 4: ESPACE CHAUFFEURS ET ARTISANS TAXIEURS (#drivers) */}
       <section id="drivers" className="max-w-7xl mx-auto px-4 sm:px-6">
