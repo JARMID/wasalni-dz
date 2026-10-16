@@ -6,7 +6,9 @@ void main() {
 }
 
 class DriverCockpitApp extends StatelessWidget {
-  const DriverCockpitApp({super.key});
+  const DriverCockpitApp({super.key, this.supabaseService});
+
+  final SupabaseService? supabaseService;
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +25,15 @@ class DriverCockpitApp extends StatelessWidget {
         ),
         fontFamily: 'Roboto',
       ),
-      home: const CockpitHomeScreen(),
+      home: CockpitHomeScreen(supabaseService: supabaseService),
     );
   }
 }
 
 class CockpitHomeScreen extends StatefulWidget {
-  const CockpitHomeScreen({super.key});
+  const CockpitHomeScreen({super.key, this.supabaseService});
+
+  final SupabaseService? supabaseService;
 
   @override
   State<CockpitHomeScreen> createState() => _CockpitHomeScreenState();
@@ -37,6 +41,33 @@ class CockpitHomeScreen extends StatefulWidget {
 
 class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
   bool _isArabic = false;
+  late final SupabaseService _supabaseService;
+
+  @override
+  void initState() {
+    super.initState();
+    _supabaseService = widget.supabaseService ?? SupabaseService();
+    _syncDriverWalletBalance();
+  }
+
+  Future<void> _syncDriverWalletBalance() async {
+    final balances = await _supabaseService.fetchWalletBalances();
+    if (balances.containsKey('2020') && mounted) {
+      setState(() {
+        driver = driver.copyWith(walletBalanceDzd: balances['2020']!);
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    if (widget.supabaseService == null) {
+      _supabaseService.dispose();
+    }
+    _pinController.dispose();
+    _meterController.dispose();
+    super.dispose();
+  }
 
   // Regulatory Driver Profile (Executive Decree 12-230)
   DriverProfile driver = const DriverProfile(
@@ -244,6 +275,8 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
     setState(() {
       incidents.insert(0, incident);
     });
+
+    _supabaseService.recordDashcamIncident(incident);
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -704,6 +737,18 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
                       completedAt: DateTime.now(),
                     );
                   });
+                  _supabaseService.recordLedgerEntry(
+                    LedgerEntry(
+                      id: 'SPARE-${prompt.rideId}',
+                      timestamp: DateTime.now().toIso8601String(),
+                      entryType: 'spare_change_credit',
+                      debitAccount: '2020_DRIVER_OPERATIONAL',
+                      creditAccount: '2010_RIDER_TRUSTDESK',
+                      amountDzd: changeAmount,
+                      description: 'Flywheel spare change converted to rider wallet',
+                      rideId: prompt.rideId,
+                    ),
+                  );
                 },
                 child: Text(_isArabic ? 'تحويل لمحفظة وصلني' : 'Créditer sur WASSLANI'),
               ),
@@ -743,6 +788,26 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
             ],
           ),
           actions: [
+            // Driver Operational Wallet Balance Pill
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF59E0B).withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: const Color(0xFFF59E0B).withValues(alpha: 0.4)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.account_balance_wallet, size: 14, color: Color(0xFFF59E0B)),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${driver.walletBalanceDzd.toStringAsFixed(0)} DA',
+                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Color(0xFFF59E0B)),
+                  ),
+                ],
+              ),
+            ),
             // Vehicle & Agrément Compliance Button
             TextButton.icon(
               style: TextButton.styleFrom(foregroundColor: const Color(0xFF60A5FA)),

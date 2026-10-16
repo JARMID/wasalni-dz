@@ -1,5 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
+import 'package:naql_core/naql_core.dart';
 import 'package:driver_app/main.dart';
 
 void main() {
@@ -133,5 +137,41 @@ void main() {
     // Verify navigation banner is active with speed limit and road name
     expect(find.textContaining('Rejoindre la Rocade Sud'), findsOneWidget);
     expect(find.text('80'), findsOneWidget);
+  });
+
+  testWidgets('DriverCockpitApp synchronizes driver operational balance and records crash lockbox', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1280, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    bool dashcamIncidentUploaded = false;
+    final mockClient = MockClient((request) async {
+      if (request.url.path == '/rest/v1/wallets') {
+        final responsePayload = [
+          {'system_account_code': '2020', 'balance_dzd': '5200.00'},
+        ];
+        return http.Response(jsonEncode(responsePayload), 200, headers: {'content-type': 'application/json'});
+      }
+      if (request.url.path == '/rest/v1/dashcam_incidents') {
+        dashcamIncidentUploaded = true;
+        return http.Response(jsonEncode([{'id': '00000000-0000-0000-0000-000000000001'}]), 201, headers: {'content-type': 'application/json'});
+      }
+      return http.Response('[]', 200);
+    });
+
+    final testService = SupabaseService(client: mockClient);
+    addTearDown(testService.dispose);
+
+    await tester.pumpWidget(DriverCockpitApp(supabaseService: testService));
+    await tester.pumpAndSettle();
+
+    // Verify synchronized operational balance 5200 DA appears
+    expect(find.text('5200 DA'), findsOneWidget);
+
+    // Trigger crash button
+    await tester.tap(find.text('Crash 2.84G'));
+    await tester.pumpAndSettle();
+
+    expect(dashcamIncidentUploaded, isTrue);
   });
 }

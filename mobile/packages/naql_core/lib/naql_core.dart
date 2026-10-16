@@ -15,3 +15,4 @@ export 'security/envelope_encryption.dart';
 export 'services/tariff_service.dart';
 export 'services/spare_change_engine.dart';
 export 'services/geo_routing_service.dart';
+export 'services/supabase_service.dart';

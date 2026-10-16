@@ -1,5 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:http/http.dart' as http;
+import 'package:http/testing.dart';
+import 'package:naql_core/naql_core.dart';
 import 'package:rider_app/main.dart';
 
 void main() {
@@ -95,5 +99,37 @@ void main() {
 
     // Returned to idle booking screen
     expect(find.text('Commander un Taxi Certifié'), findsOneWidget);
+  });
+
+  testWidgets('RiderApp synchronizes live wallet balance from SupabaseService', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(450, 1000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    final mockClient = MockClient((request) async {
+      final responsePayload = [
+        {'system_account_code': '2010', 'balance_dzd': '2850.00'},
+      ];
+      return http.Response(jsonEncode(responsePayload), 200, headers: {
+        'content-type': 'application/json',
+      });
+    });
+
+    final testService = SupabaseService(client: mockClient);
+    addTearDown(testService.dispose);
+
+    await tester.pumpWidget(RiderApp(supabaseService: testService));
+    await tester.pumpAndSettle();
+
+    // Verify synchronized balance 2850 DA is displayed in top header
+    expect(find.text('2850 DA'), findsOneWidget);
+
+    // Switch to Wallet tab via bottom bar icon
+    final walletTabFinder = find.byIcon(Icons.wallet);
+    await tester.tap(walletTabFinder);
+    await tester.pumpAndSettle();
+
+    // Verify synchronized balance 2850 DA is displayed in the hero card
+    expect(find.text('2850 DA'), findsWidgets);
   });
 }

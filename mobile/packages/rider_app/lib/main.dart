@@ -6,7 +6,9 @@ void main() {
 }
 
 class RiderApp extends StatelessWidget {
-  const RiderApp({super.key});
+  const RiderApp({super.key, this.supabaseService});
+
+  final SupabaseService? supabaseService;
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +25,15 @@ class RiderApp extends StatelessWidget {
         ),
         fontFamily: 'Roboto',
       ),
-      home: const RiderHomeScreen(),
+      home: RiderHomeScreen(supabaseService: supabaseService),
     );
   }
 }
 
 class RiderHomeScreen extends StatefulWidget {
-  const RiderHomeScreen({super.key});
+  const RiderHomeScreen({super.key, this.supabaseService});
+
+  final SupabaseService? supabaseService;
 
   @override
   State<RiderHomeScreen> createState() => _RiderHomeScreenState();
@@ -41,6 +45,37 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
   ServiceMode _selectedMode = ServiceMode.taxiIndividuel;
   double _riderWalletBalanceDzd = 1450.0;
   final double _accumulatedSpareChangeDzd = 350.0;
+  bool _isSyncingBalance = false;
+  late final SupabaseService _supabaseService;
+
+  @override
+  void initState() {
+    super.initState();
+    _supabaseService = widget.supabaseService ?? SupabaseService();
+    _loadSupabaseBalances();
+  }
+
+  Future<void> _loadSupabaseBalances() async {
+    if (!mounted) return;
+    setState(() => _isSyncingBalance = true);
+    final balances = await _supabaseService.fetchWalletBalances();
+    if (mounted) {
+      setState(() {
+        _isSyncingBalance = false;
+        if (balances.containsKey('2010')) {
+          _riderWalletBalanceDzd = balances['2010']!;
+        }
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    if (widget.supabaseService == null) {
+      _supabaseService.dispose();
+    }
+    super.dispose();
+  }
 
   RideState _currentRide = const RideIdle();
 
@@ -1537,7 +1572,25 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                       _isArabic ? 'محفظة وصلني الرقمية' : 'PORTEFEUILLE WASSLANI',
                       style: const TextStyle(color: Colors.white70, fontSize: 12, fontWeight: FontWeight.bold, letterSpacing: 1.5),
                     ),
-                    const Icon(Icons.shield, color: Colors.white70, size: 20),
+                    Row(
+                      children: [
+                        IconButton(
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                          icon: _isSyncingBalance
+                              ? const SizedBox(
+                                  width: 14,
+                                  height: 14,
+                                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white70),
+                                )
+                              : const Icon(Icons.sync, color: Colors.white70, size: 18),
+                          tooltip: _isArabic ? 'تحديث الرصيد' : 'Actualiser le solde',
+                          onPressed: _isSyncingBalance ? null : _loadSupabaseBalances,
+                        ),
+                        const SizedBox(width: 8),
+                        const Icon(Icons.shield, color: Colors.white70, size: 18),
+                      ],
+                    ),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -1588,10 +1641,14 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                _isArabic ? 'سجل الرحلات الرسمية المنجزة:' : 'Historique des Courses Fiscale DTW:',
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              Expanded(
+                child: Text(
+                  _isArabic ? 'سجل الرحلات الرسمية المنجزة:' : 'Historique des Courses Fiscale DTW:',
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
+              const SizedBox(width: 8),
               Text(
                 '${_tripHistory.length} ${_isArabic ? "رحلات" : "trajets"}',
                 style: const TextStyle(fontSize: 12, color: Colors.white54),
@@ -1638,9 +1695,12 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(
-                          '${item.driverName} • ${item.distanceKm.toStringAsFixed(1)} km',
-                          style: const TextStyle(color: Colors.white54, fontSize: 11),
+                        Expanded(
+                          child: Text(
+                            '${item.driverName} • ${item.distanceKm.toStringAsFixed(1)} km',
+                            style: const TextStyle(color: Colors.white54, fontSize: 11),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
                         if (item.spareChangeDzd > 0)
                           Container(
