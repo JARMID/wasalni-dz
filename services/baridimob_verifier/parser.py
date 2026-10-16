@@ -63,7 +63,7 @@ def parse_baridimob_text(receipt_text: str) -> Optional[BaridiMobReceipt]:
     """
     # 1. Transaction ID pattern (e.g. TXN-12345678, Ref: 9876543210, Virement N°...)
     txn_match = re.search(
-        r'(?:R[ée]f[ée]rence|Transaction|Virement|N[°o]|Ref)\s*[:#]?\s*([A-Za-z0-9_-]{6,24})',
+        r'(?:R[ée]f[ée]rence|Transaction|Virement|N[°o]|Ref|المرجع|رقم العملية|معاملة)\s*[:#]?\s*([A-Za-z0-9_-]{6,24})',
         receipt_text,
         re.IGNORECASE
     )
@@ -74,15 +74,15 @@ def parse_baridimob_text(receipt_text: str) -> Optional[BaridiMobReceipt]:
     sender_rip = rip_matches[0] if len(rip_matches) > 0 else "00799999000000000000"
     recipient_rip = rip_matches[1] if len(rip_matches) > 1 else "00799999111111111111"
 
-    # 3. Extract Amount in DZD (e.g. 1 500,00 DZD, 2500 DA, 500.00 DA)
+    # 3. Extract Amount in DZD (e.g. 1 500,00 DZD, 2500 DA, 500.00 DA, 1200 دج)
     amount_match = re.search(
-        r'(?:Montant|Tarif|Amount|Somme)\s*[:]?\s*([\d\s]+(?:[.,]\d{1,2})?)\s*(?:DA|DZD|Dinar)',
+        r'(?:Montant(?:\s+[\wéè]+)?|Tarif|Amount|Somme|المبلغ(?:\s+[\wأ-ي]+)?|القيمة|المجموع)\s*[:]?\s*([\d\s]+(?:[.,]\d{1,2})?)\s*(?:\b(?:DA|DZD|Dinar|da|dzd)\b|دج|دينار)',
         receipt_text,
         re.IGNORECASE
     )
     if not amount_match:
-        # Fallback search for amount pattern followed by DA
-        amount_match = re.search(r'([\d\s]+(?:[.,]\d{1,2})?)\s*(?:DA|DZD)', receipt_text)
+        # Fallback search for amount pattern followed by DA or DZD or دج
+        amount_match = re.search(r'\b(\d[\d\s]*(?:[.,]\d{1,2})?)\s*(?:\b(?:DA|DZD|Dinar|da|dzd)\b|دج|دينار)', receipt_text, re.IGNORECASE)
 
     amount = 0.0
     if amount_match:
@@ -97,6 +97,8 @@ def parse_baridimob_text(receipt_text: str) -> Optional[BaridiMobReceipt]:
         r'(\d{2}[/-]\d{2}[/-]\d{4}\s+(?:\d{2}:\d{2}(?::\d{2})?)?)',
         receipt_text
     )
+    if not date_match:
+        date_match = re.search(r'(\d{4}[/-]\d{2}[/-]\d{2}\s+(?:\d{2}:\d{2}(?::\d{2})?)?)', receipt_text)
     timestamp = date_match.group(1) if date_match else "2026-10-14 18:00:00"
 
     # Validate RIP checksum

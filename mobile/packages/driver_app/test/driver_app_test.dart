@@ -174,4 +174,68 @@ void main() {
 
     expect(dashcamIncidentUploaded, isTrue);
   });
+
+  testWidgets('DriverCockpitApp toggles offline mode and queues incidents', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1280, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const DriverCockpitApp());
+    await tester.pumpAndSettle();
+
+    // Find and tap network toggle icon in AppBar
+    final wifiBtn = find.byIcon(Icons.wifi);
+    expect(wifiBtn, findsOneWidget);
+    await tester.tap(wifiBtn);
+    await tester.pumpAndSettle();
+
+    // Verify offline banner appears with tunnel notice
+    expect(find.textContaining('Mode Hors-Ligne (Tunnels / Sous-sol)'), findsOneWidget);
+
+    // Tap crash button while offline
+    await tester.tap(find.text('Crash 2.84G'));
+    await tester.pump();
+
+    // Verify offline queueing notice
+    expect(find.textContaining('Mis en file d\'attente locale'), findsOneWidget);
+
+    // Reconnect network
+    final reconnectBtn = find.text('Reconnecter');
+    expect(reconnectBtn, findsOneWidget);
+    await tester.tap(reconnectBtn);
+    await tester.pumpAndSettle();
+
+    // Banner disappears
+    expect(find.textContaining('Mode Hors-Ligne (Tunnels / Sous-sol)'), findsNothing);
+  });
+
+  testWidgets('DriverCockpitApp generates and displays DTW Taximeter quittance with QR verification', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(1280, 800);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const DriverCockpitApp());
+    await tester.pumpAndSettle();
+
+    // Tap Quittance button in AppBar
+    final quittanceBtn = find.text('Quittance');
+    expect(quittanceBtn, findsOneWidget);
+    await tester.tap(quittanceBtn);
+    await tester.pumpAndSettle();
+
+    // Verify quittance dialog elements
+    expect(find.text('QUITTANCE TAXIMÈTRE DÉCRET 12-230'), findsOneWidget);
+    expect(find.textContaining('RÉPUBLIQUE ALGÉRIENNE DÉMOCRATIQUE ET POPULAIRE'), findsOneWidget);
+    expect(find.textContaining('Sceau DTW:'), findsOneWidget);
+    expect(find.byType(QuittanceQrWidget), findsOneWidget);
+    expect(find.text('Partager'), findsOneWidget);
+
+    // Close dialog
+    final closeBtn = find.text('Fermer');
+    expect(closeBtn, findsOneWidget);
+    await tester.tap(closeBtn);
+    await tester.pumpAndSettle();
+
+    expect(find.text('QUITTANCE TAXIMÈTRE DÉCRET 12-230'), findsNothing);
+  });
 }

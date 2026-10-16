@@ -37,7 +37,7 @@ Write-Host "[2/6] Execution des tests unitaires Flutter (naql_core)..." -Foregro
 Push-Location "$ProjectRoot\mobile\packages\naql_core"
 try {
     $resCore = flutter test
-    Write-Host "  -> Succes: Shamir 2-of-3, Machine Thermique et Tarification valides (5/5 tests)." -ForegroundColor Green
+    Write-Host "  -> Succes: Shamir 2-of-3, Machine Thermique, Grand Livre et Quittance valides (32/32 tests)." -ForegroundColor Green
     $PassedCount++
 } catch {
     Write-Host "  -> Echec sur naql_core: $_" -ForegroundColor Red
@@ -50,7 +50,7 @@ Write-Host "[3/6] Execution des tests Flutter (rider_app)..." -ForegroundColor Y
 Push-Location "$ProjectRoot\mobile\packages\rider_app"
 try {
     $resRider = flutter test
-    Write-Host "  -> Succes: Modes de transport, commande et code PIN valides." -ForegroundColor Green
+    Write-Host "  -> Succes: Modes, RTL, portefeuille live, hors-ligne et quittance QR valides (6/6 tests)." -ForegroundColor Green
     $PassedCount++
 } catch {
     Write-Host "  -> Echec sur rider_app: $_" -ForegroundColor Red
@@ -63,7 +63,7 @@ Write-Host "[4/6] Execution des tests Flutter (driver_app)..." -ForegroundColor 
 Push-Location "$ProjectRoot\mobile\packages\driver_app"
 try {
     $resDriver = flutter test
-    Write-Host "  -> Succes: Agrement DTW, HUD CameraX et declencheur crash 2.84G valides." -ForegroundColor Green
+    Write-Host "  -> Succes: Agrement DTW, HUD CameraX, 2.84G crash, boite noire et quittance QR valides (7/7 tests)." -ForegroundColor Green
     $PassedCount++
 } catch {
     Write-Host "  -> Echec sur driver_app: $_" -ForegroundColor Red
@@ -76,7 +76,7 @@ Write-Host "[5/6] Tests unitaires du verificateur BaridiMob (Modulo 97 & Anti-Re
 Push-Location "$ProjectRoot\services\baridimob_verifier"
 try {
     $resPy = python -m unittest test_verifier.py
-    Write-Host "  -> Succes: Cle RIP Modulo 97 et signature idempotente valides a 100% (3/3 tests)." -ForegroundColor Green
+    Write-Host "  -> Succes: Cle RIP Modulo 97 et signature idempotente valides a 100% (4/4 tests)." -ForegroundColor Green
     $PassedCount++
 } catch {
     Write-Host "  -> Echec du verificateur BaridiMob: $_" -ForegroundColor Red

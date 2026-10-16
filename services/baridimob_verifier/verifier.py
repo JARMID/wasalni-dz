@@ -5,6 +5,7 @@ Prevents duplicate top-up replay attacks and writes immutable accounting journal
 
 import hashlib
 import json
+from typing import Dict, Any
 try:
     from .parser import BaridiMobReceipt, parse_baridimob_text, verify_algerian_rip
 except ImportError:

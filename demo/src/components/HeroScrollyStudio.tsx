@@ -387,7 +387,7 @@ export const HeroScrollyStudio: React.FC<HeroScrollyStudioProps> = ({
                       {activeStage === 2 && <CreditCard className="w-4 h-4 text-white" />}
                     </div>
 
-                    {/* Interactive Hotspot Beacons */}
+                    {/* Interactive Hotspot Pins */}
                     {currentStage.hotspots.map((hs, i) => (
                       <button
                         key={i}

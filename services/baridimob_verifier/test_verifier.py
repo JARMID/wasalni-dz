@@ -68,6 +68,23 @@ class TestBaridiMobVerifier(unittest.TestCase):
         self.assertFalse(res2["success"])
         self.assertEqual(res2["error"], "DUPLICATE_TRANSACTION")
 
+    def test_parse_arabic_baridimob_receipt(self):
+        arabic_receipt = """
+        بريد الجزائر - بريدي موب
+        وصل تحويل إلكتروني
+        المرجع: TXN-ALG-773104
+        التاريخ: 15/10/2026 14:35:20
+        الحساب المرسل: 00799999001234567825
+        الحساب المستلم: 00799999009876543210
+        المبلغ: 1 800,00 دج
+        الوضعية: مقبولة وناجحة
+        """
+        receipt = parse_baridimob_text(arabic_receipt)
+        self.assertIsNotNone(receipt)
+        self.assertEqual(receipt.transaction_id, "TXN-ALG-773104")
+        self.assertEqual(receipt.amount_dzd, 1800.0)
+        self.assertEqual(receipt.timestamp, "15/10/2026 14:35:20")
+
 
 if __name__ == "__main__":
     unittest.main()

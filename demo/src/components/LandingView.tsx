@@ -23,6 +23,7 @@ import type { AppLang } from '../utils/i18n';
 import type { ActiveTab, BrandOption, GraphicsPalette } from './Header';
 import { FluidShaderCanvas } from './FluidShaderCanvas';
 import { FooterReveal } from './FooterReveal';
+import { HeroScrollyStudio } from './HeroScrollyStudio';
 
 interface LocationHub {
   id: string;
@@ -602,6 +603,9 @@ export const LandingView: React.FC<LandingViewProps> = ({
 
         </div>
       </section>
+
+      {/* SCROLLYTELLING STUDIO: 3 Core Pillars with GSAP ScrollTrigger & Hotspots */}
+      <HeroScrollyStudio lang={lang} onNavigateTab={onNavigateTab} />
 
       {/* SECTION 3: COMMENT ÇA MARCHE (3 Simple Steps) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6">

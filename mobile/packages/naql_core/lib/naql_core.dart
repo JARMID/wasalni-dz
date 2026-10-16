@@ -16,3 +16,7 @@ export 'services/tariff_service.dart';
 export 'services/spare_change_engine.dart';
 export 'services/geo_routing_service.dart';
 export 'services/supabase_service.dart';
+export 'models/taximeter_quittance.dart';
+export 'services/offline_sync_queue.dart';
+export 'services/audio_haptic_service.dart';
+export 'widgets/quittance_qr_widget.dart';

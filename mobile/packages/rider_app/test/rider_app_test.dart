@@ -132,4 +132,68 @@ void main() {
     // Verify synchronized balance 2850 DA is displayed in the hero card
     expect(find.text('2850 DA'), findsWidgets);
   });
+
+  testWidgets('RiderApp displays offline banner when network connectivity is toggled', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(450, 1000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const RiderApp());
+    await tester.pumpAndSettle();
+
+    // Toggle connectivity via offline icon
+    final wifiBtn = find.byIcon(Icons.wifi);
+    expect(wifiBtn, findsOneWidget);
+    await tester.tap(wifiBtn);
+    await tester.pumpAndSettle();
+
+    // Verify offline banner appears with tunnel notice
+    expect(find.textContaining('Mode Hors-Ligne (Tunnels / Sous-sol)'), findsOneWidget);
+
+    // Tap Reconnecter
+    final reconnectBtn = find.text('Reconnecter');
+    expect(reconnectBtn, findsOneWidget);
+    await tester.tap(reconnectBtn);
+    await tester.pumpAndSettle();
+
+    // Banner should disappear
+    expect(find.textContaining('Mode Hors-Ligne (Tunnels / Sous-sol)'), findsNothing);
+  });
+
+  testWidgets('RiderApp opens official DTW Taximeter quittance with QR verification code', (WidgetTester tester) async {
+    tester.view.physicalSize = const Size(450, 1000);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(tester.view.resetPhysicalSize);
+
+    await tester.pumpWidget(const RiderApp());
+    await tester.pumpAndSettle();
+
+    // Switch to Wallet and History tab
+    final walletTabFinder = find.byIcon(Icons.wallet);
+    await tester.tap(walletTabFinder);
+    await tester.pumpAndSettle();
+
+    // Find and tap first "Voir Quittance DTW" button
+    final quittanceBtn = find.text('Voir Quittance DTW').first;
+    await tester.ensureVisible(quittanceBtn);
+    await tester.tap(quittanceBtn);
+    await tester.pumpAndSettle();
+
+    // Verify official quittance dialog is open
+    expect(find.text('QUITTANCE TAXIMÈTRE DÉCRET 12-230'), findsOneWidget);
+    expect(find.textContaining('RÉPUBLIQUE ALGÉRIENNE DÉMOCRATIQUE ET POPULAIRE'), findsOneWidget);
+    expect(find.textContaining('Sceau DTW:'), findsOneWidget);
+    expect(find.byType(QuittanceQrWidget), findsOneWidget);
+
+    // Verify action buttons
+    expect(find.text('Partager'), findsOneWidget);
+    final closeBtn = find.text('Fermer');
+    expect(closeBtn, findsOneWidget);
+
+    // Close dialog
+    await tester.tap(closeBtn);
+    await tester.pumpAndSettle();
+
+    expect(find.text('QUITTANCE TAXIMÈTRE DÉCRET 12-230'), findsNothing);
+  });
 }
