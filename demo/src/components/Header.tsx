@@ -298,6 +298,13 @@ export const Header: React.FC<HeaderProps> = ({
               </a>
 
               <a
+                href="#verify"
+                className="px-2 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
+              >
+                {lang === 'ar' ? 'التحقق' : 'Vérification'}
+              </a>
+
+              <a
                 href="#safety"
                 className="px-2 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
               >

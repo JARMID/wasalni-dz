@@ -37,6 +37,9 @@ import { StickyStack } from './StickyStack';
 import { HeroRealExperience } from './HeroRealExperience';
 import { CommunesExplorer } from './CommunesExplorer';
 import { DriverEarningsCalculator } from './DriverEarningsCalculator';
+import { OfficialVerificationConsole } from './OfficialVerificationConsole';
+import { FamilyTrackingModal } from './FamilyTrackingModal';
+import { AlgiersTrafficRadar } from './AlgiersTrafficRadar';
 import { soundEngine } from '../utils/audio';
 
 interface LandingViewProps {
@@ -86,6 +89,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
   const [taximeterKm, setTaximeterKm] = useState<number>(12.5);
   const [taximeterRushHour, setTaximeterRushHour] = useState<boolean>(false);
   const [showQuittanceModal, setShowQuittanceModal] = useState<boolean>(false);
+  const [isFamilyTrackingModalOpen, setIsFamilyTrackingModalOpen] = useState<boolean>(false);
 
   // Section 5.8: FAQ Accordion
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
@@ -775,6 +779,9 @@ export const LandingView: React.FC<LandingViewProps> = ({
         onSelectDistance={(km) => setTaximeterKm(km)} 
       />
 
+      {/* SECTION 2.9: RADAR DU TRAFIC & VITESSE SUR LES ROCADES D'ALGER (#radar) */}
+      <AlgiersTrafficRadar lang={lang} />
+
       {/* GSAP HORIZONTAL SHOWCASE: 6 Surfaces Métier & Démonstrateur Synchronisé */}
       <HorizontalShowcase lang={lang} onNavigateTab={onNavigateTab} />
 
@@ -1002,6 +1009,19 @@ export const LandingView: React.FC<LandingViewProps> = ({
               <span>•</span>
               <span>{isAr ? 'إشعارات مباشرة' : 'Suivi GPS parents'}</span>
             </div>
+
+            <div className="pt-2">
+              <button
+                onClick={() => {
+                  soundEngine.playClick();
+                  setIsFamilyTrackingModalOpen(true);
+                }}
+                className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-md shadow-blue-600/25 transition-all flex items-center space-x-2 cursor-pointer"
+              >
+                <Navigation className="w-3.5 h-3.5" />
+                <span>{isAr ? 'تجربة محاكي التتبع الحي للأولياء' : 'Tester le Suivi en Direct pour Parents'}</span>
+              </button>
+            </div>
           </div>
 
           {/* Card 2: Comptes Entreprises & Facturation */}
@@ -1108,6 +1128,9 @@ export const LandingView: React.FC<LandingViewProps> = ({
           </div>
         </div>
       </section>
+
+      {/* SECTION 5.7: GUICHET OFFICIEL DE VÉRIFICATION DE QUITTANCE & LIVRET DE PLACE (#verify) */}
+      <OfficialVerificationConsole lang={lang} />
 
       {/* SECTION 5.8: FOIRE AUX QUESTIONS RÉGLEMENTAIRE & CITOYENNE (#faq) */}
       <section id="faq" className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -1680,6 +1703,13 @@ export const LandingView: React.FC<LandingViewProps> = ({
           </div>
         </div>
       )}
+
+      {/* MODAL 4: FAMILY LIVE TRACKING & PARENT REASSURANCE DIALOG */}
+      <FamilyTrackingModal
+        isOpen={isFamilyTrackingModalOpen}
+        onClose={() => setIsFamilyTrackingModalOpen(false)}
+        lang={lang}
+      />
 
     </div>
   );
