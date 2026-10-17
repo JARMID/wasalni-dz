@@ -21,7 +21,12 @@ import {
   Zap,
   Quote,
   Check,
-  SlidersHorizontal
+  SlidersHorizontal,
+  ChevronDown,
+  ChevronUp,
+  HelpCircle,
+  Receipt,
+  Printer
 } from 'lucide-react';
 import type { AppLang } from '../utils/i18n';
 import type { ActiveTab, BrandOption, GraphicsPalette } from './Header';
@@ -75,12 +80,26 @@ export const LandingView: React.FC<LandingViewProps> = ({
   // Bento Cell 4: Family Reassurance Mode
   const [familyTab, setFamilyTab] = useState<'school' | 'parents' | 'legal'>('school');
 
+  // Section 2.5: Interactive Official Taximeter Console
+  const [taximeterKm, setTaximeterKm] = useState<number>(12.5);
+  const [taximeterRushHour, setTaximeterRushHour] = useState<boolean>(false);
+  const [showQuittanceModal, setShowQuittanceModal] = useState<boolean>(false);
+
+  // Section 5.8: FAQ Accordion
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
+
   // Regulated Tariff (Executive Decree 12-230): 100 DA Flag Drop + 35 DA/km
   const wasslaniSimFare = Math.round(100 + simDistance * 35);
   // Unregulated VTC & Clandestins: 150 DA Base + 55 DA/km with dynamic rain multiplier (3.1x)
   const vtcBase = Math.round(150 + simDistance * 55);
   const vtcSimFare = isRainSurge ? Math.round(vtcBase * 3.1) : Math.round(vtcBase * 1.35);
   const directSavings = Math.max(0, vtcSimFare - wasslaniSimFare);
+
+  // Dedicated Taximeter Console Calculations
+  const taximeterWasslaniTotal = Math.round(100 + taximeterKm * 35);
+  const taximeterVtcBase = Math.round(150 + taximeterKm * 55);
+  const taximeterVtcTotal = taximeterRushHour ? Math.round(taximeterVtcBase * 3.1) : Math.round(taximeterVtcBase * 1.35);
+  const taximeterSavings = Math.max(0, taximeterVtcTotal - taximeterWasslaniTotal);
 
   // BaridiMob refund calculation
   const simRideCost = 370;
@@ -549,6 +568,205 @@ export const LandingView: React.FC<LandingViewProps> = ({
         </div>
       </section>
 
+      {/* SECTION 2.5: SIMULATEUR DE TAXIMÈTRE OFFICIEL (Décret Exécutif 12-230) */}
+      <section id="taximeter" className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="rounded-3xl p-8 sm:p-12 bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 shadow-2xl backdrop-blur-xl relative overflow-hidden">
+          
+          <div className="text-center max-w-3xl mx-auto mb-10 space-y-3">
+            <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
+              <Car className="w-3.5 h-3.5" />
+              <span>{isAr ? 'محاكي العداد الرسمي للدولة الجزائرية' : 'Taximètre Homologué • Wilaya d\'Alger'}</span>
+            </div>
+            <h2 className="text-2xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
+              {isAr ? 'احسب تسعيرة رحلتك بالعداد الرسمي بالدينار الجزائري' : 'Simulateur Officiel du Compteur Kilométrique'}
+            </h2>
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
+              {isAr 
+                ? 'وفق المرسوم التنفيذي 12-230 الصادر عن وزارة النقل: 100 دج انطلاق و35 دج لكل كيلومتر. قارن في ثوانٍ مع التطبيقات غير المقننة وشاهد الفارق لصالح جيبك.'
+                : 'Conformément au Décret Exécutif 12-230: 100 DA de prise en charge et 35 DA par kilomètre réel. Constatez l\'écart direct avec les algorithmes VTC non homologués.'}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            
+            {/* Left Controls: Sliders & Presets (7 cols) */}
+            <div className="lg:col-span-7 space-y-6 text-left">
+              
+              {/* Distance Slider Control */}
+              <div className="p-6 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-white/10 space-y-4">
+                <div className="flex items-center justify-between">
+                  <label htmlFor="taximeter-range" className="text-sm font-bold text-slate-800 dark:text-slate-200 flex items-center space-x-2">
+                    <Navigation className="w-4 h-4 text-blue-500" />
+                    <span>{isAr ? 'مسافة المسار بالكيلومتر :' : 'Distance réelle du trajet :'}</span>
+                  </label>
+                  <span className="font-mono text-2xl font-black text-blue-600 dark:text-blue-400">
+                    {taximeterKm.toFixed(1)} <span className="text-xs text-slate-500">KM</span>
+                  </span>
+                </div>
+
+                <input
+                  id="taximeter-range"
+                  type="range"
+                  min="1"
+                  max="45"
+                  step="0.5"
+                  value={taximeterKm}
+                  onChange={(e) => {
+                    setTaximeterKm(parseFloat(e.target.value));
+                  }}
+                  className="w-full h-2.5 bg-slate-200 dark:bg-slate-800 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                />
+
+                {/* Preset Hub Buttons */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2">
+                  {[
+                    { label: '3.5 km Centre', km: 3.5 },
+                    { label: '8.5 km Kouba', km: 8.5 },
+                    { label: '18 km Aéroport', km: 18.0 },
+                    { label: '28.5 km Zéralda', km: 28.5 },
+                  ].map(preset => (
+                    <button
+                      key={preset.label}
+                      onClick={() => {
+                        soundEngine.playSelection();
+                        setTaximeterKm(preset.km);
+                      }}
+                      className={`py-2 px-2.5 rounded-xl text-xs font-mono font-bold border transition-colors cursor-pointer text-center ${
+                        taximeterKm === preset.km
+                          ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                          : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:border-blue-400'
+                      }`}
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Weather & Rush Hour Surge Toggle */}
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-white/10 flex flex-wrap items-center justify-between gap-3">
+                <div className="space-y-0.5">
+                  <div className="text-xs font-bold text-slate-900 dark:text-white flex items-center space-x-1.5">
+                    {taximeterRushHour ? <CloudRain className="w-4 h-4 text-amber-500" /> : <Sun className="w-4 h-4 text-amber-500" />}
+                    <span>{isAr ? 'حالة الطقس وساعات الذروة :' : 'Conditions Météo & Heure de Pointe :'}</span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    {isAr 
+                      ? 'التطبيقات العشوائية ترفع السعر حتى 3.1x في المطر، بينما عداد وصلني يبقى ثابتاً قانونياً.'
+                      : 'Les VTC non régulés appliquent jusqu\'à 3.1x de surtension. WASSLANI garantit 0 DA de surcoût.'}
+                  </p>
+                </div>
+
+                <button
+                  onClick={() => {
+                    soundEngine.playSelection();
+                    setTaximeterRushHour(prev => !prev);
+                  }}
+                  className={`px-4 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center space-x-2 ${
+                    taximeterRushHour
+                      ? 'bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/40 shadow-sm'
+                      : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-white/10'
+                  }`}
+                >
+                  <span>{taximeterRushHour ? 'Pluie & Forte Affluence (Actif)' : 'Conditions Normales'}</span>
+                </button>
+              </div>
+
+              {/* Action: Print or View Official Digital Receipt */}
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={() => {
+                    soundEngine.playCashRegisterDing();
+                    setShowQuittanceModal(true);
+                  }}
+                  className="py-3 px-5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg shadow-blue-600/25 transition-all flex items-center space-x-2 cursor-pointer"
+                >
+                  <Receipt className="w-4 h-4" />
+                  <span>{isAr ? 'معاينة القسيمة الجبائية الرسمية' : 'Consulter la Quittance Fiscale Homologuée'}</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    soundEngine.playClick();
+                    setIsAppModalOpen(true);
+                  }}
+                  className="py-3 px-5 rounded-xl border border-slate-300 dark:border-white/15 bg-white/70 dark:bg-slate-800/80 hover:bg-slate-100 text-slate-800 dark:text-slate-200 font-bold text-xs transition-colors flex items-center space-x-2 cursor-pointer"
+                >
+                  <Smartphone className="w-4 h-4 text-blue-500" />
+                  <span>{isAr ? 'تثبيت التطبيق على هاتفك' : 'Installer WASSLANI'}</span>
+                </button>
+              </div>
+
+            </div>
+
+            {/* Right Display: Digital LED Taximeter HUD (5 cols) */}
+            <div className="lg:col-span-5 p-6 sm:p-7 rounded-3xl bg-slate-950 text-white border-2 border-slate-800 shadow-2xl relative overflow-hidden space-y-5 text-left">
+              
+              {/* Casing Header */}
+              <div className="flex items-center justify-between pb-3 border-b border-white/10 text-xs font-mono">
+                <div className="flex items-center space-x-2">
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse" />
+                  <span className="font-bold text-amber-400 tracking-wider">ONML • FISCAL TAXIMETER</span>
+                </div>
+                <span className="text-[10px] text-slate-400 font-bold">DTW-16/092</span>
+              </div>
+
+              {/* Glowing Amber Horokilometric Display */}
+              <div className="p-4 rounded-2xl bg-black border border-white/15 space-y-2">
+                <div className="flex justify-between items-center text-[11px] font-mono text-slate-400">
+                  <span>MONTANT TOTAL HOMOLOGUÉ :</span>
+                  <span className="text-blue-400 font-bold">DÉCRET 12-230</span>
+                </div>
+                <div className="text-4xl sm:text-5xl font-black font-mono text-amber-400 tracking-wider">
+                  {taximeterWasslaniTotal}.00 <span className="text-sm font-sans text-white">DZD</span>
+                </div>
+              </div>
+
+              {/* Breakdown Matrix */}
+              <div className="grid grid-cols-2 gap-3 text-xs font-mono">
+                <div className="p-3 rounded-xl bg-slate-900 border border-white/10">
+                  <span className="text-[10px] text-slate-400 block uppercase">Prise en Charge</span>
+                  <span className="text-base font-bold text-blue-400">100.00 DA</span>
+                </div>
+                <div className="p-3 rounded-xl bg-slate-900 border border-white/10">
+                  <span className="text-[10px] text-slate-400 block uppercase">Tarif Kilométrique</span>
+                  <span className="text-base font-bold text-slate-200">35.00 DA / km</span>
+                </div>
+              </div>
+
+              {/* VTC Comparison Box */}
+              <div className={`p-3.5 rounded-xl border space-y-1.5 font-mono text-xs transition-all ${
+                taximeterRushHour 
+                  ? 'bg-amber-950/30 border-amber-500/40' 
+                  : 'bg-slate-900/80 border-white/10'
+              }`}>
+                <div className="flex justify-between text-slate-400 text-[11px]">
+                  <span>TARIF VTC SANS COMPTEUR :</span>
+                  <span className={taximeterRushHour ? 'text-amber-400 font-bold' : 'text-slate-400'}>
+                    {taximeterRushHour ? 'Surtension Pluie (3.1x)' : 'Tarif non réglementé'}
+                  </span>
+                </div>
+                <div className="text-2xl font-black text-slate-400 line-through">
+                  {taximeterVtcTotal}.00 DZD
+                </div>
+                <div className="pt-2 border-t border-white/10 flex items-center justify-between text-blue-400 font-bold">
+                  <span>ÉCONOMIE CITOYENNE :</span>
+                  <span className="text-sm font-black text-blue-300">+{taximeterSavings}.00 DZD</span>
+                </div>
+              </div>
+
+              {/* Certification Footer */}
+              <div className="pt-1 flex items-center justify-between text-[10px] text-slate-400 font-mono">
+                <span>SCELLEMENT ONML : 2026/DZ</span>
+                <span className="text-blue-400 font-bold">CONFORME WILAYA D'ALGER</span>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </section>
+
       {/* GSAP HORIZONTAL SHOWCASE: The 5 Decoupled Portals (Passager, Cockpit Chauffeur, DTW Dispatch, Grand Livre, Contrôle Routier) */}
       <HorizontalShowcase lang={lang} onNavigateTab={onNavigateTab} />
 
@@ -870,6 +1088,103 @@ export const LandingView: React.FC<LandingViewProps> = ({
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 5.8: FOIRE AUX QUESTIONS RÉGLEMENTAIRE & CITOYENNE (#faq) */}
+      <section id="faq" className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="rounded-3xl p-8 sm:p-12 bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 shadow-2xl backdrop-blur-xl">
+          <div className="text-center max-w-3xl mx-auto mb-10 space-y-3">
+            <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
+              <HelpCircle className="w-3.5 h-3.5" />
+              <span>{isAr ? 'الأسئلة الشائعة والأجوبة الرسمية' : 'Foire Aux Questions • Cadre Officiel'}</span>
+            </div>
+            <h2 className="text-2xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
+              {isAr ? 'كل ما تحتاج معرفته عن خدمة وصلني' : 'Comprendre le Fonctionnement de WASSLANI'}
+            </h2>
+            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
+              {isAr 
+                ? 'إجابات واضحة ومباشرة حول التسعيرة القانونية، استرجاع فكة الرد عبر بريدي موب، ومعايير الأمان المعتمدة بولاية الجزائر.'
+                : 'Des réponses précises sur la tarification légale, la restitution de monnaie par BaridiMob et la protection juridique de vos trajets.'}
+            </p>
+          </div>
+
+          {/* Accordion List */}
+          <div className="max-w-4xl mx-auto space-y-3 text-left">
+            {[
+              {
+                qFr: 'Comment est calculé le tarif officiel d\'une course WASSLANI ?',
+                qAr: 'كيف يتم حساب التسعيرة الرسمية لرحلة وصلني ؟',
+                aFr: 'Chaque course applique strictement la tarification fixée par le Décret Exécutif 12-230 de la Wilaya d\'Alger: une prise en charge forfaitaire de 100 DA, augmentée de 35 DA par kilomètre réel mesuré par le taximètre. Contrairement aux VTC privés, aucun algorithme ne multiplie les tarifs sous la pluie, la nuit ou en heure de pointe.',
+                aAr: 'تطبق كل رحلة بدقة التسعيرة الرسمية المحددة بموجب المرسوم التنفيذي 12-230 لولاية الجزائر: 100 دج عند الانطلاق يضاف إليها 35 دج لكل كيلومتر فعلي مسجل بالعداد. خلافاً للتطبيقات الخاصة، لا توجد أي خوارزمية تضاعف الأسعار تحت المطر أو في أوقات الذروة.'
+              },
+              {
+                qFr: 'Comment fonctionne la restitution automatique de la monnaie sur BaridiMob ?',
+                qAr: 'كيف يعمل الاسترجاع الفوري لفكة الرد عبر بريدي موب ؟',
+                aFr: 'Lorsque vous payez votre course en espèces avec un billet de 1 000 ou 2 000 DA et que le chauffeur ne dispose pas de la monnaie exacte, le montant restant est immédiatement viré sur votre compte BaridiMob via votre numéro RIP. L\'opération prend moins de deux secondes et une quittance numérique certifiée est émise.',
+                aAr: 'عند الدفع نقداً بورقة 1000 أو 2000 دج وعدم توفر القطع النقدية لدى السائق، يتم تحويل المبلغ المتبقي فوراً إلى حسابكم بريدي موب عبر رقم الحساب البريدي الجاري RIP في أقل من ثانيتين مع إصدار وصل رقمي معتمد.'
+              },
+              {
+                qFr: 'Quelles sont les qualifications des chauffeurs et l\'état des véhicules ?',
+                qAr: 'ما هي مؤهلات السائقين وكيف تتم مراقبة المركبات ؟',
+                aFr: '100% de nos chauffeurs partenaires sont des artisans taxieurs professionnels titulaires d\'un Livret de Place (LP) délivré par la Direction des Transports de la Wilaya d\'Alger (DTW 16). Leurs véhicules font l\'objet d\'un contrôle technique semestriel rigoureux et d\'un étalonnage de taximètre scellé par l\'ONML.',
+                aAr: '100% من السائقين الشركاء هم حرفيون نظاميون يحملون دفتر مكان رسمي صادر عن مديرية النقل لولاية الجزائر (DTW 16). تخضع مركباتهم لفحص تقني دوري كل ستة أشهر ومعايرة رسمية للعداد مختومة من طرف الديوان الوطني للقياسة القانونية ONML.'
+              },
+              {
+                qFr: 'Quelles garanties de confidentialité offre la boîte noire vidéo (Loi 25-11) ?',
+                qAr: 'ما هي ضمانات الخصوصية للعلبة السوداء الرقمية (القانون 25-11) ؟',
+                aFr: 'La caméra de bord CameraX enregistre exclusivement en boucle locale de 30 secondes chiffrée selon le standard AES-256-GCM. Aucun flux n\'est transmis sur internet ni consultable par le chauffeur. En cas d\'accident grave (décélération supérieure à 2.84 G), le fichier est verrouillé sous séquestre judiciaire conformément à la Loi 25-11 et ne peut être ouvert qu\'avec un quorum Shamir 2-sur-3 par les autorités compétentes.',
+                aAr: 'تسجل الكاميرا الداخلية حصرياً في حلقة دائرية مغلقة مدتها 30 ثانية مشفرة بتقنية AES-256-GCM. لا يتم بث أي فيديو عبر الإنترنت ولا يمكن للسائق مشاهدته. في حال وقوع حادث (تباطؤ يفوق 2.84 G)، يتم قفل المقطع تحت الحراسة القضائية وفق القانون 25-11 ولا يفتح إلا بقرار قضائي رسمي بنصاب شامير 2 من 3.'
+              },
+              {
+                qFr: 'Peut-on commander et payer une course pour un proche à distance ?',
+                qAr: 'هل يمكن حجز ودفع أجرة الرحلة للأقارب والأولاد عن بعد ؟',
+                aFr: 'Oui. Grâce au module Famille & Proches, vous pouvez programmer une navette pour vos enfants vers l\'école ou commander un taxi pour vos parents âgés. Le paiement s\'effectue directement par carte CIB ou Edahabia, et vous suivez la trajectoire du véhicule en temps réel sur la carte avec notification d\'arrivée.',
+                aAr: 'نعم. بفضل ميزة العائلات والأقارب، يمكنكم برمجة رحلات يومية لأبنائكم إلى المدارس أو طلب سيارة أجرة لوالديكم عن بعد. يتم الدفع مباشرة عبر بطاقة الدفع الذهبية أو CIB مع متابعة مسار المركبة حياً على الخريطة وتلقي إشعار فور الوصول.'
+              },
+              {
+                qFr: 'Quels sont les avantages pour les artisans taxieurs par rapport aux plateformes VTC ?',
+                qAr: 'ما هي مكاسب الحرفيين مقارنة بالتطبيقات الأجنبية ؟',
+                aFr: 'Une commission réduite de 8% à 12% (contre 25% sur les applications étrangères non agréées), un gain mensuel moyen supérieur de 45 000 DZD, une protection juridique intégrale contre les mises en fourrière, et le versement quotidien de leurs recettes directement sur compte CCP.',
+                aAr: 'عمولة منصفة تتراوح بين 8% و12% فقط (مقارنة بـ 25% لدى التطبيقات الأجنبية غير المعتمدة)، دخل شهري إضافي يفوق 45 000 دج، حماية قانونية تامة من المحشر، وتحويل يومي مضمون للمستحقات مباشرة في حسابهم البريدي الجاري CCP.'
+              }
+            ].map((faq, index) => {
+              const isOpen = openFaqIndex === index;
+              return (
+                <div 
+                  key={`faq-${index}`}
+                  className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50/70 dark:bg-slate-950/60 overflow-hidden transition-all shadow-sm"
+                >
+                  <button
+                    onClick={() => {
+                      soundEngine.playSelection();
+                      setOpenFaqIndex(isOpen ? null : index);
+                    }}
+                    className="w-full p-4 sm:p-5 flex items-center justify-between text-left cursor-pointer transition-colors hover:bg-slate-100/80 dark:hover:bg-white/5"
+                  >
+                    <span className="font-extrabold text-sm sm:text-base text-slate-900 dark:text-white pr-4">
+                      {isAr ? faq.qAr : faq.qFr}
+                    </span>
+                    <div className="w-8 h-8 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+                      {isOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                    </div>
+                  </button>
+
+                  {isOpen && (
+                    <div className="px-5 pb-5 pt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-200/60 dark:border-white/5 animate-fadeIn">
+                      <p>{isAr ? faq.aAr : faq.aFr}</p>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          <div className="mt-8 text-center">
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              {isAr ? 'هل لديكم استفسار إضافي ؟ اتصلوا بمركز التوجيه والمساعدة على الرقم الأخضر 1100' : 'Une question spécifique ? Contactez le centre d\'assistance citoyenne au numéro dédié de la DTW Alger.'}
+            </p>
           </div>
         </div>
       </section>
@@ -1214,6 +1529,136 @@ export const LandingView: React.FC<LandingViewProps> = ({
                 </div>
               </form>
             )}
+
+          </div>
+        </div>
+      )}
+
+      {/* MODAL 3: QUITTANCE FISCALE NUMÉRIQUE HOMOLOGUÉE DIALOG */}
+      {showQuittanceModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fadeIn">
+          <div className="relative w-full max-w-md p-6 rounded-3xl bg-white text-slate-900 border border-slate-200 shadow-2xl space-y-4 text-left font-mono">
+            
+            <button
+              onClick={() => setShowQuittanceModal(false)}
+              className="absolute top-4 right-4 p-2 rounded-full text-slate-400 hover:text-slate-800 hover:bg-slate-100 transition-colors cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Receipt Header */}
+            <div className="text-center pb-3 border-b-2 border-dashed border-slate-300 space-y-1">
+              <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                RÉPUBLIQUE ALGÉRIENNE DÉMOCRATIQUE ET POPULAIRE
+              </div>
+              <div className="text-xs font-black tracking-tight text-slate-900 uppercase">
+                DIRECTION DES TRANSPORTS • WILAYA D'ALGER
+              </div>
+              <div className="text-[11px] font-extrabold text-blue-700 bg-blue-50 py-0.5 rounded border border-blue-200">
+                QUITTANCE OFFICIELLE DE COURSE TAXI
+              </div>
+              <div className="text-[10px] text-slate-400">
+                DÉCRET EXÉCUTIF N° 12-230 DU 24 MAI 2012
+              </div>
+            </div>
+
+            {/* Receipt Data Body */}
+            <div className="space-y-2 text-xs">
+              <div className="flex justify-between text-slate-600">
+                <span>N° Quittance :</span>
+                <span className="font-bold text-slate-900">QT-2026-10-8842</span>
+              </div>
+              <div className="flex justify-between text-slate-600">
+                <span>Date & Heure :</span>
+                <span className="font-bold text-slate-900">17/10/2026 15:35:12</span>
+              </div>
+              <div className="flex justify-between text-slate-600">
+                <span>Artisan Titulaire :</span>
+                <span className="font-bold text-slate-900">Hadj Mourad Khelifi</span>
+              </div>
+              <div className="flex justify-between text-slate-600">
+                <span>Livret de Place (LP) :</span>
+                <span className="font-bold text-blue-700">LP-88392-16</span>
+              </div>
+              <div className="flex justify-between text-slate-600">
+                <span>Véhicule & Plaque :</span>
+                <span className="font-bold text-slate-900">Peugeot 301 • 01842-120-16</span>
+              </div>
+              <div className="flex justify-between text-slate-600">
+                <span>Taximètre ONML :</span>
+                <span className="font-bold text-slate-900">SCELLÉ N° 77481/DZ</span>
+              </div>
+
+              {/* Items Breakdown */}
+              <div className="pt-2 pb-2 border-t border-b border-dashed border-slate-300 space-y-1">
+                <div className="flex justify-between text-slate-600">
+                  <span>Prise en charge (Base) :</span>
+                  <span>100.00 DZD</span>
+                </div>
+                <div className="flex justify-between text-slate-600">
+                  <span>Distance ({taximeterKm.toFixed(1)} km × 35.00 DA) :</span>
+                  <span>{Math.round(taximeterKm * 35)}.00 DZD</span>
+                </div>
+                <div className="flex justify-between text-slate-600">
+                  <span>Surcoût Météo / Embouteillage :</span>
+                  <span className="text-blue-700 font-bold">0.00 DZD (OFFICIEL)</span>
+                </div>
+              </div>
+
+              {/* Grand Total */}
+              <div className="flex justify-between items-center text-sm font-black pt-1 text-slate-950">
+                <span>TOTAL HOMOLOGUÉ :</span>
+                <span className="text-xl font-black text-blue-700 font-mono">
+                  {taximeterWasslaniTotal}.00 DZD
+                </span>
+              </div>
+
+              {/* Payment & BaridiMob Refund */}
+              <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-[11px] space-y-1">
+                <div className="flex justify-between text-amber-900 font-bold">
+                  <span>Règlement Espèces :</span>
+                  <span>1 000.00 DZD</span>
+                </div>
+                <div className="flex justify-between text-amber-800 font-extrabold">
+                  <span>Rendu Automatique BaridiMob :</span>
+                  <span className="text-amber-700 font-mono">+{1000 - taximeterWasslaniTotal}.00 DZD</span>
+                </div>
+                <div className="text-[10px] text-slate-500 pt-0.5">
+                  Virement CCP instantané vers RIP : 007999990023456789 Clé 18
+                </div>
+              </div>
+
+              {/* QR and Verification Hash */}
+              <div className="pt-2 flex items-center justify-between">
+                <div className="space-y-0.5 text-[9px] text-slate-400">
+                  <div>SHA-256: 9f82a1b7e4c3d82a...</div>
+                  <div>CONTRÔLE DTW / GENDARMERIE VALIDÉ</div>
+                </div>
+                <div className="w-12 h-12 bg-slate-100 p-1 border rounded flex items-center justify-center">
+                  <QrCode className="w-10 h-10 text-slate-900" />
+                </div>
+              </div>
+            </div>
+
+            {/* Modal Actions */}
+            <div className="pt-3 border-t border-slate-200 flex gap-2">
+              <button
+                onClick={() => {
+                  window.print();
+                }}
+                className="flex-1 py-2.5 rounded-xl bg-slate-900 text-white font-bold text-xs flex items-center justify-center space-x-1.5 hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                <Printer className="w-3.5 h-3.5" />
+                <span>Imprimer Quittance</span>
+              </button>
+
+              <button
+                onClick={() => setShowQuittanceModal(false)}
+                className="py-2.5 px-4 rounded-xl border border-slate-300 text-slate-700 font-bold text-xs hover:bg-slate-50 transition-colors cursor-pointer"
+              >
+                Fermer
+              </button>
+            </div>
 
           </div>
         </div>

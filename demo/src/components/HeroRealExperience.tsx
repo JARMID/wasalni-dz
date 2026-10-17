@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useId } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import confetti from 'canvas-confetti';
 import { 
   Car, 
   MapPin, 
@@ -15,7 +16,9 @@ import {
   Activity, 
   CheckCircle2, 
   Lock, 
-  Radio 
+  Radio,
+  ShieldCheck,
+  Zap
 } from 'lucide-react';
 import type { AppLang } from '../utils/i18n';
 import type { ActiveTab } from './Header';
@@ -33,7 +36,7 @@ export interface LocationHub {
 export const ALGIERS_HUBS: LocationHub[] = [
   {
     id: 'aeroport',
-    nameFr: 'Aéroport International Houari Boumediene (T4)',
+    nameFr: 'Aéroport Houari Boumediene (T4)',
     nameAr: 'مطار هواري بومدين الدولي (المحطة 4)',
     commune: 'Dar El Beïda',
     lat: 36.6961,
@@ -65,7 +68,7 @@ export const ALGIERS_HUBS: LocationHub[] = [
   },
   {
     id: 'bab-ezzouar',
-    nameFr: 'Bab Ezzouar (Université USTHB / Centre d\'Affaires)',
+    nameFr: 'Bab Ezzouar (Université USTHB / Quartier d\'Affaires)',
     nameAr: 'باب الزوار (جامعة هواري بومدين / حي الأعمال)',
     commune: 'Bab Ezzouar',
     lat: 36.7120,
@@ -156,7 +159,7 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
 
   // Interactive Live Vehicle Animation
   const [vehicleProgress, setVehicleProgress] = useState<number>(38);
-  const [meterTicker, setMeterTicker] = useState<number>(450);
+  const [meterTicker, setMeterTicker] = useState<number>(370);
 
   const originHub = ALGIERS_HUBS.find(h => h.id === originId) || ALGIERS_HUBS[3];
   const destHub = ALGIERS_HUBS.find(h => h.id === destId) || ALGIERS_HUBS[1];
@@ -165,6 +168,11 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
   // Executive Decree 12-230 Formula: 100 DA Flag Drop + 35 DA / KM
   const calculatedFare = Math.round((100 + distanceKm * 35) / 10) * 10;
   const estimatedDuration = Math.round(distanceKm * 1.6 + 4);
+
+  // Unregulated VTC Surge Estimate (3.1x surge under rain or peak)
+  const vtcBase = Math.round(150 + distanceKm * 55);
+  const vtcSurgeFare = Math.round(vtcBase * 2.8);
+  const directSavings = Math.max(0, vtcSurgeFare - calculatedFare);
 
   // Smooth vehicle loop along polyline
   useEffect(() => {
@@ -185,8 +193,41 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
     setMeterTicker(calculatedFare);
   }, [calculatedFare, tripState]);
 
+  // Handle completion celebration
+  const handleSimulateArrival = () => {
+    soundEngine.playSuccessChime();
+    setTripState('completed');
+    try {
+      confetti({
+        particleCount: 60,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#2563EB', '#F59E0B', '#06B6D4'],
+      });
+    } catch (_) {}
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+      
+      {/* Top Presentation Gateway Pill for Evaluators */}
+      <div className="mb-6 flex justify-center">
+        <button
+          onClick={() => {
+            soundEngine.playClick();
+            onNavigateTab('sync');
+          }}
+          className="group inline-flex items-center space-x-2.5 px-4 py-2 rounded-full text-xs font-bold bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30 backdrop-blur-md shadow-sm transition-all cursor-pointer transform hover:-translate-y-0.5"
+          title="Ouvrir le laboratoire multi-appareils (Cockpit Chauffeur + Smartphone Passager + Carte temps réel)"
+        >
+          <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+          <span className="font-mono uppercase tracking-wider">
+            {isAr ? 'عرض المختبر التفاعلي المتزامن (3 شاشات)' : 'Laboratoire Multi-Écrans en Temps Réel'}
+          </span>
+          <ArrowRight className="w-3.5 h-3.5 text-amber-500 group-hover:translate-x-1 transition-transform" />
+        </button>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
         
         {/* LEFT COLUMN: VALUE PROPOSITION, OFFICIAL TARIFF CALCULATOR & CONVERSION */}
@@ -199,9 +240,9 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
             transition={{ duration: 0.5 }}
             className="inline-flex items-center space-x-2.5 px-3.5 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider border border-blue-500/30 bg-blue-500/10 text-blue-600 dark:text-blue-400 backdrop-blur-md"
           >
-            <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+            <ShieldCheck className="w-4 h-4 text-blue-500" />
             <span className="font-mono">
-              {isAr ? 'الجمهورية الجزائرية • ولاية الجزائر • المرسوم التنفيذي 12-230' : 'Réglementation Wilaya d\'Alger • Décret Exécutif 12-230'}
+              {isAr ? 'الجمهورية الجزائرية • ولاية الجزائر • المرسوم التنفيذي 12-230' : 'Réseau Officiel • Wilaya d\'Alger • Décret Exécutif 12-230'}
             </span>
           </motion.div>
 
@@ -214,16 +255,16 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
           >
             {isAr ? (
               <>
-                أول شبكة رسمية لسيارات الأجرة،{' '}
+                الخدمة الرسمية لسيارات الأجرة،{' '}
                 <span className="text-blue-600 dark:text-blue-400">
-                  بالتسعيرة المقننة
+                  بالتسعيرة المقننة.
                 </span>
               </>
             ) : (
               <>
                 Le taxi officiel d'Alger,{' '}
                 <span className="text-blue-600 dark:text-blue-400">
-                  au tarif réglementé.
+                  au tarif compteur réglementé.
                 </span>
               </>
             )}
@@ -248,7 +289,7 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.25 }}
-            className="p-5 sm:p-6 rounded-2xl bg-white/85 dark:bg-slate-900/85 border border-slate-200 dark:border-white/10 shadow-2xl backdrop-blur-2xl space-y-4"
+            className="p-5 sm:p-6 rounded-2xl bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 shadow-2xl backdrop-blur-2xl space-y-4"
           >
             <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-white/10">
               <div className="flex items-center space-x-2">
@@ -257,7 +298,7 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
                   {isAr ? 'حاسبة التسعيرة الرسمية الفورية' : 'Calculateur de Tarif Officiel en Direct'}
                 </span>
               </div>
-              <span className="text-[11px] font-mono px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 font-bold border border-blue-500/20">
+              <span className="text-[11px] font-mono px-2.5 py-0.5 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 font-bold border border-blue-500/20">
                 100 DA + 35 DA/km
               </span>
             </div>
@@ -277,7 +318,7 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
                     soundEngine.playSelection();
                     setOriginId(e.target.value);
                   }}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-white/10 bg-white/70 dark:bg-slate-950/70 text-slate-900 dark:text-white font-medium text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                  className="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-950 text-slate-900 dark:text-white font-medium text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm"
                 >
                   {ALGIERS_HUBS.map(hub => (
                     <option key={`orig-${hub.id}`} value={hub.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
@@ -300,7 +341,7 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
                     soundEngine.playSelection();
                     setDestId(e.target.value);
                   }}
-                  className="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-white/10 bg-white/70 dark:bg-slate-950/70 text-slate-900 dark:text-white font-medium text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer"
+                  className="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-white/10 bg-white dark:bg-slate-950 text-slate-900 dark:text-white font-medium text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer shadow-sm"
                 >
                   {ALGIERS_HUBS.map(hub => (
                     <option key={`dest-${hub.id}`} value={hub.id} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">
@@ -331,7 +372,7 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
                   }}
                   className={`px-2.5 py-1 rounded-lg text-[10px] font-bold border transition-colors cursor-pointer ${
                     destId === chip.id
-                      ? 'bg-blue-600 text-white border-blue-600'
+                      ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
                       : 'bg-slate-100 dark:bg-white/5 border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:border-blue-400'
                   }`}
                 >
@@ -363,6 +404,19 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
                   {calculatedFare} <span className="text-xs text-slate-700 dark:text-slate-300 font-bold">DZD</span>
                 </div>
               </div>
+            </div>
+
+            {/* Direct Citizen Savings vs VTC Surge */}
+            <div className="px-3.5 py-2 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-between text-xs font-bold text-amber-600 dark:text-amber-400">
+              <span className="flex items-center space-x-1.5">
+                <Zap className="w-3.5 h-3.5" />
+                <span>
+                  {isAr 
+                    ? `توفير مضمون للمواطن : +${directSavings} دج مقارنة بالتطبيقات غير المقننة` 
+                    : `Économie garantie : +${directSavings} DZD préservés vs VTC (Surtension évitée)`}
+                </span>
+              </span>
+              <span className="font-mono text-[10px]">Wilaya d'Alger</span>
             </div>
 
             {/* Estimator Action Buttons */}
@@ -401,28 +455,28 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
             transition={{ duration: 0.6, delay: 0.3 }}
             className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-1"
           >
-            <div className="p-3 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-white/10 shadow-sm backdrop-blur-md">
+            <div className="p-3 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 shadow-sm backdrop-blur-md">
               <div className="text-lg font-black text-slate-900 dark:text-white font-mono">57 / 57</div>
               <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                 {isAr ? 'بلدية مغطاة' : 'Communes Alger'}
               </div>
             </div>
 
-            <div className="p-3 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-white/10 shadow-sm backdrop-blur-md">
+            <div className="p-3 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 shadow-sm backdrop-blur-md">
               <div className="text-lg font-black text-amber-500 font-mono">1 420+</div>
               <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                 {isAr ? 'سائق بدفتر مكان' : 'Artisans Agréés'}
               </div>
             </div>
 
-            <div className="p-3 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-white/10 shadow-sm backdrop-blur-md">
+            <div className="p-3 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 shadow-sm backdrop-blur-md">
               <div className="text-lg font-black text-blue-600 dark:text-blue-400 font-mono">100%</div>
               <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                 {isAr ? 'مطابق للقانون' : 'Décret 12-230'}
               </div>
             </div>
 
-            <div className="p-3 rounded-xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-white/10 shadow-sm backdrop-blur-md">
+            <div className="p-3 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 shadow-sm backdrop-blur-md">
               <div className="text-lg font-black text-cyan-500 font-mono">0.00 DA</div>
               <div className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">
                 {isAr ? 'صرف مفقود' : 'Monnaie Perdue'}
@@ -446,7 +500,7 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
                 soundEngine.playClick();
                 onOpenAppModal();
               }}
-              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 transition-colors cursor-pointer"
+              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-white/10 bg-white/60 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 transition-colors cursor-pointer"
             >
               <Download className="w-3.5 h-3.5 text-slate-700 dark:text-slate-300" />
               <span className="font-medium text-slate-800 dark:text-slate-200">Google Play</span>
@@ -457,7 +511,7 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
                 soundEngine.playClick();
                 onOpenAppModal();
               }}
-              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-white/10 bg-white/50 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 transition-colors cursor-pointer"
+              className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl border border-slate-300 dark:border-white/10 bg-white/60 dark:bg-white/5 hover:bg-white dark:hover:bg-white/10 transition-colors cursor-pointer"
             >
               <Download className="w-3.5 h-3.5 text-slate-700 dark:text-slate-300" />
               <span className="font-medium text-slate-800 dark:text-slate-200">App Store</span>
@@ -492,7 +546,7 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
         <div className="lg:col-span-6 relative flex flex-col items-center py-4">
           
           {/* Interactive Stage Mode Switcher (Passenger Smartphone vs Cockpit Dashcam HUD vs Telemetry) */}
-          <div className="w-full max-w-[480px] mb-4 p-1 rounded-2xl bg-slate-200/80 dark:bg-slate-900/90 border border-slate-300 dark:border-white/10 backdrop-blur-xl flex items-center justify-between shadow-lg">
+          <div className="w-full max-w-[500px] mb-4 p-1 rounded-2xl bg-slate-200/80 dark:bg-slate-900/90 border border-slate-300 dark:border-white/10 backdrop-blur-xl flex items-center justify-between shadow-lg">
             <button
               onClick={() => {
                 soundEngine.playSelection();
@@ -541,8 +595,8 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
 
           {/* SPATIAL STAGE DISPLAY */}
           <div 
-            className="relative w-full max-w-[480px] min-h-[580px] flex items-center justify-center"
-            style={{ perspective: '1200px' }}
+            className="relative w-full max-w-[500px] min-h-[580px] flex items-center justify-center"
+            style={{ perspective: '1400px' }}
           >
             
             <AnimatePresence mode="wait">
@@ -554,7 +608,7 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
                   animate={{ opacity: 1, scale: 1, rotateY: 0 }}
                   exit={{ opacity: 0, scale: 0.96, rotateY: -8 }}
                   transition={{ duration: 0.4 }}
-                  className="relative z-20 w-[300px] sm:w-[325px] rounded-[44px] p-3.5 bg-gradient-to-b from-slate-700 via-slate-800 to-slate-900 border-4 border-slate-700/80 shadow-2xl backdrop-blur-2xl"
+                  className="relative z-20 w-[310px] sm:w-[335px] rounded-[44px] p-3.5 bg-gradient-to-b from-slate-700 via-slate-800 to-slate-900 border-4 border-slate-700/80 shadow-2xl backdrop-blur-2xl"
                   style={{
                     boxShadow: '0 30px 60px -15px rgba(37, 99, 235, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.15)'
                   }}
@@ -563,7 +617,7 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
                   <div className="absolute inset-0 rounded-[40px] pointer-events-none border border-white/20" />
 
                   {/* Phone Display Screen */}
-                  <div className="relative rounded-[32px] overflow-hidden bg-slate-950 text-white min-h-[560px] flex flex-col justify-between border border-slate-900">
+                  <div className="relative rounded-[32px] overflow-hidden bg-slate-950 text-white min-h-[570px] flex flex-col justify-between border border-slate-900">
                     
                     {/* Dynamic Island / Status Bar */}
                     <div className="pt-2 px-5 flex items-center justify-between text-[11px] font-semibold text-slate-400 z-30">
@@ -748,7 +802,7 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
                                 soundEngine.playClick();
                                 setTripState('en_route');
                               }}
-                              className="flex-1 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition-colors flex items-center justify-center space-x-1.5 cursor-pointer shadow-md"
+                              className="flex-1 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition-colors flex items-center justify-center space-x-1.5 cursor-pointer shadow-md"
                             >
                               <span>Simuler le Départ (PIN 7842) →</span>
                             </button>
@@ -780,10 +834,7 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
                           </div>
 
                           <button
-                            onClick={() => {
-                              soundEngine.playSuccessChime();
-                              setTripState('completed');
-                            }}
+                            onClick={handleSimulateArrival}
                             className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-black text-xs transition-colors flex items-center justify-center space-x-2 cursor-pointer shadow-md shadow-blue-600/30"
                           >
                             <CheckCircle2 className="w-3.5 h-3.5" />
@@ -817,7 +868,7 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
                               }}
                               className="flex-1 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs transition-colors cursor-pointer"
                             >
-                              <span>Réinitialiser la course ↺</span>
+                              <span>Réinitialiser ↺</span>
                             </button>
                             <button
                               onClick={() => {
@@ -848,7 +899,7 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
                   animate={{ opacity: 1, scale: 1, rotateY: 0 }}
                   exit={{ opacity: 0, scale: 0.96, rotateY: 8 }}
                   transition={{ duration: 0.4 }}
-                  className="relative z-20 w-full max-w-[440px] rounded-2xl p-4 bg-slate-950/95 border border-slate-700/80 shadow-2xl backdrop-blur-2xl text-left"
+                  className="relative z-20 w-full max-w-[460px] rounded-2xl p-4 bg-slate-950/95 border border-slate-700/80 shadow-2xl backdrop-blur-2xl text-left"
                 >
                   {/* Cockpit Tablet Header */}
                   <div className="flex items-center justify-between pb-2.5 border-b border-white/10 text-xs font-mono">
@@ -975,7 +1026,7 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.96 }}
                   transition={{ duration: 0.4 }}
-                  className="relative z-20 w-full max-w-[440px] rounded-2xl p-4 bg-slate-950/95 border border-slate-700/80 shadow-2xl backdrop-blur-2xl text-left space-y-3.5"
+                  className="relative z-20 w-full max-w-[460px] rounded-2xl p-4 bg-slate-950/95 border border-slate-700/80 shadow-2xl backdrop-blur-2xl text-left space-y-3.5"
                 >
                   <div className="flex items-center justify-between pb-2 border-b border-white/10 text-xs font-mono">
                     <span className="flex items-center space-x-1.5 text-cyan-400 font-bold">
@@ -1049,54 +1100,40 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
                         <CheckCircle2 className="w-3.5 h-3.5 text-blue-400" />
                         <span>Hébergement Souverain Local (Loi 25-11)</span>
                       </span>
-                      <span className="font-mono text-blue-400 font-bold">100% DZ</span>
+                      <span className="font-mono text-cyan-400 font-bold">CONFIRMÉ</span>
                     </div>
                   </div>
 
-                  {/* Action Button */}
                   <button
                     onClick={() => {
                       soundEngine.playClick();
                       onNavigateTab('dispatch');
                     }}
-                    className="w-full py-2.5 px-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs transition-colors flex items-center justify-center space-x-1.5 cursor-pointer shadow-md shadow-blue-600/30"
+                    className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-black text-xs transition-colors flex items-center justify-center space-x-1.5 cursor-pointer shadow-md"
                   >
-                    <Activity className="w-3.5 h-3.5" />
                     <span>Ouvrir la Salle des Opérations DTW →</span>
                   </button>
+
                 </motion.div>
               )}
             </AnimatePresence>
 
           </div>
 
-          {/* PERMANENT DEMO & PRESENTATION LAUNCH CARD */}
-          <div className="w-full max-w-[480px] mt-4 p-3.5 rounded-2xl bg-gradient-to-r from-blue-950/60 via-slate-900/80 to-amber-950/40 border border-amber-500/30 text-left space-y-2 backdrop-blur-xl">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-2">
-                <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-                <span className="text-xs font-bold text-white uppercase tracking-wider">
-                  {isAr ? 'المختبر التفاعلي المتزامن للتقييم' : 'Espace Évaluation & Présentation :'}
-                </span>
-              </div>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-500/20 text-blue-300 font-bold">
-                3 ÉCRANS LIVE
-              </span>
+          {/* Under-Mockup Quick Switch to Demonstrator */}
+          <div className="w-full max-w-[500px] mt-4 p-3 rounded-2xl bg-white/70 dark:bg-slate-900/70 border border-slate-200 dark:border-white/10 backdrop-blur-md flex items-center justify-between shadow-sm">
+            <div className="flex items-center space-x-2 text-xs text-slate-600 dark:text-slate-400">
+              <Layers className="w-4 h-4 text-blue-500 shrink-0" />
+              <span>{isAr ? 'تريد رؤية الشاشات الثلاث في نفس الوقت ؟' : 'Envie de voir les 3 écrans synchronisés ?'}</span>
             </div>
-            <p className="text-xs text-slate-300 leading-relaxed">
-              {isAr 
-                ? 'اختبر المحاكاة الشاملة المتزامنة في الوقت الفعلي (لوحة تحكم السائق مع الكاميرا، هاتف الزبون، وغرفة المراقبة المركزية).'
-                : 'Testez la synchronisation en direct entre le Cockpit Chauffeur (avec dashcam CameraX), le Smartphone Passager et la Salle de Dispatching.'}
-            </p>
             <button
               onClick={() => {
                 soundEngine.playClick();
                 onNavigateTab('sync');
               }}
-              className="w-full py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition-all flex items-center justify-center space-x-2 cursor-pointer shadow-lg shadow-amber-500/20"
+              className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs transition-colors flex items-center space-x-1 cursor-pointer shrink-0"
             >
-              <Layers className="w-4 h-4 text-slate-950" />
-              <span>{isAr ? 'فتح المحاكي المتزامن الكامل ←' : 'Lancer le Simulateur Multi-Écrans en Direct →'}</span>
+              <span>{isAr ? 'عرض المختبر' : 'Ouvrir Démo ⚡'}</span>
             </button>
           </div>
 
