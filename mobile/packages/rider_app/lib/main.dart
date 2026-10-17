@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:naql_core/naql_core.dart';
+
+import 'features/booking/presentation/driver_chat_dialog.dart';
+import 'features/booking/presentation/location_picker_sheet.dart';
+import 'features/booking/presentation/rating_review_dialog.dart';
+import 'features/booking/presentation/share_trip_dialog.dart';
+import 'features/regulatory/presentation/quittance_dialog.dart';
+import 'features/regulatory/presentation/regulatory_tab.dart';
+import 'features/wallet/presentation/topup_dialog.dart';
 
 void main() {
   runApp(const RiderApp());
@@ -176,407 +183,48 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
   }
 
   void _showLocationPicker({required bool isOrigin}) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: const Color(0xFF131D31),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (ctx) => Directionality(
-        textDirection: _isArabic ? TextDirection.rtl : TextDirection.ltr,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                isOrigin
-                    ? (_isArabic ? 'مكان الانطلاق' : 'Lieu de prise en charge')
-                    : (_isArabic ? 'وجهة الوصول' : 'Destination d\'arrivée'),
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
-              ),
-              const SizedBox(height: 16),
-              Flexible(
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  itemCount: GeoRoutingService.algiersHubs.length,
-                  separatorBuilder: (_, __) => const Divider(color: Colors.white10),
-                  itemBuilder: (ctx, i) {
-                    final hub = GeoRoutingService.algiersHubs[i];
-                    return ListTile(
-                      dense: true,
-                      leading: Icon(
-                        isOrigin ? Icons.my_location : Icons.location_on,
-                        color: isOrigin ? const Color(0xFF0EA5E9) : const Color(0xFFF59E0B),
-                        size: 20,
-                      ),
-                      title: Text(
-                        hub.localizedName(_isArabic),
-                        style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600),
-                      ),
-                      subtitle: Text(
-                        hub.commune,
-                        style: const TextStyle(color: Colors.white54, fontSize: 11),
-                      ),
-                      trailing: Text(
-                        '${hub.lat.toStringAsFixed(2)}, ${hub.lng.toStringAsFixed(2)}',
-                        style: const TextStyle(color: Colors.white38, fontSize: 10, fontFamily: 'monospace'),
-                      ),
-                      onTap: () {
-                        setState(() {
-                          if (isOrigin) {
-                            _origin = hub;
-                          } else {
-                            _destination = hub;
-                          }
-                        });
-                        Navigator.pop(ctx);
-                      },
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
+    LocationPickerSheet.show(
+      context,
+      isOrigin: isOrigin,
+      isArabic: _isArabic,
+      onSelectHub: (hub) {
+        setState(() {
+          if (isOrigin) {
+            _origin = hub;
+          } else {
+            _destination = hub;
+          }
+        });
+      },
     );
   }
 
   void _showTopupDialog() {
-    double selectedAmt = 1000.0;
-    showDialog(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setDlgState) => Directionality(
-          textDirection: _isArabic ? TextDirection.rtl : TextDirection.ltr,
-          child: AlertDialog(
-            backgroundColor: const Color(0xFF131D31),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            title: Row(
-              children: [
-                const Icon(Icons.credit_card, color: Color(0xFF0EA5E9)),
-                const SizedBox(width: 10),
-                Text(
-                  _isArabic ? 'شحن المحفظة (Chargily Pay V2)' : 'Recharge Chargily Pay V2',
-                  style: const TextStyle(fontSize: 18),
-                ),
-              ],
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  _isArabic
-                      ? 'حدد المبلغ (بطاقة CIB أو الذهبية):'
-                      : 'Sélectionnez le montant (Carte CIB / Edahabia):',
-                ),
-                const SizedBox(height: 12),
-                Wrap(
-                  spacing: 8,
-                  children: [500.0, 1000.0, 2000.0, 5000.0].map((amt) {
-                    final isSel = selectedAmt == amt;
-                    return ChoiceChip(
-                      label: Text('${amt.toInt()} DA'),
-                      selected: isSel,
-                      selectedColor: const Color(0xFF0EA5E9),
-                      onSelected: (val) {
-                        if (val) setDlgState(() => selectedAmt = amt);
-                      },
-                    );
-                  }).toList(),
-                ),
-                const SizedBox(height: 16),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.05),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: Colors.white10),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.security, size: 20, color: Color(0xFF2563EB)),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          _isArabic
-                              ? 'بوابة الدفع الآمن SATIM مع رمز التحقق OTP عبر الرسائل النصية.'
-                              : 'Passerelle sécurisée SATIM 3D-Secure avec OTP SMS.',
-                          style: const TextStyle(fontSize: 12, color: Colors.white70),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: Text(_isArabic ? 'إلغاء' : 'Annuler'),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2563EB),
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                ),
-                onPressed: () {
-                  Navigator.pop(ctx);
-                  setState(() {
-                    _riderWalletBalanceDzd += selectedAmt;
-                  });
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      backgroundColor: const Color(0xFF2563EB),
-                      content: Text(
-                        _isArabic
-                            ? 'تم شحن ${selectedAmt.toInt()} دج بنجاح عبر SATIM 3DS.'
-                            : 'Recharge de ${selectedAmt.toInt()} DA validée par SATIM 3DS.',
-                      ),
-                    ),
-                  );
-                },
-                child: Text(_isArabic ? 'تأكيد الدفع' : 'Confirmer le Paiement'),
-              ),
-            ],
-          ),
-        ),
-      ),
+    TopupDialog.show(
+      context,
+      isArabic: _isArabic,
+      onSuccess: (amt) {
+        setState(() {
+          _riderWalletBalanceDzd += amt;
+        });
+      },
     );
   }
 
   void _showShareTripDialog(String rideCode) {
-    final phoneController = TextEditingController();
-    showDialog(
-      context: context,
-      builder: (ctx) => Directionality(
-        textDirection: _isArabic ? TextDirection.rtl : TextDirection.ltr,
-        child: AlertDialog(
-          backgroundColor: const Color(0xFF131D31),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: Row(
-            children: [
-              const Icon(Icons.share, color: Color(0xFF0EA5E9)),
-              const SizedBox(width: 10),
-              Text(
-                _isArabic ? 'مشاركة مسار الرحلة الآمن' : 'Partage Sécurisé du Trajet',
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-            ],
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                _isArabic
-                    ? 'شارك رابط التتبع الفوري مع عائلتك متوافق مع قانون حماية المعطيات 18-07:'
-                    : 'Partagez le lien de géolocalisation en temps réel avec vos proches (Loi 18-07):',
-                style: const TextStyle(fontSize: 12, color: Colors.white70),
-              ),
-              const SizedBox(height: 12),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.black38,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.white12),
-                ),
-                child: SelectableText(
-                  'https://wasslani.dz/suivi/$rideCode',
-                  style: const TextStyle(fontFamily: 'monospace', fontSize: 12, color: Color(0xFF60A5FA)),
-                ),
-              ),
-              const SizedBox(height: 14),
-              TextField(
-                controller: phoneController,
-                keyboardType: TextInputType.phone,
-                decoration: InputDecoration(
-                  hintText: _isArabic ? 'رقم هاتف العائلة (05xx / 06xx / 07xx)' : 'Numéro du proche (05xx / 06xx / 07xx)',
-                  hintStyle: const TextStyle(fontSize: 12, color: Colors.white38),
-                  filled: true,
-                  fillColor: const Color(0xFF0F172A),
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: Text(_isArabic ? 'إغلاق' : 'Fermer'),
-            ),
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2563EB),
-                foregroundColor: Colors.white,
-              ),
-              icon: const Icon(Icons.send, size: 16),
-              label: Text(_isArabic ? 'إرسال الرابط' : 'Envoyer par SMS'),
-              onPressed: () {
-                Navigator.pop(ctx);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    backgroundColor: const Color(0xFF2563EB),
-                    content: Text(
-                      _isArabic
-                          ? 'تم إرسال رابط التتبع الفوري إلى ${phoneController.text.isEmpty ? "رقم الهاتف" : phoneController.text}'
-                          : 'Lien de suivi chiffré transmis avec succès par SMS.',
-                    ),
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
+    ShareTripDialog.show(
+      context,
+      rideCode: rideCode,
+      isArabic: _isArabic,
     );
   }
 
   void _showChatDialog(String driverName, String plate) {
-    final TextEditingController chatController = TextEditingController();
-    final List<Map<String, String>> chatMessages = [
-      {
-        'sender': 'driver',
-        'text': _isArabic ? 'السلام عليكم! أنا في الطريق بسيارة بيجو 301.' : 'Salam Alikoum ! Je suis en route avec ma Peugeot 301.',
-        'time': '16:42'
-      }
-    ];
-
-    showDialog(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setDlgState) => Directionality(
-          textDirection: _isArabic ? TextDirection.rtl : TextDirection.ltr,
-          child: AlertDialog(
-            backgroundColor: const Color(0xFF131D31),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-            titlePadding: const EdgeInsets.fromLTRB(20, 16, 16, 12),
-            title: Row(
-              children: [
-                const CircleAvatar(
-                  backgroundColor: Color(0xFF2563EB),
-                  radius: 18,
-                  child: Icon(Icons.person, color: Colors.white, size: 20),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(driverName, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-                      Text(plate, style: const TextStyle(fontSize: 11, color: Colors.white54)),
-                    ],
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.close, size: 20),
-                  onPressed: () => Navigator.pop(ctx),
-                ),
-              ],
-            ),
-            content: SizedBox(
-              width: double.maxFinite,
-              height: 360,
-              child: Column(
-                children: [
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        'راني نستنى قدام الباب',
-                        'Je suis devant l\'entrée',
-                        'راني في إشارة المرور',
-                        'Climatisation svp',
-                      ].map((chip) => Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        child: ActionChip(
-                          backgroundColor: const Color(0xFF2563EB).withValues(alpha: 0.15),
-                          side: BorderSide(color: const Color(0xFF2563EB).withValues(alpha: 0.3)),
-                          label: Text(chip, style: const TextStyle(fontSize: 10, color: Color(0xFF60A5FA))),
-                          onPressed: () {
-                            setDlgState(() {
-                              chatMessages.add({
-                                'sender': 'rider',
-                                'text': chip,
-                                'time': '16:43',
-                              });
-                            });
-                          },
-                        ),
-                      )).toList(),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: chatMessages.length,
-                      itemBuilder: (ctx, idx) {
-                        final msg = chatMessages[idx];
-                        final isRider = msg['sender'] == 'rider';
-                        return Align(
-                          alignment: isRider ? Alignment.centerRight : Alignment.centerLeft,
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(vertical: 4),
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: isRider ? const Color(0xFF2563EB) : const Color(0xFF1E293B),
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: Text(
-                              msg['text'] ?? '',
-                              style: const TextStyle(fontSize: 13, color: Colors.white),
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: chatController,
-                          decoration: InputDecoration(
-                            hintText: _isArabic ? 'اكتب رسالة...' : 'Écrire un message...',
-                            hintStyle: const TextStyle(fontSize: 12, color: Colors.white38),
-                            filled: true,
-                            fillColor: const Color(0xFF0F172A),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      IconButton(
-                        icon: const Icon(Icons.send, color: Color(0xFF2563EB)),
-                        onPressed: () {
-                          if (chatController.text.trim().isNotEmpty) {
-                            setDlgState(() {
-                              chatMessages.add({
-                                'sender': 'rider',
-                                'text': chatController.text.trim(),
-                                'time': '16:44',
-                              });
-                              chatController.clear();
-                            });
-                          }
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
+    DriverChatDialog.show(
+      context,
+      driverName: driverName,
+      vehiclePlate: plate,
+      isArabic: _isArabic,
     );
   }
 
@@ -590,209 +238,17 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
     String? destinationName,
     double? spareChangeDzd,
   }) {
-    final tripFare = (fareDzd - 125.0).clamp(50.0, 5000.0);
-    final quittance = TaximeterQuittance(
-      quittanceId: 'QTX-16-2026-${(1000 + (driverName.hashCode.abs() % 9000))}',
-      issuedAt: DateTime.now(),
+    QuittanceDialog.show(
+      context,
       driverName: driverName,
       agrementNumber: agrementNumber,
-      livretDePlaceId: 'LP-16-${agrementNumber.replaceAll(RegExp(r'[^0-9]'), '').padRight(5, '0').substring(0, 5)}',
       vehiclePlate: vehiclePlate,
-      vehicleModel: 'Peugeot 301 Taxi Jaune',
+      fareDzd: fareDzd,
+      distanceKm: distanceKm,
       originName: originName ?? _origin.localizedName(_isArabic),
       destinationName: destinationName ?? _destination.localizedName(_isArabic),
-      distanceKm: distanceKm,
-      durationMinutes: (distanceKm * 2.2).round().clamp(5, 120),
-      priseEnChargeDzd: 25.0,
-      fraisApprocheDzd: 100.0,
-      fareHorokilometriqueDzd: tripFare,
-      totalFareDzd: fareDzd,
-      spareChangeCreditedDzd: spareChangeDzd ?? 0.0,
-    );
-
-    showDialog(
-      context: context,
-      builder: (ctx) => Directionality(
-        textDirection: _isArabic ? TextDirection.rtl : TextDirection.ltr,
-        child: AlertDialog(
-          backgroundColor: Colors.white,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-          title: Column(
-            children: [
-              Text(
-                _isArabic ? 'الجمهورية الجزائرية الديمقراطية الشعبية' : 'RÉPUBLIQUE ALGÉRIENNE DÉMOCRATIQUE ET POPULAIRE',
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Colors.black87),
-              ),
-              const SizedBox(height: 2),
-              Text(
-                _isArabic ? 'مديرية النقل لولاية الجزائر (DTW)' : 'Direction des Transports de la Wilaya d\'Alger (DTW)',
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 10, fontWeight: FontWeight.w600, color: Colors.black54),
-              ),
-              const SizedBox(height: 6),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                decoration: BoxDecoration(color: const Color(0xFF2563EB).withValues(alpha: 0.1), borderRadius: BorderRadius.circular(4)),
-                child: Text(
-                  _isArabic ? 'وصل العداد الرسمي مرسوم 12-230' : 'QUITTANCE TAXIMÈTRE DÉCRET 12-230',
-                  style: const TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Color(0xFF2563EB)),
-                ),
-              ),
-            ],
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  _isArabic ? 'السائق: $driverName' : 'Chauffeur: $driverName',
-                  style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 13),
-                ),
-                Text(
-                  _isArabic ? 'رخصة الاستغلال: $agrementNumber' : 'Agrément DTW: $agrementNumber',
-                  style: const TextStyle(color: Colors.black54, fontSize: 11),
-                ),
-                Text(
-                  _isArabic ? 'رقم اللوحة: $vehiclePlate' : 'Immatriculation: $vehiclePlate',
-                  style: const TextStyle(color: Colors.black87, fontSize: 11),
-                ),
-                const Divider(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        _isArabic ? 'رسم الانطلاق (نهار):' : 'Prise en charge (Tarif 1 Jour):',
-                        style: const TextStyle(color: Colors.black54, fontSize: 11),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    const Text('25.00 DA', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 11)),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        _isArabic ? 'رسم الاقتراب (سجل تجاري 604103):' : 'Frais d\'approche (CNRC 604103):',
-                        style: const TextStyle(color: Colors.black54, fontSize: 11),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    const Text('100.00 DA', style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 11)),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        _isArabic ? 'مسافة الطريق (${distanceKm.toStringAsFixed(1)} كم):' : 'Trajet horokilométrique (${distanceKm.toStringAsFixed(1)} km):',
-                        style: const TextStyle(color: Colors.black54, fontSize: 11),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text('${tripFare.toStringAsFixed(2)} DA', style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 11)),
-                  ],
-                ),
-                const Divider(height: 16),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        _isArabic ? 'المجموع المدفوع:' : 'TOTAL RÉGLÉ:',
-                        style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold, fontSize: 13),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text('${fareDzd.toStringAsFixed(0)} DA', style: const TextStyle(color: Color(0xFF2563EB), fontWeight: FontWeight.bold, fontSize: 15)),
-                  ],
-                ),
-                if (quittance.spareChangeCreditedDzd > 0) ...[
-                  const SizedBox(height: 4),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          _isArabic ? 'الفكة المودعة في المحفظة:' : 'Monnaie Flywheel Épargne:',
-                          style: const TextStyle(color: Color(0xFFF59E0B), fontSize: 11, fontWeight: FontWeight.w600),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text('${quittance.spareChangeCreditedDzd.toStringAsFixed(0)} DA', style: const TextStyle(color: Color(0xFFF59E0B), fontWeight: FontWeight.bold, fontSize: 12)),
-                    ],
-                  ),
-                ],
-                const SizedBox(height: 12),
-                Center(
-                  child: Column(
-                    children: [
-                      QuittanceQrWidget(
-                        data: quittance.toQrInspectionPayload(),
-                        size: 110.0,
-                      ),
-                      const SizedBox(height: 6),
-                      Text(
-                        'Sceau DTW: ${quittance.verificationHash}',
-                        style: const TextStyle(fontSize: 9, fontFamily: 'monospace', fontWeight: FontWeight.bold, color: Colors.black54),
-                      ),
-                      const SizedBox(height: 4),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: const Color(0xFF2563EB)),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: Text(
-                          _isArabic ? '★ مطابق لمراقبة شرطة المرور DTW ★' : '★ CONFORME CONTRÔLE ROUTIER DTW ★',
-                          style: const TextStyle(fontSize: 8, fontWeight: FontWeight.bold, color: Color(0xFF1E3A8A)),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton.icon(
-              icon: const Icon(Icons.share, size: 14),
-              label: Text(_isArabic ? 'مشاركة الوصل' : 'Partager'),
-              onPressed: () {
-                Clipboard.setData(ClipboardData(text: quittance.toShareableSummary(isArabic: _isArabic)));
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    backgroundColor: const Color(0xFF2563EB),
-                    content: Text(_isArabic ? 'تم نسخ بيانات الوصل الرسمي إلى الحافظة.' : 'Résumé officiel de la quittance copié dans le presse-papiers.'),
-                  ),
-                );
-              },
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF2563EB),
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-              ),
-              onPressed: () => Navigator.pop(ctx),
-              child: Text(_isArabic ? 'إغلاق' : 'Fermer'),
-            ),
-          ],
-        ),
-      ),
+      spareChangeDzd: spareChangeDzd ?? 0.0,
+      isArabic: _isArabic,
     );
   }
 
@@ -809,189 +265,32 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
   }
 
   void _showRatingReviewDialog(RideDriverAssigned assigned) {
-    int stars = 5;
-    bool respectedMeter = true;
-    int cleanliness = 5;
-    int safeDriving = 5;
-    final commentController = TextEditingController();
-
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setDlgState) => Directionality(
-          textDirection: _isArabic ? TextDirection.rtl : TextDirection.ltr,
-          child: AlertDialog(
-            backgroundColor: const Color(0xFF131D31),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            title: Row(
-              children: [
-                const Icon(Icons.star, color: Color(0xFFF59E0B)),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    _isArabic ? 'تقييم الرحلة وجودة الخدمة' : 'Évaluation de la Course (DTW)',
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
+    RatingReviewDialog.show(
+      context,
+      assigned: assigned,
+      isArabic: _isArabic,
+      onSubmit: (rating) {
+        setState(() {
+          _tripHistory.insert(
+            0,
+            TripHistoryItem(
+              id: assigned.rideId,
+              date: DateTime.now(),
+              origin: _origin,
+              destination: _destination,
+              serviceMode: _selectedMode,
+              distanceKm: _currentDistanceKm,
+              fareDzd: _currentEstimatedFareDzd,
+              spareChangeDzd: 100.0,
+              driverName: assigned.driverName,
+              vehiclePlate: assigned.vehiclePlate,
+              agrementNumber: assigned.agrementNumber,
+              paymentRail: 'cash_with_spare_change',
             ),
-            content: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    _isArabic
-                        ? 'السائق: ${assigned.driverName} • ${assigned.vehiclePlate}'
-                        : 'Chauffeur: ${assigned.driverName} • ${assigned.vehiclePlate}',
-                    style: const TextStyle(color: Colors.white70, fontSize: 13),
-                  ),
-                  const SizedBox(height: 14),
-                  Text(_isArabic ? 'التقييم العام:' : 'Note Globale:', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 6),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(5, (i) {
-                      final s = i + 1;
-                      return IconButton(
-                        icon: Icon(
-                          s <= stars ? Icons.star : Icons.star_border,
-                          color: const Color(0xFFF59E0B),
-                          size: 28,
-                        ),
-                        onPressed: () => setDlgState(() => stars = s),
-                      );
-                    }),
-                  ),
-                  const SizedBox(height: 10),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                    decoration: BoxDecoration(
-                      color: Colors.black26,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.white10),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            _isArabic ? 'احترام تسعيرة العداد القانوني' : 'Respect du compteur légal',
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                        ),
-                        Switch(
-                          value: respectedMeter,
-                          activeThumbColor: const Color(0xFF2563EB),
-                          onChanged: (val) => setDlgState(() => respectedMeter = val),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(_isArabic ? 'نظافة المركبة:' : 'Propreté du Véhicule:', style: const TextStyle(fontSize: 12)),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [3, 4, 5].map((val) => Padding(
-                      padding: const EdgeInsets.only(right: 6),
-                      child: ChoiceChip(
-                        label: Text('$val ★'),
-                        selected: cleanliness == val,
-                        selectedColor: const Color(0xFF2563EB),
-                        onSelected: (sel) => sel ? setDlgState(() => cleanliness = val) : null,
-                      ),
-                    )).toList(),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(_isArabic ? 'سلامة القيادة والسرعة:' : 'Conduite Sécurisée:', style: const TextStyle(fontSize: 12)),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [3, 4, 5].map((val) => Padding(
-                      padding: const EdgeInsets.only(right: 6),
-                      child: ChoiceChip(
-                        label: Text('$val ★'),
-                        selected: safeDriving == val,
-                        selectedColor: const Color(0xFF2563EB),
-                        onSelected: (sel) => sel ? setDlgState(() => safeDriving = val) : null,
-                      ),
-                    )).toList(),
-                  ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: commentController,
-                    decoration: InputDecoration(
-                      hintText: _isArabic ? 'ملاحظات إضافية (اختياري)...' : 'Remarques éventuelles (facultatif)...',
-                      hintStyle: const TextStyle(fontSize: 11, color: Colors.white38),
-                      filled: true,
-                      fillColor: const Color(0xFF0F172A),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
-                      contentPadding: const EdgeInsets.all(10),
-                    ),
-                    maxLines: 2,
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: Text(_isArabic ? 'تخطي' : 'Passer'),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2563EB),
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                ),
-                onPressed: () {
-                  final rating = RideRating(
-                    rideId: assigned.rideId,
-                    stars: stars,
-                    respectedTaximeter: respectedMeter,
-                    cleanlinessRating: cleanliness,
-                    safeDrivingRating: safeDriving,
-                    ratedAt: DateTime.now(),
-                    comment: commentController.text.trim(),
-                  );
-                  Navigator.pop(ctx);
-                  setState(() {
-                    _tripHistory.insert(
-                      0,
-                      TripHistoryItem(
-                        id: assigned.rideId,
-                        date: DateTime.now(),
-                        origin: _origin,
-                        destination: _destination,
-                        serviceMode: _selectedMode,
-                        distanceKm: _currentDistanceKm,
-                        fareDzd: _currentEstimatedFareDzd,
-                        spareChangeDzd: 100.0,
-                        driverName: assigned.driverName,
-                        vehiclePlate: assigned.vehiclePlate,
-                        agrementNumber: assigned.agrementNumber,
-                        paymentRail: 'cash_with_spare_change',
-                      ),
-                    );
-                    _currentRide = const RideIdle();
-                  });
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      backgroundColor: const Color(0xFF2563EB),
-                      content: Text(
-                        _isArabic
-                            ? 'شكراً لك! تم تسجيل التقييم (${rating.compositeScore.toStringAsFixed(1)}/5) بنجاح.'
-                            : 'Merci ! Évaluation enregistrée (${rating.compositeScore.toStringAsFixed(1)}/5).',
-                      ),
-                    ),
-                  );
-                },
-                child: Text(_isArabic ? 'إرسال التقييم' : 'Envoyer l\'Avis'),
-              ),
-            ],
-          ),
-        ),
-      ),
+          );
+          _currentRide = const RideIdle();
+        });
+      },
     );
   }
 
@@ -1989,66 +1288,6 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
   }
 
   Widget _buildRegulatoryTab() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            _isArabic ? 'الإطار القانوني والتنظيمي الجزائري' : 'Cadre Réglementaire Algérien',
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 16),
-          _buildLawItem(
-            code: _isArabic ? 'المرسوم التنفيذي 12-230' : 'DÉCRET EXÉCUTIF 12-230',
-            title: _isArabic ? 'استغلال سيارات الأجرة البلدية' : 'Exploitation des Taxis Municipaux',
-            description: _isArabic
-                ? 'يسمح فقط للسائقين الحائزين على رخصة استغلال بلدية ودفتر مقاعد صالح بالعمل على المنصة.'
-                : 'Seuls les chauffeurs détenteurs d\'un Agrément communal et d\'un Livret de Place valide sont autorisés sur la plateforme, éliminant tout risque de mise en fourrière.',
-          ),
-          const SizedBox(height: 12),
-          _buildLawItem(
-            code: _isArabic ? 'رمز السجل التجاري 604103' : 'CODE CNRC 604103',
-            title: _isArabic ? 'مركز الحجز ورسم الاقتراب' : 'Centrale de Réservation & Frais d\'Approche',
-            description: _isArabic
-                ? 'ينظم الربط وتحديد رسم الاقتراب القانوني 100 دج المضاف إلى قيمة العداد الرسمي.'
-                : 'Régule la mise en relation et fixe les frais d\'approche légaux de 100 DA ajoutés au montant du taximètre horokilométrique.',
-          ),
-          const SizedBox(height: 12),
-          _buildLawItem(
-            code: _isArabic ? 'القانون 18-07 والقانون 25-11' : 'LOI 18-07 & LOI 25-11',
-            title: _isArabic ? 'سيادة البيانات والمراقبة المرئية' : 'Souveraineté des Données & Vidéosurveillance',
-            description: _isArabic
-                ? 'تخزين بيانات تحديد المواقع وتسجيلات الكاميرا مشفرة محليًا على خوادم داخل التراب الوطني الجزائري.'
-                : 'Les données de géolocalisation et les enregistrements vidéo de sécurité sont chiffrés en boîte noire locale et stockés sur des serveurs hébergés en Algérie.',
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLawItem({required String code, required String title, required String description}) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFF131D31),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white10),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(color: Colors.amber.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(6)),
-            child: Text(code, style: const TextStyle(fontSize: 10, color: Colors.amber, fontWeight: FontWeight.bold)),
-          ),
-          const SizedBox(height: 8),
-          Text(title, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 6),
-          Text(description, style: const TextStyle(fontSize: 12, height: 1.4, color: Colors.white70)),
-        ],
-      ),
-    );
+    return RegulatoryTab(isArabic: _isArabic);
   }
 }

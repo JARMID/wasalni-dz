@@ -168,6 +168,178 @@ class SupabaseService {
     }
   }
 
+  /// Creates a ride request in public.rides with Executive Decree 12-230 parameters
+  Future<Map<String, dynamic>?> createRideRequest({
+    required String rideCode,
+    required String originAddress,
+    required double originLat,
+    required double originLng,
+    required String destinationAddress,
+    required double destinationLat,
+    required double destinationLng,
+    required double estimatedFareDzd,
+    required String pinCode,
+    String? riderId,
+    String? originCommune,
+    String? destinationCommune,
+    int distanceMeters = 0,
+    int durationSeconds = 0,
+    String serviceType = 'taxi_individuel_metered',
+    double fraisApprocheDzd = 100.0,
+    String paymentMethod = 'cash',
+  }) async {
+    try {
+      final uri = Uri.parse('$baseUrl/rest/v1/rides');
+      final payload = {
+        'ride_code': rideCode,
+        'rider_id': riderId ?? riderTrustDeskWalletId,
+        'service_type': serviceType,
+        'status': 'requested',
+        'origin_address': originAddress,
+        'origin_commune': originCommune ?? 'Alger',
+        'origin_wilaya_code': 16,
+        'origin_location': 'SRID=4326;POINT($originLng $originLat)',
+        'destination_address': destinationAddress,
+        'destination_commune': destinationCommune ?? 'Alger',
+        'destination_wilaya_code': 16,
+        'destination_location': 'SRID=4326;POINT($destinationLng $destinationLat)',
+        'distance_meters': distanceMeters,
+        'duration_seconds': durationSeconds,
+        'frais_approche_amount': fraisApprocheDzd,
+        'fare_estimated': estimatedFareDzd,
+        'payment_method': paymentMethod,
+        'payment_state': 'pending',
+        'pin_code': pinCode,
+        'requested_at': DateTime.now().toUtc().toIso8601String(),
+      };
+
+      final response = await _client.post(
+        uri,
+        headers: _headers,
+        body: jsonEncode([payload]),
+      );
+
+      if (response.statusCode >= 200 && response.statusCode < 300) {
+        final List<dynamic> data = jsonDecode(response.body) as List<dynamic>;
+        if (data.isNotEmpty) {
+          return data.first as Map<String, dynamic>;
+        }
+      }
+      return null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  /// Fetches pending ride requests from public.rides ordered by most recent
+  Future<List<Map<String, dynamic>>> fetchPendingRides({int limit = 10}) async {
+    try {
+      final uri = Uri.parse(
+        '$baseUrl/rest/v1/rides?status=eq.requested&order=requested_at.desc&limit=$limit',
+      );
+      final response = await _client.get(uri, headers: _headers);
+
+      if (response.statusCode == 200) {
+        final List<dynamic> data = jsonDecode(response.body) as List<dynamic>;
+        return data.cast<Map<String, dynamic>>();
+      }
+      return [];
+    } catch (_) {
+      return [];
+    }
+  }
+
+  /// Marks a pending ride as accepted by a municipal driver
+  Future<bool> acceptRide({
+    required String rideId,
+    required String driverId,
+  }) async {
+    try {
+      final uri = Uri.parse('$baseUrl/rest/v1/rides?id=eq.$rideId');
+      final payload = {
+        'status': 'accepted',
+        'driver_id': driverId,
+        'accepted_at': DateTime.now().toUtc().toIso8601String(),
+      };
+
+      final response = await _client.patch(
+        uri,
+        headers: _headers,
+        body: jsonEncode(payload),
+      );
+
+      return response.statusCode >= 200 && response.statusCode < 300;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Updates the status and optional telemetry of an active ride
+  Future<bool> updateRideStatus({
+    required String rideId,
+    required String status,
+    Map<String, dynamic>? additionalFields,
+  }) async {
+    try {
+      final uri = Uri.parse('$baseUrl/rest/v1/rides?id=eq.$rideId');
+      final payload = <String, dynamic>{
+        'status': status,
+        if (status == 'driver_arrived') 'arrived_at': DateTime.now().toUtc().toIso8601String(),
+        if (status == 'in_progress') 'started_at': DateTime.now().toUtc().toIso8601String(),
+        if (status == 'cancelled') 'cancelled_at': DateTime.now().toUtc().toIso8601String(),
+        ...?additionalFields,
+      };
+
+      final response = await _client.patch(
+        uri,
+        headers: _headers,
+        body: jsonEncode(payload),
+      );
+
+      return response.statusCode >= 200 && response.statusCode < 300;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Finalizes a trip with Executive Decree 12-230 taximeter meter value and quittance
+  Future<bool> completeRide({
+    required String rideId,
+    required double meterFinalAmount,
+    required double fareFinal,
+    double platformCommissionRate = 10.0,
+    String paymentState = 'settled',
+    String? taximeterPhotoUrl,
+  }) async {
+    try {
+      final uri = Uri.parse('$baseUrl/rest/v1/rides?id=eq.$rideId');
+      final commissionAmount = (fareFinal * platformCommissionRate) / 100.0;
+      final driverPayout = fareFinal - commissionAmount;
+
+      final payload = {
+        'status': 'completed',
+        'meter_final_amount': meterFinalAmount,
+        'fare_final': fareFinal,
+        'platform_commission_rate': platformCommissionRate,
+        'platform_commission_amount': commissionAmount,
+        'driver_payout_amount': driverPayout,
+        'payment_state': paymentState,
+        'completed_at': DateTime.now().toUtc().toIso8601String(),
+        if (taximeterPhotoUrl != null) 'taximeter_photo_url': taximeterPhotoUrl,
+      };
+
+      final response = await _client.patch(
+        uri,
+        headers: _headers,
+        body: jsonEncode(payload),
+      );
+
+      return response.statusCode >= 200 && response.statusCode < 300;
+    } catch (_) {
+      return false;
+    }
+  }
+
   void dispose() {
     _client.close();
   }
