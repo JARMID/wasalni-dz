@@ -115,6 +115,19 @@ export function App() {
     return () => window.removeEventListener('hashchange', handleHash);
   }, []);
 
+  // Sync activeTab state to window.location.hash for shareable URLs and persistence
+  useEffect(() => {
+    const currentHash = window.location.hash.replace('#', '').toLowerCase();
+    const targetHash = activeTab === 'home' ? '' : activeTab;
+    if (currentHash !== targetHash) {
+      if (activeTab === 'home') {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      } else {
+        window.location.hash = activeTab;
+      }
+    }
+  }, [activeTab]);
+
   // Sync theme to root HTML
   useEffect(() => {
     if (isDark) {
