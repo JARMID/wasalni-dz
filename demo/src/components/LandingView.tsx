@@ -15,7 +15,13 @@ import {
   Building2,
   FileCheck2,
   Lock,
-  BadgePercent
+  BadgePercent,
+  CloudRain,
+  Sun,
+  Zap,
+  Quote,
+  Check,
+  SlidersHorizontal
 } from 'lucide-react';
 import type { AppLang } from '../utils/i18n';
 import type { ActiveTab, BrandOption, GraphicsPalette } from './Header';
@@ -24,6 +30,7 @@ import { FooterReveal } from './FooterReveal';
 import { HorizontalShowcase } from './HorizontalShowcase';
 import { StickyStack } from './StickyStack';
 import { HeroRealExperience } from './HeroRealExperience';
+import { soundEngine } from '../utils/audio';
 
 interface LandingViewProps {
   lang: AppLang;
@@ -54,6 +61,31 @@ export const LandingView: React.FC<LandingViewProps> = ({
   const [smsPhone, setSmsPhone] = useState('');
   const [smsSent, setSmsSent] = useState(false);
 
+  // Bento Cell 1: Interactive Tariff Defense Simulator
+  const [simDistance, setSimDistance] = useState<number>(7.8);
+  const [isRainSurge, setIsRainSurge] = useState<boolean>(false);
+
+  // Bento Cell 2: Interactive BaridiMob Change Calculator
+  const [selectedBill, setSelectedBill] = useState<number>(1000);
+  const [isTestingCcpRefund, setIsTestingCcpRefund] = useState<boolean>(false);
+
+  // Bento Cell 3: Interactive DTW Verification Card
+  const [showDtwCard, setShowDtwCard] = useState<boolean>(false);
+
+  // Bento Cell 4: Family Reassurance Mode
+  const [familyTab, setFamilyTab] = useState<'school' | 'parents' | 'legal'>('school');
+
+  // Regulated Tariff (Executive Decree 12-230): 100 DA Flag Drop + 35 DA/km
+  const wasslaniSimFare = Math.round(100 + simDistance * 35);
+  // Unregulated VTC & Clandestins: 150 DA Base + 55 DA/km with dynamic rain multiplier (3.1x)
+  const vtcBase = Math.round(150 + simDistance * 55);
+  const vtcSimFare = isRainSurge ? Math.round(vtcBase * 3.1) : Math.round(vtcBase * 1.35);
+  const directSavings = Math.max(0, vtcSimFare - wasslaniSimFare);
+
+  // BaridiMob refund calculation
+  const simRideCost = 370;
+  const refundAmount = Math.max(0, selectedBill - simRideCost);
+
   // Form field ID for accessibility
   const smsInputId = useId();
 
@@ -65,6 +97,14 @@ export const LandingView: React.FC<LandingViewProps> = ({
       setSmsSent(false);
       setSmsPhone('');
     }, 4000);
+  };
+
+  const handleTestCcpRefund = () => {
+    soundEngine.playCashRegisterDing();
+    setIsTestingCcpRefund(true);
+    setTimeout(() => {
+      setIsTestingCcpRefund(false);
+    }, 4500);
   };
 
   return (
@@ -108,7 +148,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
         {/* Master Asymmetrical Bento Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           
-          {/* Bento Cell 1 (Col-span 7): Official Regulated Taximeter (Executive Decree 12-230) */}
+          {/* Bento Cell 1 (Col-span 7): Official Regulated Taximeter (Executive Decree 12-230) with Live Interactive Simulator */}
           <div className="lg:col-span-7 rounded-2xl p-6 sm:p-8 bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 shadow-xl backdrop-blur-xl relative overflow-hidden flex flex-col justify-between group hover:border-blue-500/40 transition-all text-left">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
@@ -131,46 +171,108 @@ export const LandingView: React.FC<LandingViewProps> = ({
                 </p>
               </div>
 
+              {/* Interactive Distance & Rain Simulator Controls */}
+              <div className="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-white/10 space-y-3">
+                <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                  <span className="font-bold text-slate-700 dark:text-slate-300 flex items-center space-x-1.5">
+                    <SlidersHorizontal className="w-3.5 h-3.5 text-blue-500" />
+                    <span>{isAr ? 'مسافة الرحلة بالمحاكاة :' : 'Distance du trajet :'}</span>
+                    <span className="font-mono font-black text-blue-600 dark:text-blue-400">{simDistance} km</span>
+                  </span>
+
+                  {/* Weather Toggle */}
+                  <button
+                    onClick={() => {
+                      soundEngine.playSelection();
+                      setIsRainSurge(prev => !prev);
+                    }}
+                    className={`px-3 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center space-x-1.5 cursor-pointer border ${
+                      isRainSurge
+                        ? 'bg-amber-500/20 text-amber-500 border-amber-500/40 shadow-sm'
+                        : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-300 dark:border-white/10'
+                    }`}
+                  >
+                    {isRainSurge ? <CloudRain className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5 text-amber-500" />}
+                    <span>{isRainSurge ? 'Pluie & Heure de Pointe (3.1x VTC)' : 'Conditions Normales'}</span>
+                  </button>
+                </div>
+
+                {/* Preset Hub Distance Buttons */}
+                <div className="flex flex-wrap gap-1.5">
+                  {[
+                    { label: '3.5 km (Centre)', km: 3.5 },
+                    { label: '7.8 km (Kouba)', km: 7.8 },
+                    { label: '16 km (Aéroport T4)', km: 16 },
+                    { label: '25 km (Zéralda)', km: 25 },
+                  ].map(p => (
+                    <button
+                      key={p.label}
+                      onClick={() => {
+                        soundEngine.playClick();
+                        setSimDistance(p.km);
+                      }}
+                      className={`px-2 py-0.5 rounded text-[10px] font-mono font-semibold border transition-colors cursor-pointer ${
+                        simDistance === p.km
+                          ? 'bg-blue-600 text-white border-blue-600'
+                          : 'bg-white/60 dark:bg-white/5 border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300'
+                      }`}
+                    >
+                      {p.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {/* Side-by-Side Comparison Widget */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
                 <div className="p-3.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-500/30 space-y-1">
                   <div className="flex items-center justify-between text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase">
                     <span>WASSLANI (Officiel)</span>
                     <CheckCircle2 className="w-3.5 h-3.5" />
                   </div>
-                  <div className="text-xl font-black font-mono text-blue-600 dark:text-blue-400">
-                    370 DZD
+                  <div className="text-2xl font-black font-mono text-blue-600 dark:text-blue-400">
+                    {wasslaniSimFare} DZD
                   </div>
                   <div className="text-[10px] text-slate-500 dark:text-slate-400">
                     100 DA + 35 DA/km • Zéro surcoût météo
                   </div>
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 space-y-1 opacity-80">
+                <div className={`p-3.5 rounded-xl border space-y-1 transition-all ${
+                  isRainSurge
+                    ? 'bg-amber-950/20 border-amber-500/40'
+                    : 'bg-slate-100 dark:bg-slate-800/50 border-slate-200 dark:border-white/5 opacity-80'
+                }`}>
                   <div className="flex items-center justify-between text-[11px] font-bold text-slate-500 uppercase">
                     <span>VTC & Clandestins</span>
-                    <span className="text-[10px] text-amber-500 font-mono">Surcoût 3.2x</span>
+                    <span className={`text-[10px] font-mono font-bold ${isRainSurge ? 'text-amber-500' : 'text-slate-400'}`}>
+                      {isRainSurge ? 'Surtension 3.1x' : 'Tarif variable'}
+                    </span>
                   </div>
-                  <div className="text-xl font-black font-mono text-slate-700 dark:text-slate-300 line-through">
-                    950 - 1 200 DZD
+                  <div className="text-2xl font-black font-mono text-slate-700 dark:text-slate-300 line-through">
+                    {vtcSimFare} DZD
                   </div>
                   <div className="text-[10px] text-slate-500">
-                    Algorithme de surtension prédateur
+                    {isRainSurge ? 'Multiplicateur appliqué par mauvais temps' : 'Algorithme dynamique non homologué'}
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="pt-4 mt-2 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-xs font-bold text-blue-600 dark:text-blue-400">
+            <div className="pt-4 mt-3 border-t border-slate-100 dark:border-white/5 flex flex-wrap items-center justify-between gap-2 text-xs font-bold text-blue-600 dark:text-blue-400">
               <span className="flex items-center space-x-1.5">
-                <BadgePercent className="w-4 h-4" />
-                <span>{isAr ? 'توفير مؤكد بنسبة 45% إلى 60% على التنقلات الحضرية' : 'Économie garantie de 45% à 60% sur vos trajets quotidiens'}</span>
+                <BadgePercent className="w-4 h-4 shrink-0" />
+                <span>
+                  {isAr 
+                    ? `توفير مباشر للمواطن بقيمة ${directSavings} دج على هذا المسار` 
+                    : `Économie citoyenne directe : +${directSavings} DZD préservés sur ce trajet`}
+                </span>
               </span>
-              <span className="font-mono text-[11px]">Alger Wilaya 16</span>
+              <span className="font-mono text-[11px]">Wilaya d'Alger</span>
             </div>
           </div>
 
-          {/* Bento Cell 2 (Col-span 5): BaridiMob Change Refund Flywheel */}
+          {/* Bento Cell 2 (Col-span 5): BaridiMob Change Refund Flywheel with Interactive Banknote Picker */}
           <div className="lg:col-span-5 rounded-2xl p-6 sm:p-8 bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 shadow-xl backdrop-blur-xl flex flex-col justify-between group hover:border-amber-500/40 transition-all text-left">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
@@ -193,21 +295,61 @@ export const LandingView: React.FC<LandingViewProps> = ({
                 </p>
               </div>
 
+              {/* Interactive Banknote Picker */}
+              <div className="space-y-1.5">
+                <span className="text-[11px] font-bold text-slate-600 dark:text-slate-400 block">
+                  {isAr ? 'اختر فئة الورقة النقدية المدفوعة :' : 'Sélectionnez le billet remis au chauffeur :'}
+                </span>
+                <div className="flex gap-2">
+                  {[500, 1000, 2000].map(bill => (
+                    <button
+                      key={bill}
+                      onClick={() => {
+                        soundEngine.playSelection();
+                        setSelectedBill(bill);
+                      }}
+                      className={`flex-1 py-1.5 rounded-lg text-xs font-mono font-bold border transition-colors cursor-pointer ${
+                        selectedBill === bill
+                          ? 'bg-amber-500 text-slate-950 border-amber-500 shadow-md'
+                          : 'bg-slate-100 dark:bg-white/5 border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-300 hover:border-amber-400'
+                      }`}
+                    >
+                      {bill} DA
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {/* Visual Instant Quittance Receipt */}
-              <div className="p-3.5 rounded-xl bg-black/80 border border-white/10 font-mono text-xs space-y-2">
+              <div className="p-3.5 rounded-xl bg-black/90 border border-white/10 font-mono text-xs space-y-2">
                 <div className="flex justify-between text-slate-400 text-[11px]">
-                  <span>COURSE AUDITÉE : 450.00 DZD</span>
-                  <span>ESPÈCES : 1 000 DA</span>
+                  <span>COURSE HOMOLOGUÉE : {simRideCost}.00 DZD</span>
+                  <span>ESPÈCES : {selectedBill}.00 DZD</span>
                 </div>
                 <div className="p-2 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-between text-amber-400 font-bold text-xs">
                   <span>VIREMENT EFFECTUÉ :</span>
-                  <span>+550.00 DZD CCP</span>
+                  <span>+{refundAmount}.00 DZD CCP</span>
                 </div>
                 <div className="text-[10px] text-slate-400 flex items-center justify-between">
-                  <span>RIP: 00799999... • SATIM</span>
-                  <span className="text-blue-400 font-bold">CONFIRMÉ EN 1.2s</span>
+                  <span>RIP: 007999990023456789 Clé 18</span>
+                  <span className="text-blue-400 font-bold">
+                    {isTestingCcpRefund ? 'CONFIRMATION SATIM...' : 'CONFIRMÉ EN 1.2s'}
+                  </span>
                 </div>
               </div>
+
+              {/* Test Button */}
+              <button
+                onClick={handleTestCcpRefund}
+                className="w-full py-2 px-3 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/30 text-amber-600 dark:text-amber-400 font-bold text-xs transition-colors flex items-center justify-center space-x-1.5 cursor-pointer"
+              >
+                <Zap className="w-3.5 h-3.5" />
+                <span>
+                  {isTestingCcpRefund
+                    ? (isAr ? 'تم تأكيد العملية بنجاح ✓' : 'Virement SATIM exécuté avec succès ✓')
+                    : (isAr ? 'اختبر التحويل الفوري للرصيد' : 'Tester le Remboursement Immédiat CCP ⚡')}
+                </span>
+              </button>
             </div>
 
             <div className="pt-4 mt-2 border-t border-slate-100 dark:border-white/5 flex items-center text-xs font-bold text-amber-600 dark:text-amber-400">
@@ -215,7 +357,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
             </div>
           </div>
 
-          {/* Bento Cell 3 (Col-span 5): Accredited DTW Artisans */}
+          {/* Bento Cell 3 (Col-span 5): Accredited DTW Artisans with Interactive Professional Card */}
           <div className="lg:col-span-5 rounded-2xl p-6 sm:p-8 bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 shadow-xl backdrop-blur-xl flex flex-col justify-between group hover:border-blue-500/40 transition-all text-left">
             <div className="space-y-4">
               <div className="flex items-center justify-between">
@@ -238,21 +380,56 @@ export const LandingView: React.FC<LandingViewProps> = ({
                 </p>
               </div>
 
-              {/* Accreditation Badges */}
-              <div className="space-y-2 pt-1">
-                <div className="flex items-center space-x-2 text-xs font-semibold text-slate-700 dark:text-slate-200">
-                  <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />
-                  <span>{isAr ? 'دفتر مكان رسمي ساري المفعول (ولاية الجزائر)' : 'Livret de Place officiel valide (DTW 16)'}</span>
+              {/* Digital Card Toggle or Bullet Checklist */}
+              {showDtwCard ? (
+                <div className="p-3.5 rounded-xl bg-slate-950 text-white border border-blue-500/40 space-y-2 text-xs font-mono animate-fadeIn">
+                  <div className="flex justify-between items-center pb-1.5 border-b border-white/10 text-[10px]">
+                    <span className="text-blue-400 font-bold">DIRECTION DES TRANSPORTS WILAYA D'ALGER</span>
+                    <span className="text-amber-400">DTW 16</span>
+                  </div>
+                  <div className="flex justify-between text-[11px]">
+                    <span className="text-slate-400">Titulaire :</span>
+                    <span className="font-bold text-white">Mourad Khelifi</span>
+                  </div>
+                  <div className="flex justify-between text-[11px]">
+                    <span className="text-slate-400">Livret de Place :</span>
+                    <span className="text-blue-300 font-bold">LP-88392-16</span>
+                  </div>
+                  <div className="flex justify-between text-[11px]">
+                    <span className="text-slate-400">Véhicule & Plaque :</span>
+                    <span>Peugeot 301 • 01842-120-16</span>
+                  </div>
+                  <div className="flex justify-between text-[10px] text-slate-400 pt-1 border-t border-white/10">
+                    <span>Contrôle technique :</span>
+                    <span className="text-blue-400 font-bold">À JOUR (ONML SCELLÉ)</span>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-2 text-xs font-semibold text-slate-700 dark:text-slate-200">
-                  <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />
-                  <span>{isAr ? 'مراقبة تقنية دورية ومطابقة معايير السلامة' : 'Contrôle technique périodique semestriel'}</span>
+              ) : (
+                <div className="space-y-2 pt-1">
+                  <div className="flex items-center space-x-2 text-xs font-semibold text-slate-700 dark:text-slate-200">
+                    <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />
+                    <span>{isAr ? 'دفتر مكان رسمي ساري المفعول (ولاية الجزائر)' : 'Livret de Place officiel valide (DTW 16)'}</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-xs font-semibold text-slate-700 dark:text-slate-200">
+                    <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />
+                    <span>{isAr ? 'مراقبة تقنية دورية ومطابقة معايير السلامة' : 'Contrôle technique périodique semestriel'}</span>
+                  </div>
+                  <div className="flex items-center space-x-2 text-xs font-semibold text-slate-700 dark:text-slate-200">
+                    <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />
+                    <span>{isAr ? 'سجل تجاري وطني CNRC 604103 معتمد' : 'Registre de commerce national CNRC 604103'}</span>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-2 text-xs font-semibold text-slate-700 dark:text-slate-200">
-                  <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />
-                  <span>{isAr ? 'سجل تجاري وطني CNRC 604103 معتمد' : 'Registre de commerce national CNRC 604103'}</span>
-                </div>
-              </div>
+              )}
+
+              <button
+                onClick={() => {
+                  soundEngine.playClick();
+                  setShowDtwCard(prev => !prev);
+                }}
+                className="w-full py-2 px-3 rounded-xl bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-600 dark:text-blue-400 font-bold text-xs transition-colors flex items-center justify-center space-x-1.5 cursor-pointer"
+              >
+                <span>{showDtwCard ? 'Fermer la Carte' : 'Inspecter la Carte Professionnelle DTW 16'}</span>
+              </button>
             </div>
 
             <div className="pt-4 mt-2 border-t border-slate-100 dark:border-white/5 flex items-center text-xs font-bold text-blue-600 dark:text-blue-400">
@@ -283,7 +460,68 @@ export const LandingView: React.FC<LandingViewProps> = ({
                 </p>
               </div>
 
-              {/* Family Reassurance Telemetry Strip */}
+              {/* Family Reassurance Scenario Tabs */}
+              <div className="flex gap-2 p-1 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-white/5">
+                {[
+                  { id: 'school', label: 'Navettes Scolaires' },
+                  { id: 'parents', label: 'Trajet Parents' },
+                  { id: 'legal', label: 'Boîte Noire Loi 25-11' },
+                ].map(tab => (
+                  <button
+                    key={tab.id}
+                    onClick={() => {
+                      soundEngine.playSelection();
+                      setFamilyTab(tab.id as 'school' | 'parents' | 'legal');
+                    }}
+                    className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      familyTab === tab.id
+                        ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm'
+                        : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Active Scenario Context */}
+              <div className="p-3.5 rounded-xl bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-200/80 dark:border-indigo-500/30 space-y-1 text-xs">
+                {familyTab === 'school' && (
+                  <>
+                    <div className="font-bold text-indigo-900 dark:text-indigo-200 flex items-center space-x-1.5">
+                      <Check className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                      <span>Trajet quotidien scolaire ou universitaire avec chauffeur attitré</span>
+                    </div>
+                    <p className="text-[11px] text-slate-600 dark:text-slate-300">
+                      Notifications directes à la montée et à la descente du véhicule. Facturation mensuelle sans manipulation d'argent liquide par les élèves.
+                    </p>
+                  </>
+                )}
+                {familyTab === 'parents' && (
+                  <>
+                    <div className="font-bold text-indigo-900 dark:text-indigo-200 flex items-center space-x-1.5">
+                      <Check className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                      <span>Réservation & paiement à distance pour proches et aînés</span>
+                    </div>
+                    <p className="text-[11px] text-slate-600 dark:text-slate-300">
+                      Réglez la course depuis votre carte CIB ou compte BaridiMob. Suivez l'itinéraire en direct sur la carte jusqu'à l'arrivée à destination.
+                    </p>
+                  </>
+                )}
+                {familyTab === 'legal' && (
+                  <>
+                    <div className="font-bold text-indigo-900 dark:text-indigo-200 flex items-center space-x-1.5">
+                      <Check className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                      <span>Tampon judiciaire chiffré AES-256 avec quorum Shamir 2-sur-3</span>
+                    </div>
+                    <p className="text-[11px] text-slate-600 dark:text-slate-300">
+                      Enregistrement en boucle locale de 30 secondes. Déchiffrement strictement conditionné à une réquisition judiciaire officielle (Loi 25-11).
+                    </p>
+                  </>
+                )}
+              </div>
+
+              {/* Telemetry Strip */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
                 <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-white/5 text-center">
                   <div className="text-base font-black text-indigo-600 dark:text-indigo-400 font-mono">AES-256</div>
@@ -551,6 +789,88 @@ export const LandingView: React.FC<LandingViewProps> = ({
             </div>
           </div>
 
+        </div>
+      </section>
+
+      {/* SECTION 5.5: RETOURS DU TERRAIN WILAYA D'ALGER (Pilot Deployment Testimonials) */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6">
+        <div className="rounded-2xl p-8 sm:p-12 bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 shadow-xl backdrop-blur-xl">
+          <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">
+              {isAr ? 'شهادات حية من الميدان' : 'Retours du Terrain • Wilaya d\'Alger'}
+            </span>
+            <h3 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
+              {isAr ? 'ماذا يقول السائقون الحرفيون والركاب في العاصمة' : 'L\'Expérience WASSLANI au Quotidien'}
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+              {isAr ? 'آراء شركائنا في المحطات المركزية والمستفيدين من الخدمة' : 'Témoignages recueillis auprès des artisans taxieurs et des usagers réguliers.'}
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+            {/* Testimonial 1: Chauffeur Artisan */}
+            <div className="p-6 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-white/5 space-y-4 flex flex-col justify-between">
+              <div className="space-y-3">
+                <Quote className="w-6 h-6 text-amber-500/60" />
+                <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed italic">
+                  {isAr
+                    ? '"22 سنة وأنا سائق طاكسي في ساحة أول ماي. هذه أول منصة تحترم الحرفي الجزائري. عمولة 10% فقط، ولا مشكل للصرف مع الزبائن، والتحويل اليومي على حسابي CCP مضمون في الموعد."'
+                    : '"Après 22 ans de métier à la station du 1er Mai, c\'est la première fois qu\'une application défend l\'artisan. Commission de 10% seulement, plus de dispute pour la monnaie et mes virements CCP arrivent chaque jour."'}
+                </p>
+              </div>
+              <div className="pt-3 border-t border-slate-200 dark:border-white/5 flex items-center space-x-3">
+                <div className="w-9 h-9 rounded-full bg-amber-500/20 text-amber-500 font-bold text-xs flex items-center justify-center font-mono">
+                  HR
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-slate-900 dark:text-white">Hadj Rachid M.</div>
+                  <div className="text-[10px] text-slate-500 font-mono">Artisan Taxieur • LP-16/0482</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Testimonial 2: Mère de Famille / Médecin */}
+            <div className="p-6 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-white/5 space-y-4 flex flex-col justify-between">
+              <div className="space-y-3">
+                <Quote className="w-6 h-6 text-blue-500/60" />
+                <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed italic">
+                  {isAr
+                    ? '"أعمل في المناوبة الليلية بمستشفى مصطفى باشا. الأمان بالنسبة لي أساسي. سائق رسمي يحمل دفتر مكان، العداد القانوني دون زيادات، ومتابعة المسار مباشرة عبر التطبيق تمنحني طمأنينة تامة."'
+                    : '"En garde de nuit au CHU Mustapha Pacha, la sécurité est primordiale. Savoir que le chauffeur a un Livret de Place vérifié et que le tarif compteur est respecté sans majoration arbitraire change tout."'}
+                </p>
+              </div>
+              <div className="pt-3 border-t border-slate-200 dark:border-white/5 flex items-center space-x-3">
+                <div className="w-9 h-9 rounded-full bg-blue-500/20 text-blue-500 font-bold text-xs flex items-center justify-center font-mono">
+                  KS
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-slate-900 dark:text-white">Dr. Karima S.</div>
+                  <div className="text-[10px] text-slate-500 font-mono">Médecin • Alger-Centre</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Testimonial 3: Gestionnaire PME */}
+            <div className="p-6 rounded-xl bg-slate-50 dark:bg-slate-950/60 border border-slate-200 dark:border-white/5 space-y-4 flex flex-col justify-between">
+              <div className="space-y-3">
+                <Quote className="w-6 h-6 text-indigo-500/60" />
+                <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed italic">
+                  {isAr
+                    ? '"حولنا تنقلات مهندسينا في القطب التكنولوجي لسيدي عبد الله وحي الأعمال بباب الزوار إلى وصلني. الفاتورة الشهرية الرسمية متطابقة جبائياً والخدمة دقيقة ومنتظمة."'
+                    : '"Nous gérons tous les trajets professionnels de nos ingénieurs entre Sidi Abdellah et Bab Ezzouar via WASSLANI. Facturation mensuelle conforme, traçabilité fiscale et ponctualité remarquable."'}
+                </p>
+              </div>
+              <div className="pt-3 border-t border-slate-200 dark:border-white/5 flex items-center space-x-3">
+                <div className="w-9 h-9 rounded-full bg-indigo-500/20 text-indigo-500 font-bold text-xs flex items-center justify-center font-mono">
+                  SL
+                </div>
+                <div>
+                  <div className="text-xs font-bold text-slate-900 dark:text-white">Sofiane L.</div>
+                  <div className="text-[10px] text-slate-500 font-mono">Directeur d'Ingénierie • Bab Ezzouar</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 

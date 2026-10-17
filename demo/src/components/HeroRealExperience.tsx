@@ -584,12 +584,16 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
                       <div className="absolute inset-0 opacity-30 bg-[radial-gradient(#38bdf8_1px,transparent_1px)] [background-size:18px_18px]" />
                       
                       {/* Vector Coastline Graphic */}
-                      <svg className="absolute inset-0 w-full h-full opacity-20 pointer-events-none" viewBox="0 0 300 400">
+                      <svg className="absolute inset-0 w-full h-full opacity-25 pointer-events-none" viewBox="0 0 300 400">
                         <path 
                           d="M 0 120 Q 80 160, 160 140 T 300 180 L 300 0 L 0 0 Z" 
                           fill="#0369a1" 
                         />
-                        <text x="180" y="80" fill="#38bdf8" fontSize="11" fontWeight="bold" letterSpacing="2">BAIE D'ALGER</text>
+                        <text x="175" y="65" fill="#38bdf8" fontSize="10" fontWeight="bold" letterSpacing="2">BAIE D'ALGER</text>
+                        <path d="M 10 200 Q 120 180, 290 220" stroke="#334155" strokeWidth="2" fill="none" opacity="0.6" strokeDasharray="4 4" />
+                        <text x="35" y="215" fill="#64748b" fontSize="8" fontFamily="monospace">ROCADE SUD (16)</text>
+                        <path d="M 20 90 Q 150 125, 280 95" stroke="#334155" strokeWidth="2" fill="none" opacity="0.6" strokeDasharray="4 4" />
+                        <text x="135" y="112" fill="#64748b" fontSize="8" fontFamily="monospace">ROCADE NORD • BORD DE MER</text>
                       </svg>
 
                       {/* Top Floating Origin/Dest Pill */}
@@ -638,7 +642,7 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
                           {/* Node Destination */}
                           <circle cx="230" cy="40" r="8" fill="#F59E0B" stroke="#ffffff" strokeWidth="2" />
 
-                          {/* Moving Taxi Vehicle Marker with Radar Beacon */}
+                          {/* Moving Taxi Vehicle Marker with Radar Beacon and Tangent Rotation */}
                           {(() => {
                             const t = vehicleProgress / 100;
                             const p0 = { x: 30, y: 140 };
@@ -649,11 +653,17 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
                             const cx = Math.pow(1 - t, 3) * p0.x + 3 * Math.pow(1 - t, 2) * t * p1.x + 3 * (1 - t) * Math.pow(t, 2) * p2.x + Math.pow(t, 3) * p3.x;
                             const cy = Math.pow(1 - t, 3) * p0.y + 3 * Math.pow(1 - t, 2) * t * p1.y + 3 * (1 - t) * Math.pow(t, 2) * p2.y + Math.pow(t, 3) * p3.y;
 
+                            const dx = 3 * Math.pow(1 - t, 2) * (p1.x - p0.x) + 6 * (1 - t) * t * (p2.x - p1.x) + 3 * Math.pow(t, 2) * (p3.x - p2.x);
+                            const dy = 3 * Math.pow(1 - t, 2) * (p1.y - p0.y) + 6 * (1 - t) * t * (p2.y - p1.y) + 3 * Math.pow(t, 2) * (p3.y - p2.y);
+                            const angleDeg = (Math.atan2(dy, dx) * 180) / Math.PI;
+
                             return (
                               <g transform={`translate(${cx}, ${cy})`}>
                                 <circle cx="0" cy="0" r="16" fill="rgba(245, 158, 11, 0.25)" className="animate-ping" />
-                                <circle cx="0" cy="0" r="11" fill="#F59E0B" stroke="#0F172A" strokeWidth="2" />
-                                <Car className="w-3.5 h-3.5 text-slate-950" x="-7" y="-7" />
+                                <circle cx="0" cy="0" r="12" fill="#F59E0B" stroke="#0F172A" strokeWidth="2" />
+                                <g transform={`rotate(${angleDeg})`}>
+                                  <Car className="w-3.5 h-3.5 text-slate-950" x="-7" y="-7" />
+                                </g>
                               </g>
                             );
                           })()}
@@ -671,7 +681,9 @@ export const HeroRealExperience: React.FC<HeroRealExperienceProps> = ({
                         {tripState === 'en_route' && (
                           <>
                             <Activity className="w-3.5 h-3.5 text-amber-400 animate-spin" />
-                            <span className="text-amber-400">En course • Vitesse 52 km/h</span>
+                            <span className="text-amber-400">
+                              En course • Vitesse {46 + Math.round(Math.sin((vehicleProgress * Math.PI) / 25) * 8)} km/h
+                            </span>
                           </>
                         )}
                         {tripState === 'completed' && (
