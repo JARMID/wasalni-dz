@@ -9,10 +9,12 @@ import {
   Wallet, 
   ArrowRight, 
   Check, 
-  Compass
+  Compass,
+  MonitorPlay
 } from 'lucide-react';
 import type { AppLang } from '../utils/i18n';
 import type { ActiveTab } from './Header';
+import { soundEngine } from '../utils/audio';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -136,6 +138,22 @@ export const HorizontalShowcase: React.FC<HorizontalShowcaseProps> = ({ lang, on
       ],
       cta: isAr ? 'افتح السجل المالي' : 'Consulter le Grand Livre',
     },
+    {
+      id: 'sync' as ActiveTab,
+      badge: isAr ? 'المختبر متعدد الشاشات' : 'Laboratoire Multi-Écrans',
+      icon: MonitorPlay,
+      accent: 'amber',
+      title: isAr ? 'العرض الحي التزامني 3 أجهزة' : 'Démonstrateur Synchronisé 3 Écrans',
+      desc: isAr
+        ? 'محاكاة حية متزامنة في الوقت الفعلي تجمع لوحة السائق، خريطة الجزائر الحية، وتطبيق الراكب.'
+        : 'Pilotage interactif en simultané du Cockpit Chauffeur, de la Télématique Alger Leaflet et du Smartphone Passager.',
+      bullets: [
+        isAr ? 'تزامن فوري بين السائق والزبون والمركز' : 'Synchronisation WebSocket sans latence',
+        isAr ? 'محاكاة كاملة لمسار حقيقي بالجزائر' : 'Scénario complet : appel, trajet et quittance',
+        isAr ? 'اختبار الصندوق الأسود 2.84 G' : 'Déclencheur d\'impact 2.84 G et scellement Loi 25-11',
+      ],
+      cta: isAr ? 'تشغيل العرض الحي' : 'Lancer la Démo Multi-Écrans',
+    },
   ];
 
   return (
@@ -147,7 +165,7 @@ export const HorizontalShowcase: React.FC<HorizontalShowcaseProps> = ({ lang, on
           <div>
             <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 mb-2">
               <Compass className="w-3.5 h-3.5" />
-              <span>{isAr ? 'معمارية متعددة الواجهات' : '5 Portails Indépendants Découplés'}</span>
+              <span>{isAr ? 'معمارية متكاملة متعددة الواجهات' : '6 Surfaces Métier & Démonstrateur Synchronisé'}</span>
             </div>
             <h2 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white tracking-tight">
               {isAr ? 'استكشف واجهات منصة وصلني' : 'Parcourez l’Écosystème WASSLANI'}
@@ -206,7 +224,10 @@ export const HorizontalShowcase: React.FC<HorizontalShowcaseProps> = ({ lang, on
 
               <div className="pt-4">
                 <button
-                  onClick={() => onNavigateTab(slide.id)}
+                  onClick={() => {
+                    soundEngine.playClick();
+                    onNavigateTab(slide.id);
+                  }}
                   className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-slate-900 dark:bg-blue-600 hover:bg-slate-800 dark:hover:bg-blue-500 text-white font-bold text-xs shadow-md transition-all cursor-pointer group"
                 >
                   <span>{slide.cta}</span>

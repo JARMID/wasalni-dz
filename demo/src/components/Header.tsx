@@ -264,49 +264,56 @@ export const Header: React.FC<HeaderProps> = ({
             <nav className="hidden lg:flex items-center space-x-1 sm:space-x-1.5">
               <a
                 href="#services"
-                className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
+                className="px-2 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
               >
                 {lang === 'ar' ? 'الخدمات' : 'Services'}
               </a>
 
               <a
                 href="#taximeter"
-                className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
+                className="px-2 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
               >
                 {lang === 'ar' ? 'العداد الرسمي' : 'Taximètre'}
               </a>
 
               <a
-                href="#drivers"
-                className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
+                href="#communes"
+                className="px-2 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
               >
-                {lang === 'ar' ? 'السائقون الحرفيون' : 'Chauffeurs Agréés'}
+                {lang === 'ar' ? '57 بلدية' : '57 Communes'}
+              </a>
+
+              <a
+                href="#drivers"
+                className="px-2 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
+              >
+                {lang === 'ar' ? 'السائقون والأرباح' : 'Chauffeurs & Gains'}
               </a>
 
               <a
                 href="#enterprise"
-                className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
+                className="px-2 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
               >
                 {lang === 'ar' ? 'الشركات والمدارس' : 'Entreprises & Familles'}
               </a>
 
               <a
                 href="#safety"
-                className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
+                className="px-2 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
               >
-                {lang === 'ar' ? 'القانون 25-11' : 'Loi 25-11 & Sécurité'}
+                {lang === 'ar' ? 'القانون 25-11' : 'Loi 25-11'}
               </a>
 
               <a
                 href="#faq"
-                className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
+                className="px-2 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
               >
                 {lang === 'ar' ? 'الأسئلة الشائعة' : 'FAQ'}
               </a>
 
               <a
                 href="#download"
-                className="px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
+                className="px-2 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
               >
                 {lang === 'ar' ? 'تحميل التطبيق' : 'Application'}
               </a>

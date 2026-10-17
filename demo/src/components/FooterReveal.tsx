@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Sparkles, Palette } from 'lucide-react';
+import { Sparkles, Palette, PhoneCall } from 'lucide-react';
 import type { AppLang } from '../utils/i18n';
 import type { ActiveTab, GraphicsPalette } from './Header';
 
@@ -295,6 +295,35 @@ export const FooterReveal: React.FC<FooterRevealProps> = ({
 
         </div>
 
+        {/* Institutional Emergency Hotlines & Sovereign Contact Strip */}
+        <div className="py-6 border-b border-white/10 flex flex-wrap items-center justify-between gap-4 text-xs">
+          <div className="flex items-center space-x-2 text-slate-300">
+            <PhoneCall className="w-4 h-4 text-amber-500" />
+            <span className="font-extrabold text-white uppercase tracking-wider text-[11px]">
+              {isAr ? 'أرقام الطوارئ والمساعدة الرسمية :' : 'Urgences & Assistance Réglementée :'}
+            </span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
+            <div className="px-3 py-1 rounded-xl bg-blue-500/15 border border-blue-500/30 text-blue-300 font-bold flex items-center space-x-1.5">
+              <span>1548</span>
+              <span className="text-[10px] text-slate-400 font-sans font-normal">Sûreté Nationale</span>
+            </div>
+            <div className="px-3 py-1 rounded-xl bg-slate-800 border border-white/10 text-slate-200 font-bold flex items-center space-x-1.5">
+              <span>1055</span>
+              <span className="text-[10px] text-slate-400 font-sans font-normal">Gendarmerie</span>
+            </div>
+            <div className="px-3 py-1 rounded-xl bg-slate-800 border border-white/10 text-slate-200 font-bold flex items-center space-x-1.5">
+              <span>14</span>
+              <span className="text-[10px] text-slate-400 font-sans font-normal">Protection Civile</span>
+            </div>
+            <div className="px-3 py-1 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 font-bold flex items-center space-x-1.5">
+              <span>1100</span>
+              <span className="text-[10px] text-slate-400 font-sans font-normal">Assistance DTW Alger</span>
+            </div>
+          </div>
+        </div>
+
         {/* Live DTW Network Ticker & Legal Baseline */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-400">
           <div className="flex items-center space-x-2 text-[11px]">
@@ -307,7 +336,7 @@ export const FooterReveal: React.FC<FooterRevealProps> = ({
           <div className="flex items-center space-x-4 text-[11px]">
             <span>© 2026 WASSLANI. Tous droits réservés.</span>
             <span className="font-mono text-slate-500">
-              Architecture Découplée 5 Portals
+              Architecture Découplée 6 Surfaces Métier
             </span>
           </div>
         </div>

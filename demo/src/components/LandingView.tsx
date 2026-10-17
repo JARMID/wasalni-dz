@@ -35,6 +35,8 @@ import { FooterReveal } from './FooterReveal';
 import { HorizontalShowcase } from './HorizontalShowcase';
 import { StickyStack } from './StickyStack';
 import { HeroRealExperience } from './HeroRealExperience';
+import { CommunesExplorer } from './CommunesExplorer';
+import { DriverEarningsCalculator } from './DriverEarningsCalculator';
 import { soundEngine } from '../utils/audio';
 
 interface LandingViewProps {
@@ -767,7 +769,13 @@ export const LandingView: React.FC<LandingViewProps> = ({
         </div>
       </section>
 
-      {/* GSAP HORIZONTAL SHOWCASE: The 5 Decoupled Portals (Passager, Cockpit Chauffeur, DTW Dispatch, Grand Livre, Contrôle Routier) */}
+      {/* SECTION 2.8: EXPLORATEUR TÉLÉMATIQUE DES 57 COMMUNES (#communes) */}
+      <CommunesExplorer 
+        lang={lang} 
+        onSelectDistance={(km) => setTaximeterKm(km)} 
+      />
+
+      {/* GSAP HORIZONTAL SHOWCASE: 6 Surfaces Métier & Démonstrateur Synchronisé */}
       <HorizontalShowcase lang={lang} onNavigateTab={onNavigateTab} />
 
       {/* SECTION 3: COMMENT ÇA MARCHE (3 Simple Steps) */}
@@ -960,6 +968,15 @@ export const LandingView: React.FC<LandingViewProps> = ({
             </div>
 
           </div>
+
+          {/* Interactive Driver Earning Simulator */}
+          <div className="mt-8 pt-8 border-t border-slate-200 dark:border-white/10">
+            <DriverEarningsCalculator
+              lang={lang}
+              onOpenDriverModal={() => setIsDriverModalOpen(true)}
+            />
+          </div>
+
         </div>
       </section>
 
