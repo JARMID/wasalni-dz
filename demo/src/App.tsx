@@ -757,12 +757,14 @@ export function App() {
 
       </main>
 
-      {/* Floating Decoupled Surface Switcher (Permanently accessible across all views with collapse/expand toggle) */}
-      <SurfaceSwitcher
-        activeTab={activeTab}
-        onSelectTab={setActiveTab}
-        lang={lang}
-      />
+      {/* Floating Decoupled Surface Switcher (Active on Demo and Specialized Cockpit Surfaces) */}
+      {activeTab !== 'home' && (
+        <SurfaceSwitcher
+          activeTab={activeTab}
+          onSelectTab={setActiveTab}
+          lang={lang}
+        />
+      )}
 
       {/* Spare Change Flywheel Modal */}
       <SpareChangeModal

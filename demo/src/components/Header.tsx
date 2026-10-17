@@ -88,7 +88,7 @@ export const Header: React.FC<HeaderProps> = ({
   onSelectBrand,
   selectedLogoId = 'logo-01',
   onOpenLogoShowcase,
-  selectedPalette = 'mandarine',
+  selectedPalette = 'saphir',
   onSelectPalette,
 }) => {
   const [soundOn, setSoundOn] = useState(true);
@@ -229,7 +229,6 @@ export const Header: React.FC<HeaderProps> = ({
                 <ChevronDown className="w-3.5 h-3.5" />
               </button>
 
-
               {/* Brand Dropdown Menu */}
               {isBrandMenuOpen && (
                 <div className="absolute top-full left-0 mt-2 w-72 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-white/10 p-2 z-[100] animate-fadeIn">
@@ -261,56 +260,42 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </div>
 
-            {/* Center Surface Tabs (Segmented Control for Direct Demo Access) */}
-            <nav className="hidden lg:flex items-center p-1 rounded-2xl bg-slate-200/70 dark:bg-slate-900/80 border border-slate-300/80 dark:border-white/10 shadow-inner">
-              <button
-                onClick={() => handleTabChange('home')}
-                className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-sm"
+            {/* Center Real Consumer Navigation for Public Website */}
+            <nav className="hidden lg:flex items-center space-x-1 sm:space-x-2">
+              <a
+                href="#services"
+                className="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
               >
-                <Globe className="w-3.5 h-3.5" />
-                <span>{lang === 'ar' ? 'الموقع الرسمي' : 'Site Vitrine'}</span>
-              </button>
+                {lang === 'ar' ? 'الخدمات والتسعيرة' : 'Services & Tarifs'}
+              </a>
 
-              <button
-                onClick={() => handleTabChange('sync')}
-                className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+              <a
+                href="#drivers"
+                className="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
               >
-                <Layers className="w-3.5 h-3.5 text-blue-500 group-hover:text-white" />
-                <span>{lang === 'ar' ? 'العرض المباشر (شاشات متزامنة)' : 'Démo Multi-Écrans'}</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-              </button>
+                {lang === 'ar' ? 'السائقون الحرفيون' : 'Chauffeurs Agréés'}
+              </a>
 
-              <button
-                onClick={() => handleTabChange('rider')}
-                className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+              <a
+                href="#enterprise"
+                className="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
               >
-                <Smartphone className="w-3.5 h-3.5 text-sky-500" />
-                <span>{lang === 'ar' ? 'الراكب' : 'Passager'}</span>
-              </button>
+                {lang === 'ar' ? 'الشركات والمدارس' : 'Entreprises & Familles'}
+              </a>
 
-              <button
-                onClick={() => handleTabChange('driver')}
-                className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+              <a
+                href="#safety"
+                className="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
               >
-                <Car className="w-3.5 h-3.5 text-amber-500" />
-                <span>{lang === 'ar' ? 'السائق' : 'Cockpit'}</span>
-              </button>
+                {lang === 'ar' ? 'القانون والأمان' : 'Loi 25-11 & Sécurité'}
+              </a>
 
-              <button
-                onClick={() => handleTabChange('dispatch')}
-                className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
+              <a
+                href="#download"
+                className="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
               >
-                <Monitor className="w-3.5 h-3.5 text-blue-500" />
-                <span>{lang === 'ar' ? 'غرفة العمليات' : 'DTW'}</span>
-              </button>
-
-              <button
-                onClick={() => handleTabChange('ledger')}
-                className="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white"
-              >
-                <Wallet className="w-3.5 h-3.5 text-indigo-400" />
-                <span>{lang === 'ar' ? 'الدفتر المالي' : 'Finances'}</span>
-              </button>
+                {lang === 'ar' ? 'تحميل التطبيق' : 'Application'}
+              </a>
             </nav>
 
             {/* Right Action Gates & Controls */}

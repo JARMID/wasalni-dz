@@ -118,7 +118,7 @@ export const FooterReveal: React.FC<FooterRevealProps> = ({
               {onSelectPalette && (
                 <div className="flex items-center space-x-1.5 p-1 rounded-xl bg-white/5 border border-white/10">
                   <Palette className="w-3.5 h-3.5 text-slate-400 ml-2 mr-1" />
-                  {(['mandarine', 'carmin', 'cyan', 'monochrome'] as GraphicsPalette[]).map((pal) => (
+                  {((['saphir', 'mandarine', 'carmin', 'cyan', 'monochrome']) as GraphicsPalette[]).map((pal) => (
                     <button
                       key={pal}
                       onClick={() => onSelectPalette(pal)}
@@ -128,7 +128,7 @@ export const FooterReveal: React.FC<FooterRevealProps> = ({
                           : 'text-slate-400 hover:text-white'
                       }`}
                     >
-                      {pal === 'mandarine' ? 'Braise' : pal === 'carmin' ? 'Carmin' : pal === 'cyan' ? 'Cyan' : 'Titane'}
+                      {pal === 'saphir' ? 'Saphir' : pal === 'mandarine' ? 'Mandarine' : pal === 'carmin' ? 'Carmin' : pal === 'cyan' ? 'Cyan' : 'Monochrome'}
                     </button>
                   ))}
                 </div>

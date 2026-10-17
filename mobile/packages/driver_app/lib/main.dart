@@ -772,6 +772,11 @@ class _CockpitHomeScreenState extends State<CockpitHomeScreen> {
                         driverLng: driver.currentLng,
                       );
                     });
+
+                    _supabaseService.acceptRide(
+                      rideId: req.rideId,
+                      driverId: driver.id,
+                    ).catchError((_) => false);
                   },
                   child: Text(
                     _isArabic ? 'قبول الرحلة' : 'Accepter la Course',

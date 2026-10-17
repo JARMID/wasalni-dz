@@ -6,7 +6,6 @@ import {
   ArrowRight, 
   CheckCircle2, 
   Calendar,
-  HeartHandshake,
   QrCode,
   Download,
   Smartphone,
@@ -15,14 +14,13 @@ import {
   X,
   Building2,
   FileCheck2,
-  Layers
+  Lock,
+  BadgePercent
 } from 'lucide-react';
 import type { AppLang } from '../utils/i18n';
 import type { ActiveTab, BrandOption, GraphicsPalette } from './Header';
-import { soundEngine } from '../utils/audio';
 import { FluidShaderCanvas } from './FluidShaderCanvas';
 import { FooterReveal } from './FooterReveal';
-import { HeroScrollyStudio } from './HeroScrollyStudio';
 import { HorizontalShowcase } from './HorizontalShowcase';
 import { StickyStack } from './StickyStack';
 import { HeroRealExperience } from './HeroRealExperience';
@@ -71,37 +69,6 @@ export const LandingView: React.FC<LandingViewProps> = ({
 
   return (
     <div className="space-y-24 pb-20">
-      
-      {/* PRESENTATION MODE PERSISTENT NOTICE BANNER */}
-      <aside 
-        aria-label="Mode présentation démo"
-        className="rounded-2xl bg-gradient-to-r from-blue-900/30 via-amber-900/20 to-blue-900/30 border border-amber-500/30 p-3 sm:p-3.5 text-center text-xs flex flex-wrap items-center justify-between gap-3 backdrop-blur-xl shadow-lg"
-      >
-        <div className="flex items-center space-x-2.5 text-left">
-          <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse shrink-0" />
-          <div>
-            <span className="font-bold text-slate-900 dark:text-white mr-1.5">
-              {isAr ? 'فضاء العرض التقديمي للمشروع :' : 'Espace Évaluation & Présentation :' }
-            </span>
-            <span className="text-slate-600 dark:text-slate-300">
-              {isAr 
-                ? 'الوصول إلى المحاكي التفاعلي المتزامن (لوحة تحكم السائق مع كاميرا الحماية، هاتف الزبون، وغرفة العمليات).'
-                : 'Accédez au simulateur technique multi-écrans synchronisé (cockpit chauffeur avec boîte noire CameraX, smartphone passager et carte).'}
-            </span>
-          </div>
-        </div>
-
-        <button
-          onClick={() => {
-            soundEngine.playClick();
-            onNavigateTab('sync');
-          }}
-          className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-md transition-all cursor-pointer shrink-0 flex items-center space-x-1.5"
-        >
-          <Layers className="w-3.5 h-3.5 text-slate-950" />
-          <span>{isAr ? 'تشغيل العرض الحي المباشر ←' : 'Lancer la Démo Live Multi-Écrans →'}</span>
-        </button>
-      </aside>
 
       {/* HERO SECTION: Dynamic WebGL Canvas + High-Converting Two-Column Marketing Grid */}
       <section className="relative pt-6 sm:pt-12 pb-16 overflow-hidden">
@@ -121,102 +88,223 @@ export const LandingView: React.FC<LandingViewProps> = ({
         />
       </section>
 
-      {/* SECTION 2: POURQUOI WASSLANI (4 Consumer Pillars) */}
+      {/* SECTION 2: POURQUOI WASSLANI (Master Bento Grid of Sovereign Algerian Mobility) */}
       <section id="services" className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="text-center max-w-3xl mx-auto mb-14 space-y-3">
+        <div className="text-center max-w-3xl mx-auto mb-12 space-y-3">
           <div className="inline-flex items-center space-x-2 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>{isAr ? 'مزايا الركاب والمواطنين' : 'Des Trajets Clairs et Sécurisés'}</span>
+            <span>{isAr ? 'مطابقة قانونية كاملة وابتكار في خدمة المواطن' : 'Conformité Réglementaire & Innovation Citoyenne'}</span>
           </div>
           <h2 className="text-2xl sm:text-4xl font-black tracking-tight text-slate-900 dark:text-white">
-            {isAr ? 'لماذا يفضل سكان العاصمة تطبيق وصلني ؟' : 'Le Transport Urbain Repensé pour Alger'}
+            {isAr ? 'أربعة ركائز تغير واقع النقل اليومي في العاصمة' : 'Quatre Piliers qui Changent le Quotidien à Alger'}
           </h2>
           <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">
             {isAr 
-              ? 'حل جذري لمشاكل النقل اليومية : لا مساومة على السعر، لا أزمة في فكة الرد، وحماية قانونية كاملة.'
-              : 'Une réponse concrète aux défis du quotidien : prix transparents au compteur, fin des soucis de monnaie, et chauffeurs professionnels déclarés.'}
+              ? 'حلول تقنية جذرية لحماية القدرة الشرائية للمواطن، ضمان الشفافية التامة في التسعيرة، وتوفير أقصى درجات الأمان للعائلات.'
+              : 'Une plateforme conçue pour protéger le pouvoir d\'achat des citoyens, garantir la transparence totale des prix et assurer la sécurité des passagers.'}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Master Asymmetrical Bento Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           
-          {/* Pillar 1: Compteur Garanti */}
-          <div className="glass-panel p-6 rounded-3xl border space-y-3 flex flex-col justify-between hover:border-[var(--brand-primary)]/40 transition-all">
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-[var(--brand-primary)]/10 text-[var(--brand-primary)] flex items-center justify-center font-bold">
-                <Navigation className="w-6 h-6" />
+          {/* Bento Cell 1 (Col-span 7): Official Regulated Taximeter (Executive Decree 12-230) */}
+          <div className="lg:col-span-7 rounded-2xl p-6 sm:p-8 bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 shadow-xl backdrop-blur-xl relative overflow-hidden flex flex-col justify-between group hover:border-blue-500/40 transition-all text-left">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold">
+                  <Navigation className="w-6 h-6" />
+                </div>
+                <span className="text-[11px] font-mono px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 font-bold border border-blue-500/20">
+                  Décret Exécutif 12-230
+                </span>
               </div>
-              <h3 className="font-extrabold text-base text-slate-900 dark:text-white">
-                {isAr ? 'تسعيرة العداد القانوني' : 'Compteur Officiel Garanti'}
-              </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                {isAr
-                  ? 'لا مفاوضات ولا أسعار مفروضة على الرصيف. يطبق كل سائق التسعيرة المقننة بدقة وفق المرسوم التنفيذي 12-230.'
-                  : 'Fini les prix fixés au hasard ou négociés sous la pluie. Chaque course applique strictement le barème kilométrique officiel homologué par la Wilaya d\'Alger.'}
-              </p>
+
+              <div>
+                <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                  {isAr ? 'تسعيرة العداد الرسمي : وداعاً للأسعار العشوائية تحت المطر' : 'Tarif Compteur Garanti : Fini l\'Arbitraire sous la Pluie'}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed mt-2">
+                  {isAr
+                    ? 'لا مفاوضات على الرصيف ولا مضاعفة للتسعيرة في أوقات الذروة أو سوء الأحوال الجوية. يطبق كل سائق في شبكتنا بدقة التعريفة الرسمية الصادرة عن ولاية الجزائر (100 دج انطلاق + 35 دج للكيلومتر).'
+                    : 'Fini les prix fixés au hasard ou multipliés par trois dès qu\'il pleut. Chaque course applique scrupuleusement la formule homologuée par la Wilaya d\'Alger : 100 DA de prise en charge et 35 DA par kilomètre réel.'}
+                </p>
+              </div>
+
+              {/* Side-by-Side Comparison Widget */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                <div className="p-3.5 rounded-xl bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-500/30 space-y-1">
+                  <div className="flex items-center justify-between text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase">
+                    <span>WASSLANI (Officiel)</span>
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                  </div>
+                  <div className="text-xl font-black font-mono text-blue-600 dark:text-blue-400">
+                    370 DZD
+                  </div>
+                  <div className="text-[10px] text-slate-500 dark:text-slate-400">
+                    100 DA + 35 DA/km • Zéro surcoût météo
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-white/5 space-y-1 opacity-80">
+                  <div className="flex items-center justify-between text-[11px] font-bold text-slate-500 uppercase">
+                    <span>VTC & Clandestins</span>
+                    <span className="text-[10px] text-amber-500 font-mono">Surcoût 3.2x</span>
+                  </div>
+                  <div className="text-xl font-black font-mono text-slate-700 dark:text-slate-300 line-through">
+                    950 - 1 200 DZD
+                  </div>
+                  <div className="text-[10px] text-slate-500">
+                    Algorithme de surtension prédateur
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="pt-2 flex items-center text-[11px] font-bold text-[var(--brand-primary)]">
-              <span>{isAr ? '100 دج انطلاق + عداد' : 'Zéro surprise au tarif'}</span>
+
+            <div className="pt-4 mt-2 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-xs font-bold text-blue-600 dark:text-blue-400">
+              <span className="flex items-center space-x-1.5">
+                <BadgePercent className="w-4 h-4" />
+                <span>{isAr ? 'توفير مؤكد بنسبة 45% إلى 60% على التنقلات الحضرية' : 'Économie garantie de 45% à 60% sur vos trajets quotidiens'}</span>
+              </span>
+              <span className="font-mono text-[11px]">Alger Wilaya 16</span>
             </div>
           </div>
 
-          {/* Pillar 2: Monnaie Exacte BaridiMob */}
-          <div className="glass-panel p-6 rounded-3xl border space-y-3 flex flex-col justify-between hover:border-[var(--brand-accent)]/40 transition-all">
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-[var(--brand-accent)]/10 text-[var(--brand-accent)] flex items-center justify-center font-bold">
-                <Coins className="w-6 h-6" />
+          {/* Bento Cell 2 (Col-span 5): BaridiMob Change Refund Flywheel */}
+          <div className="lg:col-span-5 rounded-2xl p-6 sm:p-8 bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 shadow-xl backdrop-blur-xl flex flex-col justify-between group hover:border-amber-500/40 transition-all text-left">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center font-bold">
+                  <Coins className="w-6 h-6" />
+                </div>
+                <span className="text-[11px] font-mono px-3 py-1 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 font-bold border border-amber-500/20">
+                  Algérie Poste CCP
+                </span>
               </div>
-              <h3 className="font-extrabold text-base text-slate-900 dark:text-white">
-                {isAr ? 'استرجاع فوري لفكة الرد' : 'Monnaie Exacte BaridiMob'}
-              </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                {isAr
-                  ? 'إذا دفعتم بورقة نقدية ولم تتوفر القطع لدى السائق، يتم تحويل المبلغ المتبقي آلياً إلى حسابكم بريدي موب في ثوانٍ.'
-                  : 'Si le chauffeur manque de pièces sur votre billet de 1000 ou 2000 DZD, le reliquat exact est recrédité directement sur votre compte BaridiMob sans friction.'}
-              </p>
+
+              <div>
+                <h3 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">
+                  {isAr ? 'استرجاع فكة الرد عبر بريدي موب' : 'Remboursement Immédiat de la Monnaie'}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed mt-2">
+                  {isAr
+                    ? 'انتهى مشكل البحث عن الصرف أو التنازل عن الباقي. إذا دفعتم بورقة 1000 أو 2000 دج ولم تتوفر القطع النقدية لدى السائق، يتم تحويل المبلغ المتبقي فوراً إلى حسابكم بريدي موب.'
+                    : 'Plus jamais de litige pour une pièce de 50 ou 100 DA manquante. Payez en espèces : le reliquat exact est recrédité immédiatement sur votre compte BaridiMob via votre numéro RIP sans intermédiaire.'}
+                </p>
+              </div>
+
+              {/* Visual Instant Quittance Receipt */}
+              <div className="p-3.5 rounded-xl bg-black/80 border border-white/10 font-mono text-xs space-y-2">
+                <div className="flex justify-between text-slate-400 text-[11px]">
+                  <span>COURSE AUDITÉE : 450.00 DZD</span>
+                  <span>ESPÈCES : 1 000 DA</span>
+                </div>
+                <div className="p-2 rounded-lg bg-amber-500/20 border border-amber-500/30 flex items-center justify-between text-amber-400 font-bold text-xs">
+                  <span>VIREMENT EFFECTUÉ :</span>
+                  <span>+550.00 DZD CCP</span>
+                </div>
+                <div className="text-[10px] text-slate-400 flex items-center justify-between">
+                  <span>RIP: 00799999... • SATIM</span>
+                  <span className="text-blue-400 font-bold">CONFIRMÉ EN 1.2s</span>
+                </div>
+              </div>
             </div>
-            <div className="pt-2 flex items-center text-[11px] font-bold text-[var(--brand-accent)]">
-              <span>{isAr ? 'وداعاً لمشكل الصرف' : 'Fini le manque de pièces'}</span>
+
+            <div className="pt-4 mt-2 border-t border-slate-100 dark:border-white/5 flex items-center text-xs font-bold text-amber-600 dark:text-amber-400">
+              <span>{isAr ? 'صفر دينار مهدور، شفافية مطلقة' : '0.00 DA de monnaie perdue pour le citoyen'}</span>
             </div>
           </div>
 
-          {/* Pillar 3: Chauffeurs Professionnels Agréés */}
-          <div className="glass-panel p-6 rounded-3xl border space-y-3 flex flex-col justify-between hover:border-blue-500/40 transition-all">
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center font-bold">
-                <ShieldCheck className="w-6 h-6" />
+          {/* Bento Cell 3 (Col-span 5): Accredited DTW Artisans */}
+          <div className="lg:col-span-5 rounded-2xl p-6 sm:p-8 bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 shadow-xl backdrop-blur-xl flex flex-col justify-between group hover:border-blue-500/40 transition-all text-left">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center font-bold">
+                  <ShieldCheck className="w-6 h-6" />
+                </div>
+                <span className="text-[11px] font-mono px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 font-bold border border-blue-500/20">
+                  Artisans Agréés DTW
+                </span>
               </div>
-              <h3 className="font-extrabold text-base text-slate-900 dark:text-white">
-                {isAr ? 'سائقون معتمدون رسمياً' : 'Artisans Déclarés DTW'}
-              </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                {isAr
-                  ? 'جميع شركائنا حائزون على دفتر المكان والاعتماد الصادر عن مديرية النقل لولاية الجزائر. لا وجود للنقل السري غير المرخص.'
-                  : 'Tous nos conducteurs sont des artisans taxieurs titulaires d\'un Livret de Place valide, vérifié par la Direction des Transports. Zéro clandestin, sécurité totale.'}
-              </p>
+
+              <div>
+                <h3 className="text-xl font-black text-slate-900 dark:text-white tracking-tight">
+                  {isAr ? 'سائقون مهنيون معتمدون ومركبات مفحوصة' : 'Chauffeurs Agréés & Véhicules Contrôlés'}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed mt-2">
+                  {isAr
+                    ? '100% من شركائنا هم حرفيون رسميون يحملون دفتر مكان معتمد صادر عن مديرية النقل لولاية الجزائر، مع فحص تقني دوري للمركبة وسجل تجاري نظامي.'
+                    : '100% de nos conducteurs sont des artisans taxieurs titulaires d\'un Livret de Place valide délivré par la Direction des Transports. Zéro transport clandestin, zéro risque de mise en fourrière.'}
+                </p>
+              </div>
+
+              {/* Accreditation Badges */}
+              <div className="space-y-2 pt-1">
+                <div className="flex items-center space-x-2 text-xs font-semibold text-slate-700 dark:text-slate-200">
+                  <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />
+                  <span>{isAr ? 'دفتر مكان رسمي ساري المفعول (ولاية الجزائر)' : 'Livret de Place officiel valide (DTW 16)'}</span>
+                </div>
+                <div className="flex items-center space-x-2 text-xs font-semibold text-slate-700 dark:text-slate-200">
+                  <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />
+                  <span>{isAr ? 'مراقبة تقنية دورية ومطابقة معايير السلامة' : 'Contrôle technique périodique semestriel'}</span>
+                </div>
+                <div className="flex items-center space-x-2 text-xs font-semibold text-slate-700 dark:text-slate-200">
+                  <CheckCircle2 className="w-4 h-4 text-blue-500 shrink-0" />
+                  <span>{isAr ? 'سجل تجاري وطني CNRC 604103 معتمد' : 'Registre de commerce national CNRC 604103'}</span>
+                </div>
+              </div>
             </div>
-            <div className="pt-2 flex items-center text-[11px] font-bold text-blue-500">
-              <span>{isAr ? 'فحص دوري للمركبات' : 'Livret de place vérifié'}</span>
+
+            <div className="pt-4 mt-2 border-t border-slate-100 dark:border-white/5 flex items-center text-xs font-bold text-blue-600 dark:text-blue-400">
+              <span>{isAr ? 'أمان قانوني كامل للراكب والسائق' : 'Sécurité juridique totale sur la voie publique'}</span>
             </div>
           </div>
 
-          {/* Pillar 4: Paiement Proches & Navettes */}
-          <div className="glass-panel p-6 rounded-3xl border space-y-3 flex flex-col justify-between hover:border-indigo-500/40 transition-all">
-            <div className="space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center font-bold">
-                <HeartHandshake className="w-6 h-6" />
+          {/* Bento Cell 4 (Col-span 7): Law 25-11 Security, Black Box & Family Peace of Mind */}
+          <div className="lg:col-span-7 rounded-2xl p-6 sm:p-8 bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 shadow-xl backdrop-blur-xl relative overflow-hidden flex flex-col justify-between group hover:border-indigo-500/40 transition-all text-left">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="w-12 h-12 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center font-bold">
+                  <Lock className="w-6 h-6" />
+                </div>
+                <span className="text-[11px] font-mono px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-bold border border-indigo-500/20">
+                  Loi 25-11 & Sécurité Famille
+                </span>
               </div>
-              <h3 className="font-extrabold text-base text-slate-900 dark:text-white">
-                {isAr ? 'الدفع عن بعد للعائلة' : 'Paiement pour un Proche'}
-              </h3>
-              <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                {isAr
-                  ? 'احجز وسدد رحلة والديك أو أبنائك عن بعد عبر البطاقة الذهبية أو بريدي موب، وتابع تنقلاتهم مباشرة على الخريطة.'
-                  : 'Réglez à distance la course de vos parents ou de vos enfants depuis votre smartphone via CIB ou BaridiMob. Suivez leur déplacement en direct jusqu\'à bon port.'}
-              </p>
+
+              <div>
+                <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+                  {isAr ? 'كاميرا مراقبة مشفرة وراحة بال تامة للعائلات' : 'Boîte Noire Vidéo & Navettes Sécurisées pour Proches'}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed mt-2">
+                  {isAr
+                    ? 'كاميرا داخلية CameraX تسجل في حلقة دائرية مدتها 30 ثانية مشفرة بتقنية AES-256 وفق القانون 25-11. كما يمكن للأولياء حجز وتسديد رحلات أبنائهم أو والديهم عن بعد مع متابعة المسار الحي في الوقت الفعلي.'
+                    : 'Chaque taxi est équipé d\'une caméra de bord chiffrée en boucle locale de 30 secondes sous séquestre judiciaire AES-256 avec quorum Shamir 2-sur-3. Réservez et payez à distance pour vos proches avec suivi en direct jusqu\'à bon port.'}
+                </p>
+              </div>
+
+              {/* Family Reassurance Telemetry Strip */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+                <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-white/5 text-center">
+                  <div className="text-base font-black text-indigo-600 dark:text-indigo-400 font-mono">AES-256</div>
+                  <div className="text-[10px] text-slate-500 dark:text-slate-400">Chiffrement Loi 25-11</div>
+                </div>
+
+                <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-white/5 text-center">
+                  <div className="text-base font-black text-blue-600 dark:text-blue-400 font-mono">&lt; 180 ms</div>
+                  <div className="text-[10px] text-slate-500 dark:text-slate-400">Télématique en Direct</div>
+                </div>
+
+                <div className="p-3 rounded-xl bg-slate-100 dark:bg-slate-800/60 border border-slate-200 dark:border-white/5 text-center">
+                  <div className="text-base font-black text-amber-500 font-mono">100% CIB</div>
+                  <div className="text-[10px] text-slate-500 dark:text-slate-400">Paiement à Distance</div>
+                </div>
+              </div>
             </div>
-            <div className="pt-2 flex items-center text-[11px] font-bold text-indigo-500">
-              <span>{isAr ? 'أمان واطمئنان للعائلة' : 'Sérénité familiale'}</span>
+
+            <div className="pt-4 mt-2 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-xs font-bold text-indigo-600 dark:text-indigo-400">
+              <span>{isAr ? 'متابعة مباشرة لمسار الأطفال والوالدين' : 'Suivi GPS parents et alertes d\'arrivée en temps réel'}</span>
+              <span className="font-mono text-[11px]">57 Communes</span>
             </div>
           </div>
 
@@ -226,26 +314,26 @@ export const LandingView: React.FC<LandingViewProps> = ({
       {/* GSAP HORIZONTAL SHOWCASE: The 5 Decoupled Portals (Passager, Cockpit Chauffeur, DTW Dispatch, Grand Livre, Contrôle Routier) */}
       <HorizontalShowcase lang={lang} onNavigateTab={onNavigateTab} />
 
-      {/* SCROLLYTELLING STUDIO: 3 Core Pillars with GSAP ScrollTrigger & Hotspots */}
-      <HeroScrollyStudio lang={lang} onNavigateTab={onNavigateTab} />
-
       {/* SECTION 3: COMMENT ÇA MARCHE (3 Simple Steps) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="glass-panel rounded-3xl p-8 sm:p-12 border border-slate-200 dark:border-white/10">
-          <div className="text-center max-w-2xl mx-auto mb-10 space-y-2">
+        <div className="rounded-2xl p-8 sm:p-12 bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 shadow-xl backdrop-blur-xl">
+          <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
             <span className="text-xs font-mono font-bold uppercase tracking-wider text-[var(--brand-primary)]">
               {isAr ? 'خطوات بسيطة وسريعة' : 'Utilisation Intuitive'}
             </span>
             <h3 className="text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
               {isAr ? 'كيف يعمل تطبيق وصلني ؟' : 'Votre Course en 3 Étapes'}
             </h3>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
+              {isAr ? 'تجربة حجز سلسة وشفافة من البداية حتى الوصول' : 'Une expérience fluide sans surprise du départ à l\'arrivée'}
+            </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center relative">
             
             {/* Step 1 */}
-            <div className="space-y-4 flex flex-col items-center">
-              <div className="w-14 h-14 rounded-2xl bg-[var(--brand-primary)] text-white font-black text-xl flex items-center justify-center shadow-lg shadow-[var(--brand-primary)]/20">
+            <div className="space-y-4 flex flex-col items-center p-4 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+              <div className="w-14 h-14 rounded-2xl bg-blue-600 text-white font-black text-xl flex items-center justify-center shadow-lg shadow-blue-600/25">
                 1
               </div>
               <h4 className="font-extrabold text-base text-slate-900 dark:text-white">
@@ -254,13 +342,13 @@ export const LandingView: React.FC<LandingViewProps> = ({
               <p className="text-xs text-slate-600 dark:text-slate-300 max-w-xs leading-relaxed">
                 {isAr 
                   ? 'افتح التطبيق، اختر وجهتك، واطلع مسبقاً على التقدير الرسمي المعتمد للتكلفة.'
-                  : 'Saisissez votre adresse de départ et d\'arrivée pour visualiser le tarif officiel calculé par le compteur.'}
+                  : 'Saisissez votre adresse de départ et d\'arrivée pour visualiser le tarif officiel calculé par le compteur homologué.'}
               </p>
             </div>
 
             {/* Step 2 */}
-            <div className="space-y-4 flex flex-col items-center">
-              <div className="w-14 h-14 rounded-2xl bg-blue-600 text-white font-black text-xl flex items-center justify-center shadow-lg shadow-blue-600/20">
+            <div className="space-y-4 flex flex-col items-center p-4 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+              <div className="w-14 h-14 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-black text-xl flex items-center justify-center shadow-lg">
                 2
               </div>
               <h4 className="font-extrabold text-base text-slate-900 dark:text-white">
@@ -274,8 +362,8 @@ export const LandingView: React.FC<LandingViewProps> = ({
             </div>
 
             {/* Step 3 */}
-            <div className="space-y-4 flex flex-col items-center">
-              <div className="w-14 h-14 rounded-2xl bg-[var(--brand-accent)] text-white font-black text-xl flex items-center justify-center shadow-lg shadow-[var(--brand-accent)]/20">
+            <div className="space-y-4 flex flex-col items-center p-4 rounded-xl hover:bg-slate-50 dark:hover:bg-white/5 transition-colors">
+              <div className="w-14 h-14 rounded-2xl bg-amber-500 text-slate-950 font-black text-xl flex items-center justify-center shadow-lg shadow-amber-500/25">
                 3
               </div>
               <h4 className="font-extrabold text-base text-slate-900 dark:text-white">
@@ -284,7 +372,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
               <p className="text-xs text-slate-600 dark:text-slate-300 max-w-xs leading-relaxed">
                 {isAr 
                   ? 'ادفع نقداً مع استلام فكة الرد في حسابك، أو سدد مباشرة عبر بطاقتك البنكية أو بريدي موب.'
-                  : 'Réglez en espèces avec rendu automatique de monnaie par BaridiMob, ou directement par carte CIB et Edahabia.'}
+                  : 'Réglez en espèces avec restitution automatique de monnaie par BaridiMob, ou directement par carte CIB et Edahabia.'}
               </p>
             </div>
 
@@ -293,7 +381,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
           <div className="mt-10 text-center">
             <button
               onClick={() => setIsAppModalOpen(true)}
-              className="inline-flex items-center space-x-2 px-6 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-950 font-bold text-xs hover:opacity-90 transition-all cursor-pointer shadow-md"
+              className="inline-flex items-center space-x-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg shadow-blue-600/25 transition-all cursor-pointer"
             >
               <Smartphone className="w-4 h-4" />
               <span>{isAr ? 'ابدأ تجربتك الأولى الآن' : 'Essayer l\'Application WASSLANI'}</span>
@@ -308,12 +396,12 @@ export const LandingView: React.FC<LandingViewProps> = ({
 
       {/* SECTION 4: ESPACE CHAUFFEURS ET ARTISANS TAXIEURS (#drivers) */}
       <section id="drivers" className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="glass-panel rounded-3xl p-8 sm:p-12 border border-[var(--brand-primary)]/30 bg-gradient-to-br from-[var(--brand-primary)]/5 via-transparent to-[var(--brand-accent)]/5">
+        <div className="rounded-2xl p-8 sm:p-12 bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 shadow-xl backdrop-blur-xl">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             
             {/* Driver Value Proposition */}
             <div className="lg:col-span-7 space-y-5 text-left">
-              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-lg bg-[var(--brand-primary)]/15 text-[var(--brand-primary)] font-bold text-xs">
+              <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-lg bg-amber-500/15 text-amber-600 dark:text-amber-400 font-bold text-xs border border-amber-500/20">
                 <Car className="w-3.5 h-3.5" />
                 <span>{isAr ? 'فضاء الحرفيين وسائقي الطاكسي (ولاية الجزائر)' : 'Espace Chauffeurs et Artisans Taxieurs'}</span>
               </div>
@@ -330,21 +418,33 @@ export const LandingView: React.FC<LandingViewProps> = ({
                   : 'Rejoignez le réseau officiel WASSLANI. Bénéficiez d\'une commission réduite de 8% à 12%, d\'une activité 100% légale sans risque de mise en fourrière, et du versement quotidien garanti de vos courses sur votre compte CCP.'}
               </p>
 
+              {/* Economic Gain Comparison Card */}
+              <div className="p-4 rounded-xl bg-amber-50/60 dark:bg-amber-950/20 border border-amber-500/20 flex flex-wrap items-center justify-between gap-3 text-xs">
+                <div>
+                  <div className="font-bold text-slate-900 dark:text-white">Commission Artisan Équitable : 8% à 12%</div>
+                  <div className="text-[11px] text-slate-500 dark:text-slate-400">Contre 25% sur les applications étrangères non agréées</div>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm font-black font-mono text-amber-600 dark:text-amber-400">+45 000 DZD / mois</div>
+                  <div className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold">Gain net moyen estimé</div>
+                </div>
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-xs font-semibold text-slate-800 dark:text-slate-200">
                 <div className="flex items-center space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-[var(--brand-primary)] shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-amber-500 shrink-0" />
                   <span>{isAr ? 'حماية من المحشر (نشاط قانوني)' : 'Zéro risque de fourrière'}</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-[var(--brand-primary)] shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-amber-500 shrink-0" />
                   <span>{isAr ? 'عمولة منصفة 8% إلى 12% فقط' : 'Commission artisan de 8% à 12%'}</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-[var(--brand-primary)] shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-amber-500 shrink-0" />
                   <span>{isAr ? 'تحويل يومي للأرباح عبر CCP' : 'Virements quotidiens CCP'}</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <CheckCircle2 className="w-4 h-4 text-[var(--brand-primary)] shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-amber-500 shrink-0" />
                   <span>{isAr ? 'كاميرا حماية للسيارة مهداة' : 'Boîte noire vidéo offerte'}</span>
                 </div>
               </div>
@@ -352,9 +452,9 @@ export const LandingView: React.FC<LandingViewProps> = ({
               <div className="pt-3">
                 <button
                   onClick={() => setIsDriverModalOpen(true)}
-                  className="px-6 py-3.5 rounded-2xl bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] text-white font-bold text-xs shadow-xl shadow-[var(--brand-primary)]/20 transition-all cursor-pointer inline-flex items-center space-x-2"
+                  className="px-6 py-3.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shadow-xl shadow-amber-500/20 transition-all cursor-pointer inline-flex items-center space-x-2"
                 >
-                  <FileCheck2 className="w-4 h-4" />
+                  <FileCheck2 className="w-4 h-4 text-slate-950" />
                   <span>{isAr ? 'تقديم طلب الانضمام كشريك' : 'Déposer ma Candidature Chauffeur'}</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
@@ -363,12 +463,12 @@ export const LandingView: React.FC<LandingViewProps> = ({
             </div>
 
             {/* Driver Requirements Card */}
-            <div className="lg:col-span-5 p-6 rounded-3xl bg-slate-900 text-white border border-slate-800 shadow-2xl space-y-4 text-left">
+            <div className="lg:col-span-5 p-6 rounded-2xl bg-slate-900 text-white border border-slate-800 shadow-2xl space-y-4 text-left">
               <div className="flex items-center justify-between">
-                <span className="text-xs uppercase tracking-wider text-[var(--brand-primary)] font-mono font-bold">
+                <span className="text-xs uppercase tracking-wider text-amber-400 font-mono font-bold">
                   {isAr ? 'شروط الانضمام الرسمية' : 'Critères d\'Admissibilité'}
                 </span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 font-bold">
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-500/20 text-blue-300 font-bold border border-blue-500/30">
                   DTW 16
                 </span>
               </div>
@@ -379,26 +479,26 @@ export const LandingView: React.FC<LandingViewProps> = ({
 
               <ul className="space-y-2.5 text-xs text-slate-300">
                 <li className="flex items-center space-x-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[var(--brand-primary)] shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                   <span>{isAr ? 'دفتر مكان ساري المفعول (ولاية الجزائر)' : 'Livret de Place valide (Wilaya d\'Alger)'}</span>
                 </li>
                 <li className="flex items-center space-x-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[var(--brand-primary)] shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                   <span>{isAr ? 'رخصة سياقة صنف ب (أكثر من سنتين)' : 'Permis de conduire Catégorie B (> 2 ans)'}</span>
                 </li>
                 <li className="flex items-center space-x-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[var(--brand-primary)] shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                   <span>{isAr ? 'شهادة المراقبة التقنية الدورية للمركبة' : 'Contrôle technique périodique à jour'}</span>
                 </li>
                 <li className="flex items-center space-x-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[var(--brand-primary)] shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                   <span>{isAr ? 'رقم الحساب البريدي الجاري CCP' : 'Relevé d\'Identité Postale (RIP / CCP)'}</span>
                 </li>
               </ul>
 
               <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
                 <span>{isAr ? 'معالجة الملف خلال 24 ساعة' : 'Dossier traité sous 24h'}</span>
-                <span className="font-bold text-white">0550 12 34 56</span>
+                <span className="font-bold text-white font-mono">0550 12 34 56</span>
               </div>
 
             </div>
@@ -412,8 +512,8 @@ export const LandingView: React.FC<LandingViewProps> = ({
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           
           {/* Card 1: Navettes Scolaires & Quotidiennes */}
-          <div className="glass-panel rounded-3xl p-8 border space-y-4 text-left hover:border-blue-500/30 transition-all">
-            <div className="w-12 h-12 rounded-2xl bg-blue-500/10 text-blue-500 flex items-center justify-center font-bold">
+          <div className="rounded-2xl p-8 bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 shadow-xl backdrop-blur-xl space-y-4 text-left hover:border-blue-500/40 transition-all">
+            <div className="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center font-bold">
               <Calendar className="w-6 h-6" />
             </div>
             <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">
@@ -432,8 +532,8 @@ export const LandingView: React.FC<LandingViewProps> = ({
           </div>
 
           {/* Card 2: Comptes Entreprises & Facturation */}
-          <div className="glass-panel rounded-3xl p-8 border space-y-4 text-left hover:border-[var(--brand-accent)]/30 transition-all">
-            <div className="w-12 h-12 rounded-2xl bg-[var(--brand-accent)]/10 text-[var(--brand-accent)] flex items-center justify-center font-bold">
+          <div className="rounded-2xl p-8 bg-white/90 dark:bg-slate-900/90 border border-slate-200 dark:border-white/10 shadow-xl backdrop-blur-xl space-y-4 text-left hover:border-amber-500/40 transition-all">
+            <div className="w-12 h-12 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center font-bold">
               <Building2 className="w-6 h-6" />
             </div>
             <h3 className="text-xl font-extrabold text-slate-900 dark:text-white">
@@ -444,7 +544,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
                 ? 'إدارة متكاملة لنقل موظفيكم وزواركم داخل ولاية الجزائر. فوترة شهرية موحدة، دفع عبر التحويل البنكي، وتتبع النفقات بسهولة.'
                 : 'Simplifiez la mobilité de vos collaborateurs et invités à Alger. Facturation mensuelle centralisée, paiement par virement bancaire et conformité fiscale complète.'}
             </p>
-            <div className="pt-2 flex items-center space-x-4 text-xs font-bold text-[var(--brand-accent)]">
+            <div className="pt-2 flex items-center space-x-4 text-xs font-bold text-amber-600 dark:text-amber-400">
               <span>{isAr ? 'فوترة شهرية قانونية' : 'Facturation mensuelle'}</span>
               <span>•</span>
               <span>{isAr ? 'خصم مالي متاح' : 'Gestion centralisée'}</span>
@@ -456,7 +556,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
 
       {/* SECTION 6: TÉLÉCHARGEMENT APPLICATION (#download) */}
       <section id="download" className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="glass-panel rounded-3xl p-8 sm:p-12 border border-slate-200 dark:border-white/10 bg-slate-950 text-white shadow-2xl">
+        <div className="rounded-2xl p-8 sm:p-12 border border-slate-800 bg-slate-950 text-white shadow-2xl">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             
             <div className="lg:col-span-8 space-y-5 text-left">
@@ -565,15 +665,15 @@ export const LandingView: React.FC<LandingViewProps> = ({
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-slate-500 dark:text-slate-400 text-left">
-          <div className="p-4 rounded-xl glass-panel border space-y-1">
+          <div className="p-4 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 space-y-1 shadow-sm">
             <span className="font-bold text-slate-800 dark:text-slate-200 block">Décret Exécutif 12-230</span>
             <p>Réglementation stricte de l'activité des taxis urbains et interurbains. Agrément préfectoral obligatoire.</p>
           </div>
-          <div className="p-4 rounded-xl glass-panel border space-y-1">
+          <div className="p-4 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 space-y-1 shadow-sm">
             <span className="font-bold text-slate-800 dark:text-slate-200 block">Registre de Commerce CNRC 604103</span>
             <p>Plateforme numérique agréée pour l'intermédiation et la gestion de flottes de transport de personnes.</p>
           </div>
-          <div className="p-4 rounded-xl glass-panel border space-y-1">
+          <div className="p-4 rounded-xl bg-white/80 dark:bg-slate-900/80 border border-slate-200 dark:border-white/10 space-y-1 shadow-sm">
             <span className="font-bold text-slate-800 dark:text-slate-200 block">Loi 25-11 Sécurité Numérique</span>
             <p>Protection intégrale des données personnelles et hébergement souverain des serveurs sur le sol national.</p>
           </div>

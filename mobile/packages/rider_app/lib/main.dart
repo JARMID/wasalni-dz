@@ -158,11 +158,12 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
     AudioHapticService.onRideDispatched();
     final now = DateTime.now();
     final pickupPin = (1000 + (now.millisecondsSinceEpoch % 9000)).toString();
+    final rideCode = 'DZ-${now.millisecondsSinceEpoch.toString().substring(7)}';
 
     setState(() {
       _currentRide = RideDriverAssigned(
         rideId: 'DZ-RIDE-${now.millisecondsSinceEpoch.toString().substring(8)}',
-        rideCode: 'DZ-${now.millisecondsSinceEpoch.toString().substring(7)}',
+        rideCode: rideCode,
         driverId: 'DRV-16-0894',
         driverName: 'Mohamed Brahimi',
         vehiclePlate: '01842-120-16',
@@ -173,6 +174,22 @@ class _RiderHomeScreenState extends State<RiderHomeScreen> {
         driverLng: 3.0588,
       );
     });
+
+    _supabaseService.createRideRequest(
+      rideCode: rideCode,
+      originAddress: _origin.nameFr,
+      originLat: _origin.lat,
+      originLng: _origin.lng,
+      originCommune: _origin.commune,
+      destinationAddress: _destination.nameFr,
+      destinationLat: _destination.lat,
+      destinationLng: _destination.lng,
+      destinationCommune: _destination.commune,
+      estimatedFareDzd: _currentEstimatedFareDzd,
+      pinCode: pickupPin,
+      distanceMeters: (_currentDistanceKm * 1000).round(),
+      durationSeconds: _currentDurationMin * 60,
+    ).catchError((_) => null);
   }
 
   void _cancelRide() {
