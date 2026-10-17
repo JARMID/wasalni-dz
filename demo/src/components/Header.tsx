@@ -319,12 +319,12 @@ export const Header: React.FC<HeaderProps> = ({
               {/* Primary Call to Action: Live Interactive Demo Launcher */}
               <button
                 onClick={() => handleTabChange('sync')}
-                className="flex items-center space-x-1.5 px-3 sm:px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow-lg shadow-blue-600/30 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                className="flex items-center space-x-1.5 px-3 sm:px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs shadow-lg shadow-amber-500/25 transition-all transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer border border-amber-400"
                 title="Lancer le démonstrateur multi-appareils (Passager + Chauffeur + Carte)"
               >
-                <Layers className="w-3.5 h-3.5" />
-                <span className="hidden sm:inline">{lang === 'ar' ? 'تشغيل العرض الحي' : 'Lancer la Démo Live'}</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-300 animate-pulse" />
+                <Layers className="w-3.5 h-3.5 text-slate-950" />
+                <span className="inline font-extrabold">{lang === 'ar' ? 'العرض الحي' : 'Démo Multi-Écrans'}</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-700 animate-pulse" />
               </button>
 
               {/* Secondary Call to Action: Download App */}

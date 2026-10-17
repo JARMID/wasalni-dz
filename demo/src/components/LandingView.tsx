@@ -14,10 +14,12 @@ import {
   Sparkles,
   X,
   Building2,
-  FileCheck2
+  FileCheck2,
+  Layers
 } from 'lucide-react';
 import type { AppLang } from '../utils/i18n';
 import type { ActiveTab, BrandOption, GraphicsPalette } from './Header';
+import { soundEngine } from '../utils/audio';
 import { FluidShaderCanvas } from './FluidShaderCanvas';
 import { FooterReveal } from './FooterReveal';
 import { HeroScrollyStudio } from './HeroScrollyStudio';
@@ -70,6 +72,37 @@ export const LandingView: React.FC<LandingViewProps> = ({
   return (
     <div className="space-y-24 pb-20">
       
+      {/* PRESENTATION MODE PERSISTENT NOTICE BANNER */}
+      <aside 
+        aria-label="Mode présentation démo"
+        className="rounded-2xl bg-gradient-to-r from-blue-900/30 via-amber-900/20 to-blue-900/30 border border-amber-500/30 p-3 sm:p-3.5 text-center text-xs flex flex-wrap items-center justify-between gap-3 backdrop-blur-xl shadow-lg"
+      >
+        <div className="flex items-center space-x-2.5 text-left">
+          <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse shrink-0" />
+          <div>
+            <span className="font-bold text-slate-900 dark:text-white mr-1.5">
+              {isAr ? 'فضاء العرض التقديمي للمشروع :' : 'Espace Évaluation & Présentation :' }
+            </span>
+            <span className="text-slate-600 dark:text-slate-300">
+              {isAr 
+                ? 'الوصول إلى المحاكي التفاعلي المتزامن (لوحة تحكم السائق مع كاميرا الحماية، هاتف الزبون، وغرفة العمليات).'
+                : 'Accédez au simulateur technique multi-écrans synchronisé (cockpit chauffeur avec boîte noire CameraX, smartphone passager et carte).'}
+            </span>
+          </div>
+        </div>
+
+        <button
+          onClick={() => {
+            soundEngine.playClick();
+            onNavigateTab('sync');
+          }}
+          className="px-3.5 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs shadow-md transition-all cursor-pointer shrink-0 flex items-center space-x-1.5"
+        >
+          <Layers className="w-3.5 h-3.5 text-slate-950" />
+          <span>{isAr ? 'تشغيل العرض الحي المباشر ←' : 'Lancer la Démo Live Multi-Écrans →'}</span>
+        </button>
+      </aside>
+
       {/* HERO SECTION: Dynamic WebGL Canvas + High-Converting Two-Column Marketing Grid */}
       <section className="relative pt-6 sm:pt-12 pb-16 overflow-hidden">
         
