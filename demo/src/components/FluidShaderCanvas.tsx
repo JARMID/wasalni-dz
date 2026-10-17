@@ -8,12 +8,12 @@ interface FluidShaderCanvasProps {
   className?: string;
 }
 
-const PALETTE_COLORS: Record<GraphicsPalette, { primary: string; accent: string; bg: string }> = {
-  saphir:    { primary: '#2563EB', accent: '#F59E0B', bg: '#0A0E17' },
-  mandarine: { primary: '#FF5C00', accent: '#6366F1', bg: '#0F1115' },
-  carmin:    { primary: '#E11D48', accent: '#38BDF8', bg: '#0B0D13' },
-  cyan:      { primary: '#06B6D4', accent: '#F97316', bg: '#040711' },
-  monochrome:{ primary: '#E2E8F0', accent: '#D4AF37', bg: '#0B0D11' },
+const PALETTE_COLORS: Record<GraphicsPalette, { primary: string; accent: string; bgDark: string; bgLight: string }> = {
+  saphir:    { primary: '#2563EB', accent: '#F59E0B', bgDark: '#0A0E17', bgLight: '#F8FAFC' },
+  mandarine: { primary: '#FF5C00', accent: '#6366F1', bgDark: '#0F1115', bgLight: '#F8FAFC' },
+  carmin:    { primary: '#E11D48', accent: '#38BDF8', bgDark: '#0B0D13', bgLight: '#F8FAFC' },
+  cyan:      { primary: '#06B6D4', accent: '#F97316', bgDark: '#040711', bgLight: '#F8FAFC' },
+  monochrome:{ primary: '#E2E8F0', accent: '#D4AF37', bgDark: '#0B0D11', bgLight: '#F8FAFC' },
 };
 
 // GLSL Vertex Shader: Multi-octave algorithmic wave topography with interactive mouse ripple
@@ -129,11 +129,14 @@ export const FluidShaderCanvas: React.FC<FluidShaderCanvasProps> = ({ palette, c
     scene.add(fluidGroup);
 
     // Read initial computed CSS variables or selected palette configuration
+    const isLightMode = document.documentElement.classList.contains('light');
     const computedStyle = window.getComputedStyle(document.documentElement);
     const palConfig = palette ? PALETTE_COLORS[palette] : null;
-    const initialPrimary = palConfig ? new THREE.Color(palConfig.primary) : parseCssColor(computedStyle.getPropertyValue('--brand-primary'), '#FF5C00');
-    const initialAccent = palConfig ? new THREE.Color(palConfig.accent) : parseCssColor(computedStyle.getPropertyValue('--brand-accent'), '#6366F1');
-    const initialDark = palConfig ? new THREE.Color(palConfig.bg) : parseCssColor(computedStyle.getPropertyValue('--brand-canvas-dark'), '#0F1115');
+    const initialPrimary = palConfig ? new THREE.Color(palConfig.primary) : parseCssColor(computedStyle.getPropertyValue('--brand-primary'), '#2563EB');
+    const initialAccent = palConfig ? new THREE.Color(palConfig.accent) : parseCssColor(computedStyle.getPropertyValue('--brand-accent'), '#F59E0B');
+    const initialDark = palConfig 
+      ? new THREE.Color(isLightMode ? palConfig.bgLight : palConfig.bgDark) 
+      : parseCssColor(computedStyle.getPropertyValue('--brand-canvas-dark'), isLightMode ? '#F8FAFC' : '#0F1115');
 
     // 1. Fluid Shader Plane
     const planeGeo = new THREE.PlaneGeometry(48, 36, 72, 72);
@@ -218,10 +221,13 @@ export const FluidShaderCanvas: React.FC<FluidShaderCanvasProps> = ({ palette, c
 
     // 4. Dynamic Palette Sync via MutationObserver
     const observer = new MutationObserver(() => {
+      const isL = document.documentElement.classList.contains('light');
       const cs = window.getComputedStyle(document.documentElement);
-      const newP = parseCssColor(cs.getPropertyValue('--brand-primary'), '#FF5C00');
-      const newA = parseCssColor(cs.getPropertyValue('--brand-accent'), '#6366F1');
-      const newD = parseCssColor(cs.getPropertyValue('--brand-canvas-dark'), '#0F1115');
+      const palConf = palette ? PALETTE_COLORS[palette] : null;
+      const newP = palConf ? new THREE.Color(palConf.primary) : parseCssColor(cs.getPropertyValue('--brand-primary'), '#2563EB');
+      const newA = palConf ? new THREE.Color(palConf.accent) : parseCssColor(cs.getPropertyValue('--brand-accent'), '#F59E0B');
+      const targetDarkStr = palConf ? (isL ? palConf.bgLight : palConf.bgDark) : (isL ? '#F8FAFC' : '#0F1115');
+      const newD = parseCssColor(cs.getPropertyValue('--brand-canvas-dark'), targetDarkStr);
 
       uniforms.uColorPrimary.value.copy(newP);
       uniforms.uColorAccent.value.copy(newA);

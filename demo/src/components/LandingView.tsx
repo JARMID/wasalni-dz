@@ -74,7 +74,7 @@ export const LandingView: React.FC<LandingViewProps> = ({
       <section className="relative pt-6 sm:pt-12 pb-16 overflow-hidden">
         
         {/* Three.js WebGL Fluid Shader Background Canvas */}
-        <FluidShaderCanvas palette={selectedPalette} className="opacity-70 dark:opacity-85 pointer-events-none" />
+        <FluidShaderCanvas palette={selectedPalette} className="opacity-40 dark:opacity-85 pointer-events-none" />
 
         {/* Ambient Gradient Glow */}
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[380px] bg-gradient-to-r from-[var(--brand-primary)]/15 via-[var(--brand-accent)]/15 to-[var(--brand-primary)]/15 blur-3xl -z-10 pointer-events-none rounded-full" />
